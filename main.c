@@ -6,14 +6,15 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/01/28 14:50:42 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/01/28 15:22:39 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <libft.h>
 
 int main(void)
 {
-	printf("Hello world !");
+	printf("Hello world ! %d\n", ft_isdigit('5'));
 	return (0);
 }
