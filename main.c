@@ -6,15 +6,13 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/01/28 15:22:39 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/01/28 17:42:21 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <libft.h>
+#include <minishell.h>
 
-int main(void)
+int main(int ac, char **av, char **env)
 {
-	printf("Hello world ! %d\n", ft_isdigit('5'));
 	return (0);
 }

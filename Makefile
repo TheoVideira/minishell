@@ -15,8 +15,6 @@ INCLUDES = -I./libft
 objs/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
-
-#
 all: $(NAME)
 
 libftplz:
