@@ -1,3 +1,6 @@
 [submodule "libft"]
 	path = libft
 	url = https://github.com/yorncl/libft.git
+[submodule "gnl"]
+	path = gnl
+	url = https://github.com/yorncl/get_next_line.git
