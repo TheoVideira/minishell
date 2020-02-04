@@ -11,6 +11,7 @@ GNL_HEADERS =	gnl/get_next_line.h \
 SRCS =		$(GNL_SRCS) \
 			srcs/parser.c \
 			srcs/freeing.c \
+			srcs/tree.c	\
 			srcs/main.c
 HEADERS =	$(GNL_HEADERS) \
 			headers/minishell.h \
