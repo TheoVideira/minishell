@@ -33,6 +33,10 @@
 
 int		is_separator(char *str)
 {
+	if (*str == '&' && *(str + 1) == '&')
+		return (2);
+	if (*str == '|' && *(str + 1) == '|')
+		return (2);
 	if (*str == '(')
 		return (1);
 	if (*str == ')')
@@ -41,47 +45,7 @@ int		is_separator(char *str)
 		return (1);
 	if (*str == ';')
 		return (1);
-	if (*str == '&' && *(str + 1) == '&')
-		return (2);
-	if (*str == '|' && *(str + 1) == '|')
-		return (2);
 	return (0);
-}
-
-int		tokencount(char *str)
-{
-	int		inquotes;
-	int		count;
-	int		tmp;
-
-	count = 0;
-	while (*str)
-	{
-		inquotes = 0;
-		while (ft_isspace(*str))
-			str++;
-		while (*str && !ft_isspace(*str))
-		{
-			if (*str == inquotes)
-			{
-				inquotes = 0;
-				str++;
-				continue ;
-			}
-			if (!inquotes && (*str == '\'' || *str == '"'))
-				inquotes = *str;
-			if (!inquotes && (tmp = is_separator(str)))
-			{
-				if (!ft_isspace(*(str - 1)))
-					count++;
-				str += tmp;
-				break ;
-			}
-			str++;
-		}
-		count++;
-	}
-	return (count);
 }
 
 int		double_quotes(char *str, char **token)
@@ -105,7 +69,7 @@ int		single_quotes(char *str, char **token)
 	int		size;
 
 	size = 0;
-	while (*str && *str != '"')
+	while (*str && *str != '\'')
 	{
 		size++;
 		str++;
@@ -134,6 +98,10 @@ int		no_quotes(char *str, char **token)
 
 char		*handle_separators(char *str)
 {
+	if (*str == '&' && *(str + 1) == '&')
+		return (ft_strdup("&&"));
+	if (*str == '|' && *(str + 1) == '|')
+		return (ft_strdup("||"));
 	if (*str == '(')
 		return (ft_strdup("("));
 	if (*str == ')')
@@ -142,10 +110,6 @@ char		*handle_separators(char *str)
 		return (ft_strdup("|"));
 	if (*str == ';')
 		return (ft_strdup(";"));
-	if (*str == '&' && *(str + 1) == '&')
-		return (ft_strdup("&&"));
-	if (*str == '|' && *(str + 1) == '|')
-		return (ft_strdup("||"));
 	return (0);
 }
 
@@ -155,49 +119,43 @@ int			get_next_token(char *str, char **tofill)
 	char *subtoken;
 	char *tmp;
 	char *start;
-	int nb;
 
-	nb = 0;
 	token = ft_calloc(1, 1); // check if null or redo strjoin to handle null
 	start = str;
 	while (ft_isspace(*str))
 		str++;
 	while (*str && !ft_isspace(*str))
 	{
-		//CHECK FO PIPE OR OTHER SEPARATORS
 		if ((subtoken = handle_separators(str)))
-			str += ft_strlen(token);
+			str += ft_strlen(subtoken);
 		else if (*str == '"')
-			str += double_quotes(str, &subtoken) + 2;
+			str += double_quotes(str + 1, &subtoken) + 2;
 		else if (*str == '\'')
-			str += single_quotes(str, &subtoken) + 2;
+			str += single_quotes(str + 1, &subtoken) + 2;
 		else
 			str += no_quotes(str, &subtoken);
 		tmp = token;
 		token = ft_strjoin(token, subtoken);
 		free(tmp);
 		free(subtoken);
-
-		if ((nb = is_separator(str)))
-			break ;
+		if (is_separator(str) || is_separator(token))
+			break;
 	}
 	*tofill = token;
 	return ((unsigned int)(str - start));
 }
 
-char	**tokenize(char *str)
+t_list	*tokenize(char *str)
 {
-	char	**tokens;
-	int		i;
-	int		count;
+	t_list	*tokens;
+	char	*token;
+	int		tmp;
 
-	count = tokencount(str);
-	tokens = ft_calloc(1, sizeof(char*) * (count + 1));
-	if (!tokens)
-		return (NULL);
-	printf("COUNT %d\n", count);
-	i = 0;
-	while (count--)
-		str += get_next_token(str, &tokens[i++]);
+	tokens = 0;
+	while ((tmp = get_next_token(str, &token)))
+	{
+		ft_lstadd_back(&tokens, ft_lstnew(token)); // check for new null
+		str += tmp;
+	}
 	return (tokens);
 }

@@ -85,8 +85,8 @@ typedef struct	s_cmd
 
 
 int		tokencount(char *str);
-char	**tokenize(char *str);
 int		get_next_token(char *str, char **tofill);
+t_list	*tokenize(char *str);
 
 
 /*

@@ -18,6 +18,7 @@ int main(int ac, char **av, char **env)
 	(void)av;
 	(void)env;
 	int				r;
+	(void) r;
 	// t_instruction	*job;
 
 	char	*line;
@@ -39,16 +40,16 @@ int main(int ac, char **av, char **env)
 		// 	break ;
 		// }
 		
-		char **tokens = tokenize(line);
-		int i = 0;
-		while (tokens[i])
+		t_list *tokens = tokenize(line);
+		printf("Listing tokens\n");
+		while (tokens)
 		{
-			printf("\"%s\"\n", tokens[i]);
-			i++;
+			printf("\"%s\"\n",(char*) tokens->content);
+			tokens = tokens->next;
 		}
 		printf("Just parsed \"%s\"\n", line);
 		free(line);
-		free_tokenarray(tokens);
+		// free_tokenarray(tokens);
 	}
 	//Think about freeing if signal caught
 	return (0);
