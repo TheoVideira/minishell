@@ -41,6 +41,7 @@ int main(int ac, char **av, char **env)
 		// }
 		
 		t_list *tokens = tokenize(line);
+		t_list *tok = tokens;
 		printf("Listing tokens\n");
 		while (tokens)
 		{
@@ -49,6 +50,22 @@ int main(int ac, char **av, char **env)
 		}
 		printf("Just parsed \"%s\"\n", line);
 		free(line);
+		t_instruction *ins;
+		if (parse_instruction(tok, &ins) == -1)
+			printf("\e[1;31mSYNTAX ERROR\e[0m\n");
+		print_tree(ins->tree);
+
+		// t_node *tree;
+		// tree = create_node(OR, 0);
+		// tree->left = create_node(AND, 0);
+		// tree->right = create_node(PIPELINE, 0);
+		// tree->left->left = create_node(PIPELINE, 0);
+		// tree->left->right = create_node(OR, 0);
+		// tree->left->right->left = create_node(PIPELINE, 0);
+		// tree->left->right->right = create_node(PIPELINE, 0);
+		// print_tree(tree);
+		
+		
 		// free_tokenarray(tokens);
 	}
 	//Think about freeing if signal caught

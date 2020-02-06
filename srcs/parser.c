@@ -12,150 +12,100 @@
 
 #include <minishell.h>
 
-// t_instruction	*parse_instruction(char *str)
-// {
-	
-// }
-
-
-// t_pipeline		*parse_pipeline(char *str)
-// {
-
-// }
-
-// t_cmd			*parse_cmd(char *str)
-// {
-
-	
-// 	while (str)
-
-// }
-
-int		is_separator(char *str)
+int		parse_instruction(t_list *tokens, t_instruction	**i)
 {
-	if (*str == '&' && *(str + 1) == '&')
-		return (2);
-	if (*str == '|' && *(str + 1) == '|')
-		return (2);
-	if (*str == '(')
-		return (1);
-	if (*str == ')')
-		return (1);
-	if (*str == '|')
-		return (1);
-	if (*str == ';')
-		return (1);
+	int				r;
+
+	*i = ft_calloc(1, sizeof(t_instruction));
+	r = parse_or(&tokens, &(*i)->tree);
+	return (r);
+}
+
+int		parse_or(t_list **token, t_node **r)
+{
+	t_node *node;
+	t_node *noder;
+
+	node = 0;
+	noder = 0;
+	if (!*token)
+		return 0;
+	if (parse_and(token, &node) == -1)
+		return (-1);
+	while (*token && ft_strncmp((char*)(*token)->content, "||", 3) == 0)
+	{
+		*token = (*token)->next;
+		if (parse_and(token, &noder))
+		{
+			free_node(node);
+			return (-1);
+		}
+		//add another code for malloc errors
+		node = create_node_trio(OR, node, noder);
+	}
+	*r = node;
 	return (0);
 }
 
-int		double_quotes(char *str, char **token)
+int		parse_and(t_list **token, t_node **r)
 {
-	int		size;
+	t_node *node;
+	t_node *noder;
 
-	size = 0;
-	while (*str && *str != '"')
+	node = 0;
+	noder = 0;
+	if (!*token)
+		return 0;
+	if (parse_pipeline(token, &node) == -1)
+		return (-1);
+	while (*token && ft_strncmp((char*)(*token)->content, "&&", 3) == 0)
 	{
-		size++;
-		str++;
+		*token = (*token)->next;
+		if (parse_pipeline(token, &noder) == -1)
+		{
+			free_node(node);
+			return (-1);
+		}
+		node = create_node_trio(AND, node, noder);
 	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1));
-	ft_memcpy(*token, str - size, size);
-	//replace stuff
-	return (size);
-}
-
-int		single_quotes(char *str, char **token)
-{
-	int		size;
-
-	size = 0;
-	while (*str && *str != '\'')
-	{
-		size++;
-		str++;
-	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1));
-	ft_memcpy(*token, str - size, size);
-	return (size);
-}
-
-int		no_quotes(char *str, char **token)
-{
-	int		size;
-
-	size = 0;
-	while (*str && !ft_isspace(*str) && *str != '"' && *str != '\'' && !is_separator(str))
-	{
-		size++;
-		str++;
-	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1));
-	ft_memcpy(*token, str - size, size);
-	//replace stuff
-	return (size);
-}
-
-
-char		*handle_separators(char *str)
-{
-	if (*str == '&' && *(str + 1) == '&')
-		return (ft_strdup("&&"));
-	if (*str == '|' && *(str + 1) == '|')
-		return (ft_strdup("||"));
-	if (*str == '(')
-		return (ft_strdup("("));
-	if (*str == ')')
-		return (ft_strdup(")"));
-	if (*str == '|')
-		return (ft_strdup("|"));
-	if (*str == ';')
-		return (ft_strdup(";"));
+	*r = node;
 	return (0);
 }
 
-int			get_next_token(char *str, char **tofill)
+int		parse_pipeline(t_list **token, t_node **r)
 {
-	char *token;
-	char *subtoken;
-	char *tmp;
-	char *start;
+	t_pipeline	*p;
+	t_cmd		*c;
 
-	token = ft_calloc(1, 1); // check if null or redo strjoin to handle null
-	start = str;
-	while (ft_isspace(*str))
-		str++;
-	while (*str && !ft_isspace(*str))
+	if (!*token)
+		return 0;
+	if (ft_strncmp((char*)(*token)->content, "(", 2) == 0)
 	{
-		if ((subtoken = handle_separators(str)))
-			str += ft_strlen(subtoken);
-		else if (*str == '"')
-			str += double_quotes(str + 1, &subtoken) + 2;
-		else if (*str == '\'')
-			str += single_quotes(str + 1, &subtoken) + 2;
-		else
-			str += no_quotes(str, &subtoken);
-		tmp = token;
-		token = ft_strjoin(token, subtoken);
-		free(tmp);
-		free(subtoken);
-		if (is_separator(str) || is_separator(token))
-			break;
+		*token = (*token)->next;
+		parse_or(token, r);
+		if(!*token || ft_strncmp((char*)(*token)->content, ")", 2))
+			return (-1);
+		*token = (*token)->next;
+		return (0);
 	}
-	*tofill = token;
-	return ((unsigned int)(str - start));
+	
+	// Get commands
+	while ((c = parse_cmd(token)))
+		(void) c;
+	(void) p;
+	*r = create_node(PIPELINE, 0);
+	return (0);
+	
 }
 
-t_list	*tokenize(char *str)
+t_cmd			*parse_cmd(t_list **token)
 {
-	t_list	*tokens;
-	char	*token;
-	int		tmp;
-
-	tokens = 0;
-	while ((tmp = get_next_token(str, &token)))
+	(void) token;
+	while (*token && !is_separator((char*)(*token)->content))
 	{
-		ft_lstadd_back(&tokens, ft_lstnew(token)); // check for new null
-		str += tmp;
+		printf("Ma ESS %s\n", (char*)(*token)->content);
+
+		*token = (*token)->next;
 	}
-	return (tokens);
+	return 0;
 }

@@ -12,6 +12,8 @@ SRCS =		$(GNL_SRCS) \
 			srcs/parser.c \
 			srcs/freeing.c \
 			srcs/tree.c	\
+			srcs/tokenizer.c \
+			srcs/tokenizer2.c \
 			srcs/main.c
 HEADERS =	$(GNL_HEADERS) \
 			headers/minishell.h \
