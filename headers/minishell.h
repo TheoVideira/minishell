@@ -63,9 +63,9 @@ typedef struct s_node
 typedef struct	s_cmd
 {
 	char 	*label;
-	char	**args;
-	char	**redir;
-	char	**input;
+	t_list	**args;
+	t_list	**redir;
+	t_list	**input;
 	int		fdout;
 	int		fdin;
 	int		returned;
@@ -89,16 +89,18 @@ typedef struct	s_instruction
 	t_node	*tree;
 	int		returned;
 }				t_instruction;
+
 /*
 **	Parse tree
 */
+int		is_operator(char *str);
 t_node	*create_node(t_nodetype t, t_pipeline *p);
 t_node	*create_node_trio(t_nodetype t, t_node *left, t_node *right);
 int		parse_instruction(t_list *tokens, t_instruction **i);
 int		parse_or(t_list **tokens, t_node **r);
 int		parse_and(t_list **tokens, t_node **r);
 int		parse_pipeline(t_list **tokens, t_node **r);
-t_cmd			*parse_cmd(t_list **token);
+int		parse_cmd(t_list **token, t_cmd **c);
 
 /*
 **	Lexer / tokenizer
@@ -112,10 +114,11 @@ int		tokencount(char *str);
 int		get_next_token(char *str, char **tofill);
 t_list	*tokenize(char *str);
 
-
+/*
+**	Tree debugging
+*/
 void	print_node(t_node *n, int level);
 void	print_tree(t_node *n);
-void	free_node(t_node *tofree);
 
 /*
 **	Execution
@@ -131,4 +134,5 @@ int				execute_command(t_cmd *p);
 void			free_pipeline(t_pipeline *p);
 void			free_command(t_cmd *p);
 void			free_tokenarray(char **tokens);
+void			free_node(t_node *tofree);
 #endif

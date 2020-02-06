@@ -12,9 +12,26 @@
 
 #include <minishell.h>
 
+int		is_operator(char *str)
+{
+	if (*str == '&' && *(str + 1) == '&')
+		return (2);
+	if (*str == '|' && *(str + 1) == '|')
+		return (2);
+	if (*str == '(')
+		return (1);
+	if (*str == ')')
+		return (1);
+	if (*str == '|')
+		return (1);
+	if (*str == ';')
+		return (1);
+	return (0);
+}
+
 int		parse_instruction(t_list *tokens, t_instruction	**i)
 {
-	int				r;
+	int	r;
 
 	*i = ft_calloc(1, sizeof(t_instruction));
 	r = parse_or(&tokens, &(*i)->tree);
@@ -78,7 +95,7 @@ int		parse_pipeline(t_list **token, t_node **r)
 	t_cmd		*c;
 
 	if (!*token)
-		return 0;
+		return (0);
 	if (ft_strncmp((char*)(*token)->content, "(", 2) == 0)
 	{
 		*token = (*token)->next;
@@ -89,23 +106,39 @@ int		parse_pipeline(t_list **token, t_node **r)
 		return (0);
 	}
 	
-	// Get commands
-	while ((c = parse_cmd(token)))
-		(void) c;
-	(void) p;
-	*r = create_node(PIPELINE, 0);
+	if (!(p = ft_calloc(1, sizeof(t_pipeline))))
+		return (-2);
+	while ((parse_cmd(token, &c))) // Error check ?
+	{
+		ft_lstadd_back(&p->cmds, ft_lstnew(c)); //CHECK for NULL
+		if (!*token || ft_strncmp((char*)(*token)->content, "|", 2))
+			break;
+	}
+	*r = create_node(PIPELINE, p);
 	return (0);
-	
 }
 
-t_cmd			*parse_cmd(t_list **token)
+int		parse_cmd(t_list **token, t_cmd **c)
 {
-	(void) token;
-	while (*token && !is_separator((char*)(*token)->content))
-	{
-		printf("Ma ESS %s\n", (char*)(*token)->content);
+	char *t;
 
+	if (!*token || is_operator((char*)(*token)->content))
+		return (0);
+	t = (char*)(*token)->content;
+	if((*c = ft_calloc(1, sizeof(t_cmd))) == NULL)
+		return (-1);
+	(*c)->label = t;
+	*token = (*token)->next;
+	while (*token && !is_operator((char*)(*token)->content))
+	{
+		if (ft_strncmp(t, ">",2))
+		
+		if (ft_strncmp(t, "<",2))
+
+		//args
 		*token = (*token)->next;
+		if (*token)
+			t = (char*)(*token)->content;
 	}
-	return 0;
+	return (1);
 }

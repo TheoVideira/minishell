@@ -6,6 +6,8 @@ int		is_separator(char *str)
 		return (2);
 	if (*str == '|' && *(str + 1) == '|')
 		return (2);
+	if (*str == '>' && *(str + 1) == '>')
+		return (2);
 	if (*str == '(')
 		return (1);
 	if (*str == ')')
@@ -13,6 +15,10 @@ int		is_separator(char *str)
 	if (*str == '|')
 		return (1);
 	if (*str == ';')
+		return (1);
+	if (*str == '<')
+		return (1);
+	if (*str == '>')
 		return (1);
 	return (0);
 }

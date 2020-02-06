@@ -6,6 +6,8 @@ char		*handle_separators(char *str)
 		return (ft_strdup("&&"));
 	if (*str == '|' && *(str + 1) == '|')
 		return (ft_strdup("||"));
+	if (*str == '>' && *(str + 1) == '>')
+		return (ft_strdup(">>"));
 	if (*str == '(')
 		return (ft_strdup("("));
 	if (*str == ')')
@@ -14,6 +16,10 @@ char		*handle_separators(char *str)
 		return (ft_strdup("|"));
 	if (*str == ';')
 		return (ft_strdup(";"));
+	if (*str == '<')
+		return (ft_strdup("<"));
+	if (*str == '>')
+		return (ft_strdup(">"));
 	return (0);
 }
 
