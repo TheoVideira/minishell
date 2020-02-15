@@ -51,6 +51,51 @@ void	free_node(t_node *tofree)
 	free(tofree);
 }
 
+
+
+
+
+
+
+void	print_sublist(t_list *subl, char *label)
+{
+	if (!subl)
+		return;
+	printf ("%s", label);
+	printf ("(");
+	while (subl)
+		{
+			if (subl->next)
+				printf("%s, ", (char*)subl->content);
+			else
+				printf("%s", (char*)subl->content);
+			subl = subl->next;
+		}
+	printf (") ");
+}
+
+void	print_pipeline(t_pipeline *p)
+{
+	t_list	*l;
+	t_cmd	*c;
+
+	l = p->cmds;
+	while (l)
+	{
+		c = (t_cmd*)l->content;
+		printf ("%s ", c->label);
+		
+		
+		print_sublist(c->args, "ar");
+		print_sublist(c->redir, "r");
+		print_sublist(c->hardredir, "hr");
+		print_sublist(c->input, "in");
+		l = l->next;
+		if (l)
+			printf (" | ");
+	}
+}
+
 void	print_node(t_node *n, int level)
 {
 	int i = 0;
@@ -70,7 +115,7 @@ void	print_node(t_node *n, int level)
 	if (n->type == AND)
 		printf("&&\n");
 	if (n->type == PIPELINE)
-		printf("pi\n");
+		print_pipeline(n->pipeline);
 	printf("\n");
 	if (n->left)
 		print_node(n->left, level + 1);
@@ -83,12 +128,5 @@ void	print_tree(t_node *n)
 		printf ("NUL NUL NUL\n");
 		return ;
 	}
-	print_node(n->right, 1);
-	if (n->type == OR)
-		printf("||\n");
-	if (n->type == AND)
-		printf("&&\n");
-	if (n->type == PIPELINE)
-		printf("pi\n");
-	print_node(n->left, 1);
+	print_node(n, 0);
 }

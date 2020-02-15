@@ -48,11 +48,12 @@ int main(int ac, char **av, char **env)
 			printf("\"%s\"\n",(char*) tokens->content);
 			tokens = tokens->next;
 		}
-		printf("Just parsed \"%s\"\n", line);
+		printf("Just tokenized \"%s\"\n", line);
 		free(line);
 		t_instruction *ins;
 		if (parse_instruction(tok, &ins) == -1)
 			printf("\e[1;31mSYNTAX ERROR\e[0m\n");
+		printf("Just parsed\n");
 		print_tree(ins->tree);
 
 		// t_node *tree;

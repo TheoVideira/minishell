@@ -63,9 +63,10 @@ typedef struct s_node
 typedef struct	s_cmd
 {
 	char 	*label;
-	t_list	**args;
-	t_list	**redir;
-	t_list	**input;
+	t_list	*args;
+	t_list	*redir;
+	t_list	*hardredir;
+	t_list	*input;
 	int		fdout;
 	int		fdin;
 	int		returned;
@@ -93,6 +94,10 @@ typedef struct	s_instruction
 /*
 **	Parse tree
 */
+void	nextToken(t_list **token);
+char	*getToken(t_list **token);
+t_list	*pop_next(t_list *l);
+int		get_next_arg(t_list **token, t_list **target);
 int		is_operator(char *str);
 t_node	*create_node(t_nodetype t, t_pipeline *p);
 t_node	*create_node_trio(t_nodetype t, t_node *left, t_node *right);
@@ -101,6 +106,7 @@ int		parse_or(t_list **tokens, t_node **r);
 int		parse_and(t_list **tokens, t_node **r);
 int		parse_pipeline(t_list **tokens, t_node **r);
 int		parse_cmd(t_list **token, t_cmd **c);
+
 
 /*
 **	Lexer / tokenizer
