@@ -6,11 +6,75 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/02/04 18:09:53 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/03/12 17:07:57 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+char	*getenvkey(char *str)
+{
+	int		start;
+	int		end;
+
+	start = 0;
+	end = 0;
+	while (str[end] != '=')
+		end++;
+	return (ft_substr(str, start, end));
+}
+
+char	*getenvvalue(char *str)
+{
+	int		start;
+	int		end;
+
+	start = 0;
+	end = 0;
+	while (str[start] != '=')
+		start++;
+	start++;
+	end = ft_strlen(str) - start;
+	return (ft_substr(str, start, end));
+}
+
+t_dict	*envtodict(char **env)
+{
+	t_dict	*dict;
+	t_dict	*tmp;
+	char	*key;
+	char	*value;
+
+	dict = 0;
+	if (!env)
+		return (0);
+	while (*env)
+	{
+		if (!(key = getenvkey(*env)))
+			return (0);
+		value = getenvvalue(*env);
+		if (!value || !(tmp = ft_dictnew(key, value)))
+		{
+			free(value);
+			ft_dictclear(dict);
+			return (0);
+		}
+		ft_dictadd(&dict, tmp);
+		env++;
+	}
+	return (dict);
+}
+
+//DEBUG
+void	printdict(t_dict *dict)
+{
+	printf("\e[31;1m ENV \e[0m\n");
+	while(dict)
+	{
+		printf("%s=%s\n", dict->key, dict->value);
+		dict = dict->next;
+	}
+}
 
 int main(int ac, char **av, char **env)
 {
@@ -19,9 +83,11 @@ int main(int ac, char **av, char **env)
 	(void)env;
 	int				r;
 	(void) r;
-	// t_instruction	*job;
 
 	char	*line;
+
+	t_dict *envdict = envtodict(env);
+	printdict(envdict);
 	while (1)
 	{
 		write(1, "$>", 3);
@@ -39,22 +105,29 @@ int main(int ac, char **av, char **env)
 		// 	free(line);
 		// 	break ;
 		// }
-		
 		t_list *tokens = tokenize(line);
 		t_list *tok = tokens;
+		printf("\e[1;32m1: TOKENIZER\e[0m\n");
 		printf("Listing tokens\n");
 		while (tokens)
 		{
-			printf("\"%s\"\n",(char*) tokens->content);
+			printf("\"%s\"\n",(char*)tokens->content);
 			tokens = tokens->next;
 		}
-		printf("Just tokenized \"%s\"\n", line);
+		printf("Just tokenized |%s|\n", line);
 		free(line);
-		t_instruction *ins;
-		if (parse_instruction(tok, &ins) == -1)
+		t_entry *ins;
+		printf("\e[1;32m2: PARSER\e[0m\n");
+		if (parse_entry(&tok, &ins) == -1)
 			printf("\e[1;31mSYNTAX ERROR\e[0m\n");
 		printf("Just parsed\n");
-		print_tree(ins->tree);
+		while (ins->instructions)
+		{
+			print_tree((t_node*)ins->instructions->content);
+			ins->instructions = ins->instructions->next;
+			if (ins->instructions)
+				printf("-------------------------------\n");
+		}
 
 		// t_node *tree;
 		// tree = create_node(OR, 0);

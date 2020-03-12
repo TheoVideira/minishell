@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/04 17:05:10 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/03/12 10:58:33 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/03/12 11:33:27 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,17 +60,17 @@ void	free_node(t_node *tofree)
 void	print_sublist(t_list *subl, char *label)
 {
 	if (!subl)
-		return;
+		return ;
 	printf ("%s", label);
 	printf ("(");
 	while (subl)
-		{
-			if (subl->next)
-				printf("%s, ", (char*)subl->content);
-			else
-				printf("%s", (char*)subl->content);
-			subl = subl->next;
-		}
+	{
+		if (subl->next)
+			printf("%s, ", (char*)subl->content);
+		else
+			printf("%s", (char*)subl->content);
+		subl = subl->next;
+	}
 	printf (") ");
 }
 
@@ -84,8 +84,6 @@ void	print_pipeline(t_pipeline *p)
 	{
 		c = (t_cmd*)l->content;
 		printf ("%s ", c->label);
-		
-		
 		print_sublist(c->args, "ar");
 		print_sublist(c->redir, "r");
 		print_sublist(c->hardredir, "hr");
@@ -99,7 +97,7 @@ void	print_pipeline(t_pipeline *p)
 void	print_node(t_node *n, int level)
 {
 	int i = 0;
-	
+
 	if (!n)
 		return ;
 	if (n->right)

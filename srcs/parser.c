@@ -6,7 +6,7 @@
 /*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 11:23:51 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/03/12 10:58:53 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/03/12 13:55:15 by mclaudel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 
 void	nextToken(t_list **token)
 {
-	*token = (*token)->next;
+	if (*token)
+		*token = (*token)->next;
 }
 
 char	*getToken(t_list **token)
 {
-	return ((char*)(*token)->content);
+	if ((char*)(*token))
+		return ((char*)(*token)->content);
+	return (0);
 }
 
 int		is_operator(char *str)
@@ -28,23 +31,42 @@ int		is_operator(char *str)
 		return (2);
 	if (*str == '|' && *(str + 1) == '|')
 		return (2);
-	if (*str == '(')
+	if (*str == '(' && *(str + 1) == '\0')
 		return (1);
-	if (*str == ')')
+	if (*str == ')' && *(str + 1) == '\0')
 		return (1);
-	if (*str == '|')
+	if (*str == '|' && *(str + 1) == '\0')
 		return (1);
-	if (*str == ';')
+	if (*str == ';' && *(str + 1) == '\0')
 		return (1);
 	return (0);
 }
 
-int		parse_instruction(t_list *tokens, t_instruction	**i)
+int		parse_entry(t_list **tokens, t_entry **entry)
 {
-	int	r;
+	int		r;
+	char	*tok;
+	t_node	*tree;
+	t_list	*l;
 
-	*i = ft_calloc(1, sizeof(t_instruction));
-	r = parse_or(&tokens, &(*i)->tree);
+	*entry = ft_calloc(1, sizeof(t_entry));
+	while ((tok = getToken(tokens)))
+	{
+		printf("LOOP %s\n", tok);
+		if (*tok == ';' && !*(tok + 1))
+		{
+			nextToken(tokens);
+			continue ;
+		}
+		r = parse_or(tokens, &tree);
+		if (r != 0 || !(l = ft_lstnew(tree)))
+		{
+			//panic
+			continue ;
+		}
+		nextToken(tokens);
+		ft_lstadd_back(&(*entry)->instructions, l);
+	}
 	return (r);
 }
 
@@ -56,7 +78,7 @@ int		parse_or(t_list **token, t_node **r)
 	node = 0;
 	noder = 0;
 	if (!*token)
-		return 0;
+		return (0);
 	if (parse_and(token, &node) == -1)
 		return (-1);
 	while (*token && ft_strncmp(getToken(token), "||", 3) == 0)
@@ -82,7 +104,7 @@ int		parse_and(t_list **token, t_node **r)
 	node = 0;
 	noder = 0;
 	if (!*token)
-		return 0;
+		return (0);
 	if (parse_pipeline(token, &node) == -1)
 		return (-1);
 	while (*token && ft_strncmp(getToken(token), "&&", 3) == 0)

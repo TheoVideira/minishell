@@ -72,24 +72,11 @@ typedef struct	s_cmd
 	int		returned;
 }				t_cmd;
 
-// /*
-// **	;
-// */
-// t_list			*parse_string(char *str);
-// /*
-// **	|
-// */
-// t_pipeline		*parse_pipeline(char **str);
-// /*
-// **	Simple command
-// */
-// t_cmd			*parse_cmd(char **str);
-
-typedef struct	s_instruction
+typedef struct	s_entry
 {
-	t_node	*tree;
+	t_list	*instructions;
 	int		returned;
-}				t_instruction;
+}				t_entry;
 
 /*
 **	Parse tree
@@ -101,7 +88,7 @@ int		get_next_arg(t_list **token, t_list **target);
 int		is_operator(char *str);
 t_node	*create_node(t_nodetype t, t_pipeline *p);
 t_node	*create_node_trio(t_nodetype t, t_node *left, t_node *right);
-int		parse_instruction(t_list *tokens, t_instruction **i);
+int		parse_entry(t_list **tokens, t_entry **i);
 int		parse_or(t_list **tokens, t_node **r);
 int		parse_and(t_list **tokens, t_node **r);
 int		parse_pipeline(t_list **tokens, t_node **r);

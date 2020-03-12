@@ -49,7 +49,7 @@ int			get_next_token(char *str, char **tofill)
 		free(tmp);
 		free(subtoken);
 		if (is_separator(str) || is_separator(token))
-			break;
+			break ;
 	}
 	*tofill = token;
 	return ((unsigned int)(str - start));
