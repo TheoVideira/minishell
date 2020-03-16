@@ -47,7 +47,7 @@ void	free_node(t_node *tofree)
 	if (tofree->left)
 		free_node(tofree->left);
 	if (tofree->right)
-		free_node(tofree->left);
+		free_node(tofree->right);
 	free(tofree);
 }
 
