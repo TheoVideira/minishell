@@ -22,7 +22,7 @@
 //Useless ?
 typedef struct	s_minishell
 {
-	t_list	*env;
+	t_dict	*env;
 }				t_minishell;
 
 /*
@@ -100,12 +100,13 @@ int		parse_cmd(t_list **token, t_cmd **c);
 */
 int		is_separator(char *str);
 char	*handle_separators(char *str);
-int		double_quotes(char *str, char **token);
+int		double_quotes(char *str, char **token,  t_dict *env);
 int		single_quotes(char *str, char **token);
-int		no_quotes(char *str, char **token);
+int		no_quotes(char *str, char **token,  t_dict *env);
 int		tokencount(char *str);
-int		get_next_token(char *str, char **tofill);
-t_list	*tokenize(char *str);
+int		get_next_token(char *str, char **tofill,  t_dict *env);
+t_list	*tokenize(char *str, t_dict *env);
+int		replace_env(char **str, t_dict *env);
 
 /*
 **	Tree debugging

@@ -23,7 +23,7 @@ char		*handle_separators(char *str)
 	return (0);
 }
 
-int			get_next_token(char *str, char **tofill)
+int			get_next_token(char *str, char **tofill,  t_dict *env)
 {
 	char *token;
 	char *subtoken;
@@ -39,11 +39,11 @@ int			get_next_token(char *str, char **tofill)
 		if ((subtoken = handle_separators(str)))
 			str += ft_strlen(subtoken);
 		else if (*str == '"')
-			str += double_quotes(str + 1, &subtoken) + 2;
+			str += double_quotes(str + 1, &subtoken, env) + 2;
 		else if (*str == '\'')
 			str += single_quotes(str + 1, &subtoken) + 2;
 		else
-			str += no_quotes(str, &subtoken);
+			str += no_quotes(str, &subtoken, env);
 		tmp = token;
 		token = ft_strjoin(token, subtoken);
 		free(tmp);
@@ -55,14 +55,14 @@ int			get_next_token(char *str, char **tofill)
 	return ((unsigned int)(str - start));
 }
 
-t_list	*tokenize(char *str)
+t_list	*tokenize(char *str, t_dict *env)
 {
 	t_list	*tokens;
 	char	*token;
 	int		tmp;
 
 	tokens = 0;
-	while ((tmp = get_next_token(str, &token)))
+	while ((tmp = get_next_token(str, &token, env)))
 	{
 		ft_lstadd_back(&tokens, ft_lstnew(token)); // check for new null
 		str += tmp;

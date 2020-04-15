@@ -23,7 +23,46 @@ int		is_separator(char *str)
 	return (0);
 }
 
-int		double_quotes(char *str, char **token)
+
+int		replace_env(char **str, t_dict *env)
+{
+	char *ptr;
+	char *start;
+	char *varkey;
+	char *varvalue;
+	char *new;
+	char *tofree;
+
+	new = *str;
+	ptr = new;
+	while (*ptr)
+	{
+		if (*ptr == '$')
+		{
+			start = ptr;
+			if (*(++ptr) == '?')
+			{
+				(void) ptr;
+				//Couilles TO DO
+			}
+			while (*ptr && !ft_isspace(*ptr) && *ptr != '$' && !is_separator(ptr))
+				ptr++;
+			varkey = ft_substr(new, start - new + 1, ptr - start - 1);
+			if (!(varvalue = ft_dictget(env, varkey)))
+				varvalue = "";
+			tofree = new;
+			new = ft_strreplace(new, start - new, ft_strlen(varkey), varvalue); // Check error
+			free(tofree);
+			ptr = new;
+		}
+		else
+			ptr++;
+	}
+	*str = new;
+	return (0);
+}
+
+int		double_quotes(char *str, char **token,  t_dict *env)
 {
 	int		size;
 
@@ -33,9 +72,10 @@ int		double_quotes(char *str, char **token)
 		size++;
 		str++;
 	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1));
+	*token = ft_calloc(1, sizeof(char) * (size + 1)); // CHECK ALLOC
 	ft_memcpy(*token, str - size, size);
-	//replace stuff
+	(void) env;
+	replace_env(token, env); // check error
 	return (size);
 }
 
@@ -49,12 +89,12 @@ int		single_quotes(char *str, char **token)
 		size++;
 		str++;
 	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1));
+	*token = ft_calloc(1, sizeof(char) * (size + 1)); // CHECK ALLOC
 	ft_memcpy(*token, str - size, size);
 	return (size);
 }
 
-int		no_quotes(char *str, char **token)
+int		no_quotes(char *str, char **token,  t_dict *env)
 {
 	int		size;
 
@@ -64,8 +104,9 @@ int		no_quotes(char *str, char **token)
 		size++;
 		str++;
 	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1));
+	*token = ft_calloc(1, sizeof(char) * (size + 1)); // CHECK ALLOC
 	ft_memcpy(*token, str - size, size);
-	//replace stuff
+	(void) env;
+	replace_env(token, env); // check error
 	return (size);
 }

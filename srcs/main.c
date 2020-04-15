@@ -78,16 +78,20 @@ void	printdict(t_dict *dict)
 
 int main(int ac, char **av, char **env)
 {
+	t_minishell mini = {0};
+	int			r;
+	char		*line;
 	(void)ac;
 	(void)av;
 	(void)env;
-	int				r;
 	(void) r;
 
-	char	*line;
 
-	t_dict *envdict = envtodict(env);
-	printdict(envdict);
+	char *str = "0123456789";
+	printf("%s\n", ft_strreplace(str, 2, 5, "Plz don t kill me"));
+
+	mini.env = envtodict(env);
+	// printdict(mini.env);
 	while (1)
 	{
 		write(1, "$>", 3);
@@ -105,7 +109,8 @@ int main(int ac, char **av, char **env)
 		// 	free(line);
 		// 	break ;
 		// }
-		t_list *tokens = tokenize(line);
+
+		t_list *tokens = tokenize(line, mini.env);
 		t_list *tok = tokens;
 		printf("\e[1;32m1: TOKENIZER\e[0m\n");
 		printf("Listing tokens\n");
