@@ -51,7 +51,7 @@ int		replace_env(char **str, t_dict *env)
 			if (!(varvalue = ft_dictget(env, varkey)))
 				varvalue = "";
 			tofree = new;
-			new = ft_strreplace(new, start - new, ft_strlen(varkey), varvalue); // Check error
+			new = ft_strreplace(new, start - new, ft_strlen(varkey) + 1, varvalue); // Check error
 			free(tofree);
 			ptr = new;
 		}
