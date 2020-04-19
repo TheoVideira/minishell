@@ -94,7 +94,7 @@ int main(int ac, char **av, char **env)
 	// printdict(mini.env);
 	while (1)
 	{
-		write(1, "$>", 3);
+		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
 		r = get_next_line(0, &line);
 		// if (r == -1)
 		// 	if (errno)

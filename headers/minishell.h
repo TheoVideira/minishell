@@ -127,7 +127,7 @@ int		is_builtin(char *str);
 /*
 **	Built-ins
 */
-int		echo(int ac, char **av);
+int		echo(int ac, char* const* av);
 
 /*
 **	Freeing
