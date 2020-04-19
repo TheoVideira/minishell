@@ -23,7 +23,6 @@ int		is_separator(char *str)
 	return (0);
 }
 
-
 int		replace_env(char **str, t_dict *env)
 {
 	char *ptr;

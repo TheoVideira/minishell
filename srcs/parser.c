@@ -25,6 +25,27 @@ char	*getToken(t_list **token)
 	return (0);
 }
 
+char	*getTokenHard(t_list **token)
+{
+	char *tok;
+	t_list *tofree;
+
+	tok = getToken(token);
+	tofree = *token;
+	nextToken(token);
+	free(tofree);
+	return (tok);
+}
+
+void	destroyToken(t_list **token)
+{
+	t_list *tofree;
+	
+	tofree = *token;
+	nextToken(token);
+	ft_lstdelone(tofree, free);
+}
+
 int		is_operator(char *str)
 {
 	if (*str == '&' && *(str + 1) == '&')
@@ -52,10 +73,9 @@ int		parse_entry(t_list **tokens, t_entry **entry)
 	*entry = ft_calloc(1, sizeof(t_entry));
 	while ((tok = getToken(tokens)))
 	{
-		printf("LOOP %s\n", tok);
-		if (*tok == ';' && !*(tok + 1))
+		if (ft_strncmp(tok, ";", 2) == 0)
 		{
-			nextToken(tokens);
+			destroyToken(tokens);
 			continue ;
 		}
 		r = parse_or(tokens, &tree);
@@ -67,6 +87,7 @@ int		parse_entry(t_list **tokens, t_entry **entry)
 		nextToken(tokens);
 		ft_lstadd_back(&(*entry)->instructions, l);
 	}
+	*tokens = 0;
 	return (r);
 }
 
@@ -74,6 +95,7 @@ int		parse_or(t_list **token, t_node **r)
 {
 	t_node *node;
 	t_node *noder;
+
 
 	node = 0;
 	noder = 0;
@@ -83,7 +105,7 @@ int		parse_or(t_list **token, t_node **r)
 		return (-1);
 	while (*token && ft_strncmp(getToken(token), "||", 3) == 0)
 	{
-		nextToken(token);
+		destroyToken(token);
 		if (parse_and(token, &noder))
 		{
 			free_node(node);
@@ -109,7 +131,7 @@ int		parse_and(t_list **token, t_node **r)
 		return (-1);
 	while (*token && ft_strncmp(getToken(token), "&&", 3) == 0)
 	{
-		nextToken(token);
+		destroyToken(token);
 		if (parse_pipeline(token, &noder) == -1)
 		{
 			free_node(node);
@@ -130,11 +152,11 @@ int		parse_pipeline(t_list **token, t_node **r)
 		return (0);
 	if (ft_strncmp(getToken(token), "(", 2) == 0)
 	{
-		nextToken(token);
+		destroyToken(token);
 		parse_or(token, r);
 		if (!*token || ft_strncmp(getToken(token), ")", 2))
 			return (-1);
-		nextToken(token);
+		destroyToken(token);
 		return (0);
 	}
 	if (!(p = ft_calloc(1, sizeof(t_pipeline))))
@@ -144,67 +166,87 @@ int		parse_pipeline(t_list **token, t_node **r)
 		ft_lstadd_back(&p->cmds, ft_lstnew(c)); //CHECK for NULL
 		if (!*token || ft_strncmp(getToken(token), "|", 2))
 			break ;
-		nextToken(token);
+		destroyToken(token);
 	}
 	*r = create_node(PIPELINE, p);
 	return (0);
 }
 
 //error code + error check
-int		get_next_arg(t_list **token, t_list **target)
+int		joinTokens(t_list **token, t_list **target)
 {
-	t_list *tmp;
+	t_list *toadd;
+	char *s1;
+	char *s2;
+	char *new;
 
-	tmp = *token;
-	nextToken(token);
+	toadd = popFirst(token);
+	s1 = toadd->content;
 	if (!*token || is_operator(getToken(token)))
 		return (-2);
-	ft_lstadd_back(target, pop_next(tmp));
-	*token = tmp;
+	s2 = getTokenHard(token);
+	if (!(new = ft_strjoin(s1, s2)))
+		return (-2);
+	toadd->content = new;
+	free(s1);
+	free(s2);
+	ft_lstadd_back(target, toadd);
 	return (0);
 }
 
-t_list	*pop_next(t_list *l)
+t_list	*popFirst(t_list **token)
 {
 	t_list *topop;
 
-	topop = l->next;
-	l->next = topop->next;
+	topop = *token;
+	*token = topop->next;
 	topop->next = 0;
 	return (topop);
 }
+
+
+char	**list_to_char_array(t_list *l)
+{
+	size_t s;
+	char **arr;
+	int i;
+
+	i = 0;
+	s = ft_lstsize(l);
+	if (!(arr = ft_calloc(1, sizeof(char*) * (s + 1))))
+		return (0);
+	while (l)
+	{
+		arr[i] = (char*) l->content;
+		i++;
+		l = l->next;
+	}
+	return (arr);
+}
+
 
 int		parse_cmd(t_list **token, t_cmd **c)
 {
 	int		r;
 	char	*t;
-	t_list	*tmp;
 
 	if (!*token || is_operator(getToken(token)))
 		return (0);
 	if ((*c = ft_calloc(1, sizeof(t_cmd))) == NULL)
 		return (-1);
-	(*c)->label = getToken(token);
-	tmp = *token;
-	nextToken(token);
+
+	(*c)->label = getTokenHard(token);
 	while (*token && !is_operator((t = getToken(token))))
 	{
 		r = 0;
-		if (ft_strncmp(t, ">", 2) == 0)
-			r = get_next_arg(token, &(*c)->redir);
-		else if (ft_strncmp(t, ">>", 2) == 0)
-			r = get_next_arg(token, &(*c)->hardredir);
+		if (ft_strncmp(t, ">", 2) == 0 || ft_strncmp(t, ">>", 2) == 0)
+			r = joinTokens(token, &(*c)->redir);
 		else if (ft_strncmp(t, "<", 2) == 0)
-			r = get_next_arg(token, &(*c)->input);
+			r = joinTokens(token, &(*c)->input);
 		else
-		{
-			ft_lstadd_back(&(*c)->args, pop_next(tmp));
-			*token = tmp;
-		}
+			ft_lstadd_back(&(*c)->args, popFirst(token)); // it calls nextToken() in any case
 		if (r < 0)
-			return (-2);
-		tmp = *token;
-		nextToken(token);
+			return (r);
 	}
 	return (1);
 }

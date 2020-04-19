@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <get_next_line.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 //Useless ?
 typedef struct	s_minishell
@@ -63,12 +65,9 @@ typedef struct s_node
 typedef struct	s_cmd
 {
 	char 	*label;
-	t_list	*args;
-	t_list	*redir;
-	t_list	*hardredir;
+	t_list	*args; // not usre to keep it
+	t_list	*redir; // tofix
 	t_list	*input;
-	int		fdout;
-	int		fdin;
 	int		returned;
 }				t_cmd;
 
@@ -83,7 +82,9 @@ typedef struct	s_entry
 */
 void	nextToken(t_list **token);
 char	*getToken(t_list **token);
-t_list	*pop_next(t_list *l);
+char	*getTokenHard(t_list **token);
+void	destroyToken(t_list **token);
+t_list	*popFirst(t_list **l);
 int		get_next_arg(t_list **token, t_list **target);
 int		is_operator(char *str);
 t_node	*create_node(t_nodetype t, t_pipeline *p);
@@ -93,7 +94,7 @@ int		parse_or(t_list **tokens, t_node **r);
 int		parse_and(t_list **tokens, t_node **r);
 int		parse_pipeline(t_list **tokens, t_node **r);
 int		parse_cmd(t_list **token, t_cmd **c);
-
+char	**list_to_char_array(t_list *l);
 
 /*
 **	Lexer / tokenizer
@@ -117,9 +118,16 @@ void	print_tree(t_node *n);
 /*
 **	Execution
 */
-// int				execute_instruction(t_instruction *p);
-int				execute_pipeline(t_pipeline *p);
-int				execute_command(t_cmd *p);
+int		run_entry(t_entry *entry);
+int		run_tree(t_node *tree);
+int		run_pipeline(t_pipeline *pipe);
+int		run_command(t_cmd *cmd);
+int		is_builtin(char *str);
+
+/*
+**	Built-ins
+*/
+int		echo(int ac, char **av);
 
 /*
 **	Freeing

@@ -112,6 +112,7 @@ int main(int ac, char **av, char **env)
 
 		t_list *tokens = tokenize(line, mini.env);
 		t_list *tok = tokens;
+
 		printf("\e[1;32m1: TOKENIZER\e[0m\n");
 		printf("Listing tokens\n");
 		while (tokens)
@@ -119,20 +120,34 @@ int main(int ac, char **av, char **env)
 			printf("\"%s\"\n",(char*)tokens->content);
 			tokens = tokens->next;
 		}
+		tokens = tok;
 		printf("Just tokenized |%s|\n", line);
-		free(line);
-		t_entry *ins;
+		free(line); // IMPORTANT
+		
 		printf("\e[1;32m2: PARSER\e[0m\n");
-		if (parse_entry(&tok, &ins) == -1)
+		t_entry *entry;
+		if (parse_entry(&tok, &entry) == -1)
 			printf("\e[1;31mSYNTAX ERROR\e[0m\n");
 		printf("Just parsed\n");
-		while (ins->instructions)
+
+		t_list *tree;
+		tree = entry->instructions;
+		while (tree)
 		{
-			print_tree((t_node*)ins->instructions->content);
-			ins->instructions = ins->instructions->next;
-			if (ins->instructions)
-				printf("-------------------------------\n");
+			print_tree((t_node*)tree->content);
+			tree = tree->next;
+			printf("-------------------------------\n");
 		}
+		
+		printf("THIS SHOULD NOT APPEAR\n");
+		while (tok)
+		{
+			printf("\"%s\"\n",(char*)tok->content);
+			tok = tok->next;
+		}
+		printf("\e[1;32m3: INTERPRETER\e[0m\n");
+		run_entry(entry);
+		// ft_lstclear(tokens);
 
 		// t_node *tree;
 		// tree = create_node(OR, 0);

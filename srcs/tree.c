@@ -86,7 +86,6 @@ void	print_pipeline(t_pipeline *p)
 		printf ("%s ", c->label);
 		print_sublist(c->args, "ar");
 		print_sublist(c->redir, "r");
-		print_sublist(c->hardredir, "hr");
 		print_sublist(c->input, "in");
 		l = l->next;
 		if (l)
