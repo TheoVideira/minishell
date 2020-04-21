@@ -146,7 +146,9 @@ int main(int ac, char **av, char **env)
 			tok = tok->next;
 		}
 		printf("\e[1;32m3: INTERPRETER\e[0m\n");
+		printf("-------------OUTPUT------------\n");
 		run_entry(entry);
+		printf("--------------END--------------\n");
 		// ft_lstclear(tokens);
 
 		// t_node *tree;
