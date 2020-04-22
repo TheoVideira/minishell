@@ -20,9 +20,9 @@ int		run_tree(t_node *tree, t_minishell *mini)
 	if (tree->type == PIPELINE)
 		return (run_pipeline(tree->pipeline, mini));
 	if (tree->type == OR)
-		return (run_tree(tree->left, mini) || run_tree(tree->right, mini));
+		return (run_tree(tree->left, mini) == 0 || run_tree(tree->right, mini) == 0);
 	if (tree->type == AND)
-		return (run_tree(tree->left, mini) && run_tree(tree->right, mini));
+		return (run_tree(tree->left, mini) == 0 && run_tree(tree->right, mini) == 0);
 	return (0);
 }
 
@@ -146,28 +146,68 @@ char	*find_name(char *label, t_minishell *mini)
 	return (0);
 }
 
+char	**build_args(char *first, t_list *l)
+{
+	size_t s;
+	char **arr;
+	int i;
+	int isnull;
+
+	isnull = (first == 0);
+	s = ft_lstsize(l);
+	if (!(arr = ft_calloc(1, sizeof(char*) * (s + 1 + !isnull))))
+		return (0);
+	if (!isnull)
+		arr[0] = first;
+	i = first != 0;
+	while (l)
+	{
+		arr[i] = (char*) l->content;
+		i++;
+		l = l->next;
+	}
+	return (arr);
+}
+
 int		run_command(t_cmd *cmd, t_minishell *mini)
 {
 	char **av;
-	int ac;
 	int fd[2];
-
+	pid_t pid;
+	char *path;
+	int status;
 
 	if (pipe(fd))
 		return (1);
 
-	printf("chemin trouve: %s\n", find_name(cmd->label, mini));
+	// what if use gives full path ?
+	path = find_name(cmd->label, mini);
+	printf("chemin trouve: %s\n", path);
 
+
+	
 	// if (!cmds)
 	// 	return (0);
 
 
 	if (ft_strcmp(cmd->label, "echo") == 0)
 	{
-		av = list_to_char_array(cmd->args); // check error
-		ac = ft_lstsize(cmd->args);
-		return echo(ac, av);
+		av = build_args(0, cmd->args); // check error
+		return echo(ft_lstsize(cmd->args), av);
 	}
+	if ((pid = fork()) == 0)
+	{
+		av = build_args(cmd->label, cmd->args); // check error, is it path or just executable name as first arg ?
+		execve(path, av, av); // need to add env tradd
+	}
+	else if (pid == -1)
+	{
+		//panic
+	}
+
+	waitpid(pid, &status, 0);
+	
+	
 	return (0);
 }
 

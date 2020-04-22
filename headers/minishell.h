@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/wait.h>
 
 //Useless ?
 typedef struct	s_minishell
@@ -95,7 +96,6 @@ int		parse_or(t_list **tokens, t_node **r);
 int		parse_and(t_list **tokens, t_node **r);
 int		parse_pipeline(t_list **tokens, t_node **r);
 int		parse_cmd(t_list **token, t_cmd **c);
-char	**list_to_char_array(t_list *l);
 
 /*
 **	Lexer / tokenizer
@@ -124,6 +124,7 @@ int		run_tree(t_node *tree, t_minishell *mini);
 int		run_pipeline(t_pipeline *pipe, t_minishell *mini);
 int		run_command(t_cmd *cmd, t_minishell *mini);
 int		is_builtin(char *str);
+char	**build_args(char *first, t_list *l);
 
 /*
 **	Built-ins

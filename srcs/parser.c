@@ -204,27 +204,6 @@ t_list	*popFirst(t_list **token)
 	return (topop);
 }
 
-
-char	**list_to_char_array(t_list *l)
-{
-	size_t s;
-	char **arr;
-	int i;
-
-	i = 0;
-	s = ft_lstsize(l);
-	if (!(arr = ft_calloc(1, sizeof(char*) * (s + 1))))
-		return (0);
-	while (l)
-	{
-		arr[i] = (char*) l->content;
-		i++;
-		l = l->next;
-	}
-	return (arr);
-}
-
-
 int		parse_cmd(t_list **token, t_cmd **c)
 {
 	int		r;
