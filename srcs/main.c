@@ -139,15 +139,15 @@ int main(int ac, char **av, char **env)
 			printf("-------------------------------\n");
 		}
 		
-		printf("THIS SHOULD NOT APPEAR\n");
 		while (tok)
 		{
+			printf("THIS SHOULD NOT APPEAR\n");
 			printf("\"%s\"\n",(char*)tok->content);
 			tok = tok->next;
 		}
 		printf("\e[1;32m3: INTERPRETER\e[0m\n");
 		printf("-------------OUTPUT------------\n");
-		run_entry(entry);
+		run_entry(entry, &mini);
 		printf("--------------END--------------\n");
 		// ft_lstclear(tokens);
 

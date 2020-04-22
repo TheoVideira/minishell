@@ -20,6 +20,7 @@
 #include <get_next_line.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <dirent.h>
 
 //Useless ?
 typedef struct	s_minishell
@@ -118,10 +119,10 @@ void	print_tree(t_node *n);
 /*
 **	Execution
 */
-int		run_entry(t_entry *entry);
-int		run_tree(t_node *tree);
-int		run_pipeline(t_pipeline *pipe);
-int		run_command(t_cmd *cmd);
+int		run_entry(t_entry *entry, t_minishell *mini);
+int		run_tree(t_node *tree, t_minishell *mini);
+int		run_pipeline(t_pipeline *pipe, t_minishell *mini);
+int		run_command(t_cmd *cmd, t_minishell *mini);
 int		is_builtin(char *str);
 
 /*
