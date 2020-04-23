@@ -19,6 +19,7 @@
 #include <string.h>
 #include <get_next_line.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/wait.h>
@@ -139,4 +140,6 @@ void			free_pipeline(t_pipeline *p);
 void			free_command(t_cmd *p);
 void			free_tokenarray(char **tokens);
 void			free_node(t_node *tofree);
+void			free_char_array(char **arr)
+
 #endif

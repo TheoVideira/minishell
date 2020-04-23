@@ -121,7 +121,7 @@ char	*find_name(char *label, t_minishell *mini)
 	int i;
 
 	name = 0;
-	path = ft_dictget(mini->env, "PATH");
+	path = (char*)ft_dictget(mini->env, "PATH");
 	if(!(entries = ft_split(path, ':')))
 	{
 		// panic
@@ -175,12 +175,22 @@ int		run_command(t_cmd *cmd, t_minishell *mini)
 	int fd[2];
 	pid_t pid;
 	char *path;
-	int status;
+	struct stat tmp;
+
+	
 
 	if (pipe(fd))
 		return (1);
+	
+	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')) && stat(cmd->label, &tmp) >= 0 && tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode))
+	{
+		printf("ouate: %x\n",  tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode));
+		av = build_args(cmd->label, cmd->args); // check error, is it path or just executable name as first arg ?
+		execve(cmd->label, av, av); // need to add env tradd
+		errno = EISDIR;
+		return 0;
+	}
 
-	// what if use gives full path ?
 	path = find_name(cmd->label, mini);
 	printf("chemin trouve: %s\n", path);
 
@@ -205,7 +215,7 @@ int		run_command(t_cmd *cmd, t_minishell *mini)
 		//panic
 	}
 
-	waitpid(pid, &status, 0);
+	waitpid(pid, 0, 0);
 	
 	
 	return (0);

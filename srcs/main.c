@@ -19,7 +19,7 @@ char	*getenvkey(char *str)
 
 	start = 0;
 	end = 0;
-	while (str[end] != '=')
+	while (str[end] && str[end] != '=')
 		end++;
 	return (ft_substr(str, start, end));
 }
@@ -31,7 +31,7 @@ char	*getenvvalue(char *str)
 
 	start = 0;
 	end = 0;
-	while (str[start] != '=')
+	while (str[start] && str[start] != '=')
 		start++;
 	start++;
 	end = ft_strlen(str) - start;
@@ -65,13 +65,39 @@ t_dict	*envtodict(char **env)
 	return (dict);
 }
 
+// char	**dictoenv(t_dict *dict)
+// {
+// 	t_dict *ptr;
+// 	int len1;
+// 	int len2;
+// 	char **env;
+// 	char *entry;
+
+// 	len1 = ft_dictsize(dict);
+// 	if (!(env = ft_calloc((len1 + 1) * sizeof(char*))))
+// 		return (0);
+// 	ptr = dict;
+// 	while (dict)
+// 	{
+// 		len1 = ft_strlen(dict->key);
+// 		len2 = ft_strlen((char*)dict->value);
+// 		if (!(entry = ft_calloc(len1 + 1 + len2 + 1) * sizeof(char)))
+// 		{
+// 			free_char_array(env);
+// 			return (0);	
+// 		}	
+// 		dict = dict->next;
+// 	}
+// 	return (env);
+// }
+
 //DEBUG
 void	printdict(t_dict *dict)
 {
 	printf("\e[31;1m ENV \e[0m\n");
 	while(dict)
 	{
-		printf("%s=%s\n", dict->key, dict->value);
+		printf("%s=%s\n", dict->key, (char *)dict->value);
 		dict = dict->next;
 	}
 }
@@ -91,7 +117,7 @@ int main(int ac, char **av, char **env)
 	printf("%s\n", ft_strreplace(str, 2, 5, "Plz don t kill me"));
 
 	mini.env = envtodict(env);
-	// printdict(mini.env);
+
 	while (1)
 	{
 		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
