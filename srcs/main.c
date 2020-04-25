@@ -65,31 +65,29 @@ t_dict	*envtodict(char **env)
 	return (dict);
 }
 
-// char	**dictoenv(t_dict *dict)
-// {
-// 	t_dict *ptr;
-// 	int len1;
-// 	int len2;
-// 	char **env;
-// 	char *entry;
+char	**dictoenv(t_dict *dict)
+{
+	int len1;
+	int len2;
+	char **env;
+	char *entry;
 
-// 	len1 = ft_dictsize(dict);
-// 	if (!(env = ft_calloc((len1 + 1) * sizeof(char*))))
-// 		return (0);
-// 	ptr = dict;
-// 	while (dict)
-// 	{
-// 		len1 = ft_strlen(dict->key);
-// 		len2 = ft_strlen((char*)dict->value);
-// 		if (!(entry = ft_calloc(len1 + 1 + len2 + 1) * sizeof(char)))
-// 		{
-// 			free_char_array(env);
-// 			return (0);	
-// 		}	
-// 		dict = dict->next;
-// 	}
-// 	return (env);
-// }
+	len1 = ft_dictsize(dict);
+	if (!(env = ft_calloc(1, (len1 + 1) * sizeof(char*))))
+		return (0);
+	while (dict)
+	{
+		len1 = ft_strlen(dict->key);
+		len2 = ft_strlen((char*)dict->value);
+		if (!(entry = ft_calloc(1, (len1 + 1 + len2 + 1) * sizeof(char))))
+		{
+			free_char_array(env);
+			return (0);	
+		}	
+		dict = dict->next;
+	}
+	return (env);
+}
 
 //DEBUG
 void	printdict(t_dict *dict)

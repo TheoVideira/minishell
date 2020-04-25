@@ -28,6 +28,7 @@
 typedef struct	s_minishell
 {
 	t_dict	*env;
+	char	**envtmp;
 	int		lastreturn;
 }				t_minishell;
 
@@ -132,7 +133,10 @@ int		run_entry(t_entry *entry, t_minishell *mini);
 int		run_tree(t_node *tree, t_minishell *mini);
 int		run_pipeline(t_pipeline *pipe, t_minishell *mini);
 int		run_command(t_cmd *cmd, t_minishell *mini);
-int		is_builtin(char *str);
+char	**dictoenv(t_dict *dict);
+int		is_builtin(t_cmd* cmd);
+int		execute_builtin(t_cmd* cmd, t_minishell *mini);
+
 
 /*
 **	Built-ins

@@ -57,6 +57,25 @@ int		execute_builtin(t_cmd* cmd, t_minishell *mini)
 	return (-1);
 }
 
+int		is_builtin(t_cmd* cmd)
+{
+	if (!ft_strcmp(cmd->label, "echo"))
+		return (1);
+	if (!ft_strcmp(cmd->label, "cd"))
+		return (1);
+	if (!ft_strcmp(cmd->label, "pwd"))
+		return (1);
+	if (!ft_strcmp(cmd->label, "export"))
+		return (1);
+	if (!ft_strcmp(cmd->label, "unset"))
+		return (1);
+	if (!ft_strcmp(cmd->label, "env"))
+		return (1);
+	if (!ft_strcmp(cmd->label, "exit"))
+		return (1);
+	return (0);
+}
+
 // WHY it works ?
 void free_char_array(char **arr)
 {
@@ -174,8 +193,7 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 
 	path = find_name(cmd->label, mini);
 	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
-	printf("argv[0] = %p\n", cmd->args);
-	execve(path, cmd->args, cmd->args); // need to add env tradd
+	execve(path, cmd->args, mini->envtmp); // need to add env tradd
 
 	return (0);
 }
@@ -204,6 +222,7 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	int save[2];
 	int io[2];
 
+	mini->envtmp = dictoenv(mini->env); // check error
 	save[0] = dup(0);
 	save[1] = dup(1);
 	if (!(process = ft_calloc(1, sizeof(t_process)* ft_lstsize(pi->cmds))))
@@ -212,7 +231,7 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	i = 0;
 	len = ft_lstsize(pi->cmds);
 	l = pi->cmds;
-	if (len == 1)
+	if (len == 1 && is_builtin((t_cmd *)l->content))
 	{
 		run_command((t_cmd *)l->content, mini); // check if label not found
 		return (0);
@@ -256,7 +275,6 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	while (i < len)
 	{
 		waitpid(process[i].pid, &(process[i].status), 0);
-		fprintf(stderr, "HOOO %d\n", process[i].status);
 		i++;
 	}
 	dup2(save[0], 0);
