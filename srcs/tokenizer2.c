@@ -46,7 +46,7 @@ int		replace_env(char **str, t_dict *env)
 			}
 			while (*ptr && !ft_isspace(*ptr) && *ptr != '$' && !is_separator(ptr))
 				ptr++;
-			varkey = ft_substr(new, start - new + 1, ptr - start - 1);
+			varkey = ft_substr(new, start - new + 1, ptr - start - 1); // check error
 			if (!(varvalue = (char*)ft_dictget(env, varkey)))
 				varvalue = "";
 			tofree = new;
