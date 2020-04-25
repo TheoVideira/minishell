@@ -131,9 +131,9 @@ int		is_builtin(char *str);
 **	Built-ins
 */
 void	ft_print_error(char *shell, char *prg, char *arg);
-int		echo(int ac, char* const* av);
-int		cd(int ac, char* const* av, t_dict* env);
-int		pwd(void);
+int		builtin_echo(int ac, char* const* av);
+int		builtin_cd(int ac, char* const* av, t_dict* env);
+int		builtin_pwd(void);
 
 /*
 **	Freeing

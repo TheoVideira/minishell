@@ -1,12 +1,12 @@
 #include <minishell.h>
 
-int		echo(int ac, char* const* av)
+int		builtin_echo(int ac, char* const* av)
 {
 	int i;
 	int flagn;
 
-	flagn = ac > 0 && ft_strcmp(av[0], "-n") == 0;
-	i = flagn;
+	flagn = ac > 1 && ft_strcmp(av[1], "-n") == 0;
+	i = flagn + 1;
 	while (i < ac)
 	{
 		write(1, av[i], ft_strlen(av[i]));
@@ -19,22 +19,22 @@ int		echo(int ac, char* const* av)
 	return (0);
 }
 
-int		cd(int ac, char* const* av, t_dict* env)
+int		builtin_cd(int ac, char* const* av, t_dict* env)
 {
 	char	*dir;
 
-	if (ac > 1)
+	if (ac > 2)
 		return (1);
 	if (!ac)
 		dir = ft_dictget(env, "HOME");
 	else
-		dir = av[0];
+		dir = av[1];
 	if (chdir(dir))
 		ft_print_error("minishell", "cd", av[0]);
 	return (0);
 }
 
-int		pwd(void)
+int		builtin_pwd(void)
 {
 	char *path;
 
