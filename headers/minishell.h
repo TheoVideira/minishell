@@ -68,9 +68,9 @@ typedef struct s_node
 typedef struct	s_cmd
 {
 	char 	*label;
-	t_list	*args; // not usre to keep it
-	t_list	*redir; // tofix
-	t_list	*input;
+	char	**args;
+	char	**redir;
+	char	**input;
 	int		returned;
 }				t_cmd;
 
@@ -110,6 +110,7 @@ int		tokencount(char *str);
 int		get_next_token(char *str, char **tofill,  t_dict *env);
 t_list	*tokenize(char *str, t_dict *env);
 int		replace_env(char **str, t_dict *env);
+char	**list_to_char_array(t_list *l);
 
 /*
 **	Tree debugging
@@ -125,7 +126,6 @@ int		run_tree(t_node *tree, t_minishell *mini);
 int		run_pipeline(t_pipeline *pipe, t_minishell *mini);
 int		run_command(t_cmd *cmd, t_minishell *mini);
 int		is_builtin(char *str);
-char	**build_args(char *first, t_list *l);
 
 /*
 **	Built-ins

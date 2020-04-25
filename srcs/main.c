@@ -56,7 +56,7 @@ t_dict	*envtodict(char **env)
 		if (!value || !(tmp = ft_dictnew(key, value)))
 		{
 			free(value);
-			ft_dictclear(dict);
+			ft_dictclear(dict, 0);
 			return (0);
 		}
 		ft_dictadd(&dict, tmp);
@@ -117,6 +117,7 @@ int main(int ac, char **av, char **env)
 	printf("%s\n", ft_strreplace(str, 2, 5, "Plz don t kill me"));
 
 	mini.env = envtodict(env);
+
 
 	while (1)
 	{

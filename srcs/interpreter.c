@@ -146,32 +146,8 @@ char	*find_name(char *label, t_minishell *mini)
 	return (0);
 }
 
-char	**build_args(char *first, t_list *l)
-{
-	size_t s;
-	char **arr;
-	int i;
-	int isnull;
-
-	isnull = (first == 0);
-	s = ft_lstsize(l);
-	if (!(arr = ft_calloc(1, sizeof(char*) * (s + 1 + !isnull))))
-		return (0);
-	if (!isnull)
-		arr[0] = first;
-	i = first != 0;
-	while (l)
-	{
-		arr[i] = (char*) l->content;
-		i++;
-		l = l->next;
-	}
-	return (arr);
-}
-
 int		run_command(t_cmd *cmd, t_minishell *mini)
 {
-	char **av;
 	int fd[2];
 	pid_t pid;
 	char *path;
@@ -185,30 +161,19 @@ int		run_command(t_cmd *cmd, t_minishell *mini)
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')) && stat(cmd->label, &tmp) >= 0 && tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode))
 	{
 		printf("ouate: %x\n",  tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode));
-		av = build_args(cmd->label, cmd->args); // check error, is it path or just executable name as first arg ?
-		execve(cmd->label, av, av); // need to add env tradd
+		execve(cmd->label, cmd->args, cmd->args); // need to add env tradd
 		errno = EISDIR;
 		return 0;
 	}
 
 	path = find_name(cmd->label, mini);
-	printf("chemin trouve: %s\n", path);
+	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
 
 
 	
-	// if (!cmds)
-	// 	return (0);
-
-
-	if (ft_strcmp(cmd->label, "echo") == 0)
-	{
-		av = build_args(0, cmd->args); // check error
-		return echo(ft_lstsize(cmd->args), av);
-	}
 	if ((pid = fork()) == 0)
 	{
-		av = build_args(cmd->label, cmd->args); // check error, is it path or just executable name as first arg ?
-		execve(path, av, av); // need to add env tradd
+		execve(path, cmd->args, cmd->args); // need to add env tradd
 	}
 	else if (pid == -1)
 	{
