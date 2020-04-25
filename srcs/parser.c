@@ -240,7 +240,7 @@ int		parse_cmd(t_list **token, t_cmd **c)
 		return (0);
 	if ((*c = ft_calloc(1, sizeof(t_cmd))) == NULL)
 		return (-1);
-	ft_lstadd_back(&args, popFirst(token)); 
+	ft_lstadd_back(&args, popFirst(token));
 	(*c)->label = (char*)args->content; // getting the pointer to the first arg as the label
 	while (*token && !is_operator((t = getToken(token))))
 	{
@@ -253,12 +253,12 @@ int		parse_cmd(t_list **token, t_cmd **c)
 			ft_lstadd_back(&args, popFirst(token)); // it calls nextToken() in any case
 		if (r < 0)
 			return (r);
-		(*c)->args = list_to_char_array(args); // check error
-		(*c)->redir = list_to_char_array(redir);  // check error
-		(*c)->input = list_to_char_array(input);  // check error
-		ft_lstclear(&args, 0);
-		ft_lstclear(&redir, 0);
-		ft_lstclear(&input, 0);
 	}
+	(*c)->args = list_to_char_array(args); // check error
+	(*c)->redir = list_to_char_array(redir);  // check error
+	(*c)->input = list_to_char_array(input);  // check error
+	ft_lstclear(&args, 0);
+	ft_lstclear(&redir, 0);
+	ft_lstclear(&input, 0);
 	return (1);
 }

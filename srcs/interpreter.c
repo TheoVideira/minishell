@@ -174,8 +174,9 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 
 	path = find_name(cmd->label, mini);
 	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
+	printf("argv[0] = %p\n", cmd->args);
 	execve(path, cmd->args, cmd->args); // need to add env tradd
-	
+
 	return (0);
 }
 
