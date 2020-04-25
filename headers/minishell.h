@@ -130,7 +130,10 @@ char	**build_args(char *first, t_list *l);
 /*
 **	Built-ins
 */
+void	ft_print_error(char *shell, char *prg, char *arg);
 int		echo(int ac, char* const* av);
+int		cd(int ac, char* const* av, t_dict* env);
+int		pwd(void);
 
 /*
 **	Freeing

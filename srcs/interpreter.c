@@ -205,6 +205,13 @@ int		run_command(t_cmd *cmd, t_minishell *mini)
 		av = build_args(0, cmd->args); // check error
 		return echo(ft_lstsize(cmd->args), av);
 	}
+	if (ft_strcmp(cmd->label, "cd") == 0)
+	{
+		av = build_args(0, cmd->args); // check error
+		return cd(ft_lstsize(cmd->args), av, mini->env);
+	}
+	if (ft_strcmp(cmd->label, "pwd") == 0)
+		return pwd();
 	if ((pid = fork()) == 0)
 	{
 		av = build_args(cmd->label, cmd->args); // check error, is it path or just executable name as first arg ?
