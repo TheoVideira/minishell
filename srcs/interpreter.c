@@ -26,23 +26,35 @@ int		run_tree(t_node *tree, t_minishell *mini)
 	return (0);
 }
 
-int		is_builtin(char *str)
+int		args_size(char **args)
 {
-	if (!ft_strcmp(str, "echo"))
+	int i;
+
+	i = 0;
+	while (args[i])
+	{
+		i++;
+	}
+	return (i);
+}
+
+int		execute_builtin(t_cmd* cmd, t_minishell *mini)
+{
+	if (!ft_strcmp(cmd->label, "echo"))
+		return (echo(args_size(cmd->args), cmd->args));
+	if (!ft_strcmp(cmd->label, "cd"))
+		return (cd(args_size(cmd->args), cmd->args, mini->env));
+	if (!ft_strcmp(cmd->label, "pwd"))
+		return (pwd());
+	if (!ft_strcmp(cmd->label, "export"))
 		return (1);
-	if (!ft_strcmp(str, "cd"))
+	if (!ft_strcmp(cmd->label, "unset"))
 		return (1);
-	if (!ft_strcmp(str, "pwd"))
+	if (!ft_strcmp(cmd->label, "env"))
 		return (1);
-	if (!ft_strcmp(str, "export"))
+	if (!ft_strcmp(cmd->label, "exit"))
 		return (1);
-	if (!ft_strcmp(str, "unset"))
-		return (1);
-	if (!ft_strcmp(str, "env"))
-		return (1);
-	if (!ft_strcmp(str, "exit"))
-		return (1);
-	return (0);
+	return (-1);
 }
 
 
@@ -166,10 +178,13 @@ int		run_command(t_cmd *cmd, t_minishell *mini)
 		return 0;
 	}
 
+	if (execute_builtin(cmd, mini) > -1)
+	{
+		return (0); // need to manage return value
+	}
+
 	path = find_name(cmd->label, mini);
 	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
-
-
 	
 	if ((pid = fork()) == 0)
 	{
