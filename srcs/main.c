@@ -122,6 +122,7 @@ int main(int ac, char **av, char **env)
 	{
 		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
 		r = get_next_line(0, &line);
+		
 		// if (r == -1)
 		// 	if (errno)
 		// 		perror(strerror(errno));
