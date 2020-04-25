@@ -222,20 +222,20 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	int save[2];
 	int io[2];
 
-	mini->envtmp = dictoenv(mini->env); // check error
-	save[0] = dup(0);
-	save[1] = dup(1);
-	if (!(process = ft_calloc(1, sizeof(t_process)* ft_lstsize(pi->cmds))))
-		return (0);	
-	
-	i = 0;
-	len = ft_lstsize(pi->cmds);
 	l = pi->cmds;
+	len = ft_lstsize(pi->cmds);
 	if (len == 1 && is_builtin((t_cmd *)l->content))
 	{
 		run_command((t_cmd *)l->content, mini); // check if label not found
 		return (0);
 	}
+	save[0] = dup(0);
+	save[1] = dup(1);
+	i = 0;
+	if (!(process = ft_calloc(1, sizeof(t_process)* ft_lstsize(pi->cmds))))
+		return (0);	
+	mini->envtmp = dictoenv(mini->env); // check error
+	printf("%p\n", mini->envtmp[0]);
 
 	while (i < len)
 	{
