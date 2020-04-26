@@ -85,23 +85,20 @@ int	builtin_exit(int ac, char* const* av)
 	return (1);
 }
 
-int builtin_env(t_minishell *mini)
+int builtin_env(t_dict *env)
 {
-	t_dict	*var_env;
-
-	var_env = mini->env;
-	while (var_env)
+	while (env)
 	{
-		write(1, var_env->key, ft_strlen(var_env->key));
+		write(1, env->key, ft_strlen(env->key));
 		write(1, "=", 1);
-		write(1, var_env->value, ft_strlen(var_env->value));
+		write(1, env->value, ft_strlen(env->value));
 		write(1, "\n", 1);
-		var_env = var_env->next;
+		env = env->next;
 	}
 	return (0);
 }
 
-int builtin_export(int ac, char* const* av, t_minishell *mini)
+int builtin_export(int ac, char* const* av, t_dict *env)
 {
 	int		i;
 	char	*eq;
@@ -114,21 +111,21 @@ int builtin_export(int ac, char* const* av, t_minishell *mini)
 		if ((eq = ft_strchr(av[i], '=')))
 		{
 			*eq = 0;
-			ft_dictrem(&(mini->env), av[i], free);
+			ft_dictrem(&env, av[i], free);
 			key = ft_strdup(av[i]);
 			value = ft_strdup(eq + 1);
-			ft_dictadd(&(mini->env), ft_dictnew(key, value));
+			ft_dictadd(&env, ft_dictnew(key, value));
 		}
 	}
 	return(0);
 }
 
-int builtin_unset(int ac, char* const* av, t_minishell *mini)
+int builtin_unset(int ac, char* const* av, t_dict *env)
 {
 	int i;
 
 	i = 0;
 	while (++i < ac)
-		ft_dictrem(&(mini->env), av[i], free);
+		ft_dictrem(&env, av[i], free);
 	return(0);
 }
