@@ -23,7 +23,7 @@ char		*handle_separators(char *str)
 	return (0);
 }
 
-int			get_next_token(char *str, char **tofill,  t_dict *env)
+int			get_next_token(char *str, char **tofill,  t_minishell *mini)
 {
 	char *token;
 	char *subtoken;
@@ -39,11 +39,11 @@ int			get_next_token(char *str, char **tofill,  t_dict *env)
 		if ((subtoken = handle_separators(str)))
 			str += ft_strlen(subtoken);
 		else if (*str == '"')
-			str += double_quotes(str + 1, &subtoken, env) + 2;
+			str += double_quotes(str, &subtoken, mini); // check error
 		else if (*str == '\'')
-			str += single_quotes(str + 1, &subtoken) + 2;
+			str += single_quotes(str, &subtoken); // check error
 		else
-			str += no_quotes(str, &subtoken, env);
+			str += no_quotes(str, &subtoken, mini);
 		tmp = token;
 		token = ft_strjoin(token, subtoken);
 		free(tmp);
@@ -55,14 +55,14 @@ int			get_next_token(char *str, char **tofill,  t_dict *env)
 	return ((unsigned int)(str - start));
 }
 
-t_list	*tokenize(char *str, t_dict *env)
+t_list	*tokenize(char *str, t_minishell *mini)
 {
 	t_list	*tokens;
 	char	*token;
 	int		tmp;
 
 	tokens = 0;
-	while ((tmp = get_next_token(str, &token, env)))
+	while ((tmp = get_next_token(str, &token, mini)))
 	{
 		ft_lstadd_back(&tokens, ft_lstnew(token)); // check for new null
 		str += tmp;

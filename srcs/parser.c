@@ -260,5 +260,6 @@ int		parse_cmd(t_list **token, t_cmd **c)
 	ft_lstclear(&args, 0);
 	ft_lstclear(&redir, 0);
 	ft_lstclear(&input, 0);
+	// reparse en values
 	return (1);
 }

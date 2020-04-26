@@ -74,6 +74,7 @@ typedef struct	s_cmd
 	char	**args;
 	char	**redir;
 	char	**input;
+	t_list	*toreplace;
 	int		returned;
 }				t_cmd;
 
@@ -112,13 +113,13 @@ int		parse_cmd(t_list **token, t_cmd **c);
 */
 int		is_separator(char *str);
 char	*handle_separators(char *str);
-int		double_quotes(char *str, char **token,  t_dict *env);
+int		double_quotes(char *str, char **token,  t_minishell *mini);
 int		single_quotes(char *str, char **token);
-int		no_quotes(char *str, char **token,  t_dict *env);
+int		no_quotes(char *str, char **token,  t_minishell *mini);
 int		tokencount(char *str);
-int		get_next_token(char *str, char **tofill,  t_dict *env);
-t_list	*tokenize(char *str, t_dict *env);
-int		replace_env(char **str, t_dict *env);
+int		get_next_token(char *str, char **tofill,  t_minishell *mini);
+t_list	*tokenize(char *str, t_minishell *mini);
+int		replace_env(char **str, t_minishell *mini);
 char	**list_to_char_array(t_list *l);
 
 /*

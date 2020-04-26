@@ -23,7 +23,7 @@ int		is_separator(char *str)
 	return (0);
 }
 
-int		replace_env(char **str, t_dict *env)
+int		replace_env(char **str, t_minishell *mini)
 {
 	char *ptr;
 	char *start;
@@ -42,15 +42,24 @@ int		replace_env(char **str, t_dict *env)
 			if (*(++ptr) == '?')
 			{
 				(void) ptr;
+
+				tofree = new;
+				varvalue = ft_itoa(mini->lastcall); // check env
+				printf("%d\n", mini->lastcall);
+				new = ft_strreplace(new, start - new, 2, varvalue); // Check error
 				//Couilles TO DO
 			}
-			while (*ptr && !ft_isspace(*ptr) && *ptr != '$' && !is_separator(ptr))
-				ptr++;
-			varkey = ft_substr(new, start - new + 1, ptr - start - 1); // check error
-			if (!(varvalue = (char*)ft_dictget(env, varkey)))
-				varvalue = "";
-			tofree = new;
-			new = ft_strreplace(new, start - new, ft_strlen(varkey) + 1, varvalue); // Check error
+			
+			else
+			{
+				while (*ptr && !ft_isspace(*ptr) && *ptr != '$' && !is_separator(ptr))
+					ptr++;
+				varkey = ft_substr(new, start - new + 1, ptr - start - 1); // check error
+				if (!(varvalue = (char*)ft_dictget(mini->env, varkey)))
+					varvalue = "";
+				tofree = new;
+				new = ft_strreplace(new, start - new, ft_strlen(varkey) + 1, varvalue); // Check error
+			}
 			free(tofree);
 			ptr = new;
 		}
@@ -61,7 +70,7 @@ int		replace_env(char **str, t_dict *env)
 	return (0);
 }
 
-int		double_quotes(char *str, char **token,  t_dict *env)
+int		double_quotes(char *str, char **token,  t_minishell *mini)
 {
 	int		size;
 
@@ -73,8 +82,7 @@ int		double_quotes(char *str, char **token,  t_dict *env)
 	}
 	*token = ft_calloc(1, sizeof(char) * (size + 1)); // CHECK ALLOC
 	ft_memcpy(*token, str - size, size);
-	(void) env;
-	replace_env(token, env); // check error
+	replace_env(token, mini); // check error
 	return (size);
 }
 
@@ -93,7 +101,7 @@ int		single_quotes(char *str, char **token)
 	return (size);
 }
 
-int		no_quotes(char *str, char **token,  t_dict *env)
+int		no_quotes(char *str, char **token,  t_minishell *mini)
 {
 	int		size;
 
@@ -105,7 +113,6 @@ int		no_quotes(char *str, char **token,  t_dict *env)
 	}
 	*token = ft_calloc(1, sizeof(char) * (size + 1)); // CHECK ALLOC
 	ft_memcpy(*token, str - size, size);
-	(void) env;
-	replace_env(token, env); // check error
+	replace_env(token, mini); // check error
 	return (size);
 }

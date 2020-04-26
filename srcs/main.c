@@ -66,7 +66,7 @@ t_dict	*envtodict(char **env)
 }
 
 char	**dictoenv(t_dict *dict)
-{
+{ 
 	int len1;
 	int len2;
 	int i;
@@ -140,14 +140,14 @@ int main(int ac, char **av, char **env)
 		// 	break ;
 		// }
 
-		t_list *tokens = tokenize(line, mini.env);
+		t_list *tokens = tokenize(line, &mini);
 		t_list *tok = tokens;
 
 		printf("\e[1;32m1: TOKENIZER\e[0m\n");
 		printf("Listing tokens\n");
 		while (tokens)
 		{
-			printf("\"%s\"\n",(char*)tokens->content);
+			printf("|%s|\n",(char*)tokens->content);
 			tokens = tokens->next;
 		}
 		tokens = tok;

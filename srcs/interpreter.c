@@ -178,17 +178,16 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 {
 	char *path;
 	struct stat tmp;
+	int r;
 
+	if ((r = execute_builtin(cmd, mini)) > -1)
+	{
+		mini->lastcall = r;
+		// free all shit
+		exit(r);
+	}
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')) && stat(cmd->label, &tmp) >= 0 && tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode))
-	{
 		execve(cmd->label, cmd->args, cmd->args); // need to add env tradd
-		errno = EISDIR;
-		return 0;
-	}
-	if (execute_builtin(cmd, mini) > -1)
-	{
-		return (0); // need to manage return value
-	}
 	path = find_name(cmd->label, mini);
 	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
 	execve(path, cmd->args, mini->envtmp); // need to add env tradd
@@ -210,6 +209,26 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 // 	return (0);
 // }
 
+
+// int		format_args(char **arr)
+// {
+// 	while (/* condition */)
+// 	{
+// 		/* code */
+// 	}
+	
+// }
+
+// int		format_redir(char **redir)
+// {
+	
+// }
+
+// int		format_input(char **redir)
+// {
+	
+// }
+
 int run_pipeline(t_pipeline *pi, t_minishell *mini)
 {
 	t_list *l;
@@ -223,8 +242,8 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	len = ft_lstsize(pi->cmds);
 	if (len == 1 && is_builtin((t_cmd *)l->content))
 	{
-		run_command((t_cmd *)l->content, mini); // check if label not found
-		return (0);
+		mini->lastcall = execute_builtin((t_cmd *)l->content, mini); // check if label not found
+		return (mini->lastcall);
 	}
 	save[0] = dup(0);
 	save[1] = dup(1);
@@ -252,7 +271,6 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 		if ((process[i].pid = fork()) == 0)
 		{
 			run_command((t_cmd *)l->content, mini); // check if label not found
-			exit (0);
 		}
 		else if (process[i].pid == -1)
 		{
@@ -266,7 +284,6 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 		l = l->next;
 		i++;
 	}
-
 	i = 0;
 	while (i < len)
 	{
@@ -277,6 +294,5 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	dup2(save[0], 0);
 	dup2(save[1], 1);
 	free(process);
-	// bordel avec le $?
-	return 0; // value of pipe
+	return (mini->lastcall); // value of pipe
 }
