@@ -23,49 +23,77 @@ char		*handle_separators(char *str)
 	return (0);
 }
 
-int			get_next_token(char *str, char **tofill,  t_dict *env)
-{
-	char *token;
-	char *subtoken;
-	char *tmp;
-	char *start;
 
-	token = ft_calloc(1, 1); // check if null or redo strjoin to handle null
+int			loop_until(char *str, char end) // might handle multiline
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == end && str[i - 1] != '\\') // unspecify
+			return (i);
+		i++;
+	}
+	return (i);
+}
+
+int			get_next_token(char *str, char **tofill,  t_minishell *mini)
+{
+	char	*token;
+	char	*start;
+	char	*tokenstart;
+	int		tmp;
+
+	(void)mini;
 	start = str;
 	while (ft_isspace(*str))
 		str++;
+	tokenstart = str;
 	while (*str && !ft_isspace(*str))
 	{
-		if ((subtoken = handle_separators(str)))
-			str += ft_strlen(subtoken);
+		if ((tmp = is_separator(str)))
+		{
+			str += tmp;
+			break;
+		}	
 		else if (*str == '"')
-			str += double_quotes(str + 1, &subtoken, env) + 2;
+			str += 1 + loop_until(str + 1, '"') + 1; // check error
 		else if (*str == '\'')
-			str += single_quotes(str + 1, &subtoken) + 2;
+			str += 1 + loop_until(str + 1, '\'') + 1; // check error
 		else
-			str += no_quotes(str, &subtoken, env);
-		tmp = token;
-		token = ft_strjoin(token, subtoken);
-		free(tmp);
-		free(subtoken);
-		if (is_separator(str) || is_separator(token))
+			str++;
+		if (is_separator(str))
 			break ;
+		//check uneven quotes
+	}
+	if (str - tokenstart == 0)
+	{
+		token = 0;
+		return (0);
+	}
+	else if (!(token = handle_separators(tokenstart)))
+	{
+		token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1));
+		ft_memcpy(token, tokenstart, str - tokenstart);
 	}
 	*tofill = token;
-	return ((unsigned int)(str - start));
+	return ((unsigned int)(tokenstart - start + ft_strlen(token)));
 }
 
-t_list	*tokenize(char *str, t_dict *env)
+t_list	*tokenize(char *str, t_minishell *mini)
 {
 	t_list	*tokens;
 	char	*token;
 	int		tmp;
 
 	tokens = 0;
-	while ((tmp = get_next_token(str, &token, env)))
+	while ((tmp = get_next_token(str, &token, mini)))
 	{
+		printf("tmp %d\n", tmp);
 		ft_lstadd_back(&tokens, ft_lstnew(token)); // check for new null
 		str += tmp;
 	}
+	printf("tmp last %d\n", tmp);
 	return (tokens);
 }

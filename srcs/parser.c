@@ -12,6 +12,27 @@
 
 #include <minishell.h>
 
+char	**list_to_char_array(t_list *l)
+{
+	size_t s;
+	char **arr;
+	int i;
+
+	if (!l)
+		return (0);
+	s = ft_lstsize(l);
+	if (!(arr = ft_calloc(1, sizeof(char*) * (s + 1))))
+		return (0);
+	i = 0;
+	while (l)
+	{
+		arr[i] = (char*) l->content;
+		i++;
+		l = l->next;
+	}
+	return (arr);
+}
+
 void	nextToken(t_list **token)
 {
 	if (*token)
@@ -208,24 +229,37 @@ int		parse_cmd(t_list **token, t_cmd **c)
 {
 	int		r;
 	char	*t;
+	t_list *args;
+	t_list *redir;
+	t_list *input;
 
+	args = 0;
+	redir = 0;
+	input = 0;
 	if (!*token || is_operator(getToken(token)))
 		return (0);
 	if ((*c = ft_calloc(1, sizeof(t_cmd))) == NULL)
 		return (-1);
-
-	(*c)->label = getTokenHard(token);
+	ft_lstadd_back(&args, popFirst(token));
+	(*c)->label = (char*)args->content; // getting the pointer to the first arg as the label
 	while (*token && !is_operator((t = getToken(token))))
 	{
 		r = 0;
 		if (ft_strncmp(t, ">", 2) == 0 || ft_strncmp(t, ">>", 2) == 0)
-			r = joinTokens(token, &(*c)->redir);
+			r = joinTokens(token, &redir);
 		else if (ft_strncmp(t, "<", 2) == 0)
-			r = joinTokens(token, &(*c)->input);
+			r = joinTokens(token, &input);
 		else
-			ft_lstadd_back(&(*c)->args, popFirst(token)); // it calls nextToken() in any case
+			ft_lstadd_back(&args, popFirst(token)); // it calls nextToken() in any case
 		if (r < 0)
 			return (r);
 	}
+	(*c)->args = list_to_char_array(args); // check error
+	(*c)->redir = list_to_char_array(redir);  // check error
+	(*c)->input = list_to_char_array(input);  // check error
+	ft_lstclear(&args, 0);
+	ft_lstclear(&redir, 0);
+	ft_lstclear(&input, 0);
+	// reparse en values
 	return (1);
 }

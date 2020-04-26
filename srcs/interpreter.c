@@ -26,40 +26,52 @@ int run_tree(t_node *tree, t_minishell *mini)
 	return (0);
 }
 
-int is_builtin(char *str)
+int		args_size(char **args)
 {
-	if (!ft_strcmp(str, "echo"))
-		return (1);
-	if (!ft_strcmp(str, "cd"))
-		return (1);
-	if (!ft_strcmp(str, "pwd"))
-		return (1);
-	if (!ft_strcmp(str, "export"))
-		return (1);
-	if (!ft_strcmp(str, "unset"))
-		return (1);
-	if (!ft_strcmp(str, "env"))
-		return (1);
-	if (!ft_strcmp(str, "exit"))
-		return (1);
-	return (0);
+	int i;
+
+	i = 0;
+	while (args[i])
+	{
+		i++;
+	}
+	return (i);
 }
 
-int execute_builtin(char *str)
+int		execute_builtin(t_cmd* cmd, t_minishell *mini)
 {
-	if (!ft_strcmp(str, "echo"))
+	if (!ft_strcmp(cmd->label, "echo"))
+		return (builtin_echo(args_size(cmd->args), cmd->args));
+	if (!ft_strcmp(cmd->label, "cd"))
+		return (builtin_cd(args_size(cmd->args), cmd->args, mini->env));
+	if (!ft_strcmp(cmd->label, "pwd"))
+		return (builtin_pwd());
+	if (!ft_strcmp(cmd->label, "export"))
 		return (1);
-	if (!ft_strcmp(str, "cd"))
+	if (!ft_strcmp(cmd->label, "unset"))
 		return (1);
-	if (!ft_strcmp(str, "pwd"))
+	if (!ft_strcmp(cmd->label, "env"))
+		return builtin_env(mini);
+	if (!ft_strcmp(cmd->label, "exit"))
+		return builtin_exit(args_size(cmd->args), cmd->args);
+	return (-1);
+}
+
+int		is_builtin(t_cmd* cmd)
+{
+	if (!ft_strcmp(cmd->label, "echo"))
 		return (1);
-	if (!ft_strcmp(str, "export"))
+	if (!ft_strcmp(cmd->label, "cd"))
 		return (1);
-	if (!ft_strcmp(str, "unset"))
+	if (!ft_strcmp(cmd->label, "pwd"))
 		return (1);
-	if (!ft_strcmp(str, "env"))
+	if (!ft_strcmp(cmd->label, "export"))
 		return (1);
-	if (!ft_strcmp(str, "exit"))
+	if (!ft_strcmp(cmd->label, "unset"))
+		return (1);
+	if (!ft_strcmp(cmd->label, "env"))
+		return (1);
+	if (!ft_strcmp(cmd->label, "exit"))
 		return (1);
 	return (0);
 }
@@ -162,59 +174,23 @@ char *find_name(char *label, t_minishell *mini)
 	return (0);
 }
 
-char **build_args(char *first, t_list *l)
-{
-	size_t s;
-	char **arr;
-	int i;
-	int isnull;
-
-	isnull = (first == 0);
-	s = ft_lstsize(l);
-	if (!(arr = ft_calloc(1, sizeof(char *) * (s + 1 + !isnull))))
-		return (0);
-	if (!isnull)
-		arr[0] = first;
-	i = first != 0;
-	while (l)
-	{
-		arr[i] = (char *)l->content;
-		i++;
-		l = l->next;
-	}
-	return (arr);
-}
-
-
-
 int run_command(t_cmd *cmd, t_minishell *mini)
 {
-	char **av;
 	char *path;
 	struct stat tmp;
+	int r;
 
+	if ((r = execute_builtin(cmd, mini)) > -1)
+	{
+		mini->lastcall = r;
+		// free all shit
+		exit(r);
+	}
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')) && stat(cmd->label, &tmp) >= 0 && tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode))
-	{
-		av = build_args(cmd->label, cmd->args); // check error, is it path or just executable name as first arg ?
-		execve(cmd->label, av, av);				// need to add env tradd
-		errno = EISDIR;
-		return 0;
-	}
-
-	if (is_builtin(cmd->label))
-	{
-		execute_builtin(cmd->label);
-	}
-
+		execve(cmd->label, cmd->args, cmd->args); // need to add env tradd
 	path = find_name(cmd->label, mini);
-
-	// if (!cmds)
-	// 	return (0);
-
-	
-	av = build_args(cmd->label, cmd->args); // check error, is it path or just executable name as first arg ?
-	execve(path, av, av);					// need to add env tradd
-
+	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
+	execve(path, cmd->args, mini->envtmp); // need to add env tradd
 	return (0);
 }
 
@@ -233,6 +209,55 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 // 	return (0);
 // }
 
+
+// int		format_args(char **arr)
+// {
+// 	while (/* condition */)
+// 	{
+// 		/* code */
+// 	}
+	
+// }
+
+// int		format_redir(char **redir)
+// {
+	
+// }
+
+// int		format_input(char **redir)
+// {
+	
+// }
+
+
+int	format_arr(char **arr, t_minishell *mini)
+{
+	int i;
+
+	i = 0;
+	while (arr[i])
+	{
+		arr[i] = format_arg(arr[i], mini);
+		if (arr[i] == 0)
+			return (2); // panic
+		i++;
+	}
+	return (0);
+}
+
+
+int	build_cmd(t_cmd	*cmd, t_minishell *mini)
+{
+	if (cmd->args && format_arr(cmd->args, mini))
+		return (1);
+	if (cmd->redir && format_arr(cmd->redir, mini))
+		return (1);
+	if (cmd->input && format_arr(cmd->input, mini))
+		return (1);
+	return (0);
+}
+
+
 int run_pipeline(t_pipeline *pi, t_minishell *mini)
 {
 	t_list *l;
@@ -242,19 +267,20 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	int save[2];
 	int io[2];
 
+	l = pi->cmds;
+	len = ft_lstsize(pi->cmds);
+	if (len == 1 && is_builtin((t_cmd *)l->content))
+	{
+		build_cmd((t_cmd *)l->content, mini);// panic
+		mini->lastcall = execute_builtin((t_cmd *)l->content, mini); // check if label not found
+		return (mini->lastcall);
+	}
 	save[0] = dup(0);
 	save[1] = dup(1);
+	i = 0;
 	if (!(process = ft_calloc(1, sizeof(t_process)* ft_lstsize(pi->cmds))))
 		return (0);	
-	
-	i = 0;
-	len = ft_lstsize(pi->cmds);
-	l = pi->cmds;
-	if (len == 1)
-	{
-		run_command((t_cmd *)l->content, mini); // check if label not found
-		return (0);
-	}
+	mini->envtmp = dictoenv(mini->env); // check error
 
 	while (i < len)
 	{
@@ -274,8 +300,8 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 		
 		if ((process[i].pid = fork()) == 0)
 		{
+			build_cmd((t_cmd *)l->content, mini);// panic
 			run_command((t_cmd *)l->content, mini); // check if label not found
-			exit (0);
 		}
 		else if (process[i].pid == -1)
 		{
@@ -289,17 +315,15 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 		l = l->next;
 		i++;
 	}
-
 	i = 0;
 	while (i < len)
 	{
 		waitpid(process[i].pid, &(process[i].status), 0);
-		fprintf(stderr, "HOOO %d\n", process[i].status);
+		mini->lastcall = process[i].status;
 		i++;
 	}
 	dup2(save[0], 0);
 	dup2(save[1], 1);
 	free(process);
-	// bordel avec le $?
-	return 0; // value of pipe
+	return (mini->lastcall); // value of pipe
 }

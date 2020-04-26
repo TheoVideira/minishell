@@ -56,7 +56,7 @@ t_dict	*envtodict(char **env)
 		if (!value || !(tmp = ft_dictnew(key, value)))
 		{
 			free(value);
-			ft_dictclear(dict);
+			ft_dictclear(dict, 0);
 			return (0);
 		}
 		ft_dictadd(&dict, tmp);
@@ -65,31 +65,34 @@ t_dict	*envtodict(char **env)
 	return (dict);
 }
 
-// char	**dictoenv(t_dict *dict)
-// {
-// 	t_dict *ptr;
-// 	int len1;
-// 	int len2;
-// 	char **env;
-// 	char *entry;
+char	**dictoenv(t_dict *dict)
+{ 
+	int len1;
+	int len2;
+	int i;
+	char **env;
 
-// 	len1 = ft_dictsize(dict);
-// 	if (!(env = ft_calloc((len1 + 1) * sizeof(char*))))
-// 		return (0);
-// 	ptr = dict;
-// 	while (dict)
-// 	{
-// 		len1 = ft_strlen(dict->key);
-// 		len2 = ft_strlen((char*)dict->value);
-// 		if (!(entry = ft_calloc(len1 + 1 + len2 + 1) * sizeof(char)))
-// 		{
-// 			free_char_array(env);
-// 			return (0);	
-// 		}	
-// 		dict = dict->next;
-// 	}
-// 	return (env);
-// }
+	len1 = ft_dictsize(dict);
+	if (!(env = ft_calloc(1, (len1 + 1) * sizeof(char*))))
+		return (0);
+	i = 0;
+	while (dict)
+	{
+		len1 = ft_strlen(dict->key);
+		len2 = ft_strlen((char*)dict->value);
+		if (!(env[i] = ft_calloc(1, (len1 + 1 + len2 + 1) * sizeof(char))))
+		{
+			free_char_array(env);
+			return (0);	
+		}
+		ft_memcpy(env[i], dict->key, len1);
+		env[i][len1] = '=';
+		ft_memcpy(env[i] + len1 + 1, (char*)dict->value, len2);
+		dict = dict->next;
+		i++;
+	}
+	return (env);
+}
 
 //DEBUG
 void	printdict(t_dict *dict)
@@ -137,14 +140,14 @@ int main(int ac, char **av, char **env)
 		// 	break ;
 		// }
 
-		t_list *tokens = tokenize(line, mini.env);
+		t_list *tokens = tokenize(line, &mini);
 		t_list *tok = tokens;
 
 		printf("\e[1;32m1: TOKENIZER\e[0m\n");
 		printf("Listing tokens\n");
 		while (tokens)
 		{
-			printf("\"%s\"\n",(char*)tokens->content);
+			printf("|%s|\n",(char*)tokens->content);
 			tokens = tokens->next;
 		}
 		tokens = tok;

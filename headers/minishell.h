@@ -28,7 +28,9 @@
 typedef struct	s_minishell
 {
 	t_dict	*env;
+	char	**envtmp;
 	int		lastreturn;
+	int		lastcall;
 }				t_minishell;
 
 /*
@@ -69,9 +71,10 @@ typedef struct s_node
 typedef struct	s_cmd
 {
 	char 	*label;
-	t_list	*args; // not usre to keep it
-	t_list	*redir; // tofix
-	t_list	*input;
+	char	**args;
+	char	**redir;
+	char	**input;
+	t_list	*toreplace;
 	int		returned;
 }				t_cmd;
 
@@ -110,13 +113,14 @@ int		parse_cmd(t_list **token, t_cmd **c);
 */
 int		is_separator(char *str);
 char	*handle_separators(char *str);
-int		double_quotes(char *str, char **token,  t_dict *env);
+int		double_quotes(char *str, char **token,  t_minishell *mini);
 int		single_quotes(char *str, char **token);
-int		no_quotes(char *str, char **token,  t_dict *env);
+int		no_quotes(char *str, char **token,  t_minishell *mini);
 int		tokencount(char *str);
-int		get_next_token(char *str, char **tofill,  t_dict *env);
-t_list	*tokenize(char *str, t_dict *env);
-int		replace_env(char **str, t_dict *env);
+int		get_next_token(char *str, char **tofill,  t_minishell *mini);
+t_list	*tokenize(char *str, t_minishell *mini);
+int		replace_env(char **str, t_minishell *mini);
+char	**list_to_char_array(t_list *l);
 
 /*
 **	Tree debugging
@@ -131,13 +135,24 @@ int		run_entry(t_entry *entry, t_minishell *mini);
 int		run_tree(t_node *tree, t_minishell *mini);
 int		run_pipeline(t_pipeline *pipe, t_minishell *mini);
 int		run_command(t_cmd *cmd, t_minishell *mini);
-int		is_builtin(char *str);
-char	**build_args(char *first, t_list *l);
+char	**dictoenv(t_dict *dict);
+int		is_builtin(t_cmd* cmd);
+int		execute_builtin(t_cmd* cmd, t_minishell *mini);
+char	*format_arg(char *arg,  t_minishell *mini);
 
 /*
 **	Built-ins
 */
-int		echo(int ac, char* const* av);
+void	ft_perror(char *shell, char *prg, char *arg);
+void	ft_perror_msg(char *shell, char *prg, char *arg, char *msg);
+int		builtin_echo(int ac, char* const* av);
+int		builtin_cd(int ac, char* const* av, t_dict* env);
+int		builtin_pwd(void);
+int		builtin_export(int ac, char* const* av, t_minishell *mini);
+int		builtin_unset(int ac, char* const* av, t_minishell *mini);
+int		builtin_env(t_minishell *mini);
+int		builtin_exit(int ac, char* const* av);
+
 
 /*
 **	Freeing

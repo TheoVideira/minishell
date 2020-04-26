@@ -57,19 +57,22 @@ void	free_node(t_node *tofree)
 
 
 
-void	print_sublist(t_list *subl, char *label)
+void	print_subarr(char **subl, char *label)
 {
+	int i;
+
 	if (!subl)
 		return ;
 	printf ("%s", label);
 	printf ("(");
-	while (subl)
+	i = 0;
+	while (subl[i])
 	{
-		if (subl->next)
-			printf("%s, ", (char*)subl->content);
+		if (subl[i + 1])
+			printf("%s, ", subl[i]);
 		else
-			printf("%s", (char*)subl->content);
-		subl = subl->next;
+			printf("%s", subl[i]);
+		i++;
 	}
 	printf (") ");
 }
@@ -84,9 +87,9 @@ void	print_pipeline(t_pipeline *p)
 	{
 		c = (t_cmd*)l->content;
 		printf ("%s ", c->label);
-		print_sublist(c->args, "ar");
-		print_sublist(c->redir, "r");
-		print_sublist(c->input, "in");
+		print_subarr(c->args, "ar");
+		print_subarr(c->redir, "r");
+		print_subarr(c->input, "in");
 		l = l->next;
 		if (l)
 			printf (" | ");
