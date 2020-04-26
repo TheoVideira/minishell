@@ -229,6 +229,35 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 	
 // }
 
+
+int	format_arr(char **arr, t_minishell *mini)
+{
+	int i;
+
+	i = 0;
+	while (arr[i])
+	{
+		arr[i] = format_arg(arr[i], mini);
+		if (arr[i] == 0)
+			return (2); // panic
+		i++;
+	}
+	return (0);
+}
+
+
+int	build_cmd(t_cmd	*cmd, t_minishell *mini)
+{
+	if (cmd->args && format_arr(cmd->args, mini))
+		return (1);
+	if (cmd->redir && format_arr(cmd->redir, mini))
+		return (1);
+	if (cmd->input && format_arr(cmd->input, mini))
+		return (1);
+	return (0);
+}
+
+
 int run_pipeline(t_pipeline *pi, t_minishell *mini)
 {
 	t_list *l;
@@ -242,6 +271,7 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	len = ft_lstsize(pi->cmds);
 	if (len == 1 && is_builtin((t_cmd *)l->content))
 	{
+		build_cmd((t_cmd *)l->content, mini);// panic
 		mini->lastcall = execute_builtin((t_cmd *)l->content, mini); // check if label not found
 		return (mini->lastcall);
 	}
@@ -270,6 +300,7 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 		
 		if ((process[i].pid = fork()) == 0)
 		{
+			build_cmd((t_cmd *)l->content, mini);// panic
 			run_command((t_cmd *)l->content, mini); // check if label not found
 		}
 		else if (process[i].pid == -1)

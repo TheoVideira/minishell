@@ -138,7 +138,7 @@ int		run_command(t_cmd *cmd, t_minishell *mini);
 char	**dictoenv(t_dict *dict);
 int		is_builtin(t_cmd* cmd);
 int		execute_builtin(t_cmd* cmd, t_minishell *mini);
-
+char	*format_arg(char *arg,  t_minishell *mini);
 
 /*
 **	Built-ins
