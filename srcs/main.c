@@ -121,7 +121,6 @@ int main(int ac, char **av, char **env)
 
 	mini.env = envtodict(env);
 
-
 	while (1)
 	{
 		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);

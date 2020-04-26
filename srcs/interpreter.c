@@ -185,16 +185,13 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 		errno = EISDIR;
 		return 0;
 	}
-
 	if (execute_builtin(cmd, mini) > -1)
 	{
 		return (0); // need to manage return value
 	}
-
 	path = find_name(cmd->label, mini);
 	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
 	execve(path, cmd->args, mini->envtmp); // need to add env tradd
-
 	return (0);
 }
 
@@ -235,7 +232,6 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	if (!(process = ft_calloc(1, sizeof(t_process)* ft_lstsize(pi->cmds))))
 		return (0);	
 	mini->envtmp = dictoenv(mini->env); // check error
-	printf("%p\n", mini->envtmp[0]);
 
 	while (i < len)
 	{
@@ -275,6 +271,7 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	while (i < len)
 	{
 		waitpid(process[i].pid, &(process[i].status), 0);
+		mini->lastcall = process[i].status;
 		i++;
 	}
 	dup2(save[0], 0);

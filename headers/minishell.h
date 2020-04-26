@@ -30,6 +30,7 @@ typedef struct	s_minishell
 	t_dict	*env;
 	char	**envtmp;
 	int		lastreturn;
+	int		lastcall;
 }				t_minishell;
 
 /*
