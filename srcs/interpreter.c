@@ -41,19 +41,19 @@ int		args_size(char **args)
 int		execute_builtin(t_cmd* cmd, t_minishell *mini)
 {
 	if (!ft_strcmp(cmd->label, "echo"))
-		return (echo(args_size(cmd->args), cmd->args));
+		return (builtin_echo(args_size(cmd->args), cmd->args));
 	if (!ft_strcmp(cmd->label, "cd"))
-		return (cd(args_size(cmd->args), cmd->args, mini->env));
+		return (builtin_cd(args_size(cmd->args), cmd->args, mini->env));
 	if (!ft_strcmp(cmd->label, "pwd"))
-		return (pwd());
+		return (builtin_pwd());
 	if (!ft_strcmp(cmd->label, "export"))
 		return (1);
 	if (!ft_strcmp(cmd->label, "unset"))
 		return (1);
 	if (!ft_strcmp(cmd->label, "env"))
-		return (1);
+		return builtin_env(mini);
 	if (!ft_strcmp(cmd->label, "exit"))
-		return (1);
+		return builtin_exit(args_size(cmd->args), cmd->args);
 	return (-1);
 }
 
