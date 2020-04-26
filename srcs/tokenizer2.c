@@ -6,7 +6,7 @@ int		is_separator(char *str)
 		return (2);
 	if (*str == '|' && *(str + 1) == '|')
 		return (2);
-	if (*str == '>' && *(str + 1) == '>')
+	if (*str == '>' && *(str + 1) == '>') // multi line
 		return (2);
 	if (*str == '(')
 		return (1);
@@ -115,4 +115,36 @@ int		no_quotes(char *str, char **token,  t_minishell *mini)
 	ft_memcpy(*token, str - size, size);
 	replace_env(token, mini); // check error
 	return (size);
+}
+
+int			format_arg(char *str, char **tofill,  t_minishell *mini)
+{
+	char *token;
+	char *subtoken;
+	char *tmp;
+	char *start;
+
+	token = ft_calloc(1, 1); // check if null or redo strjoin to handle null
+	start = str;
+	while (ft_isspace(*str))
+		str++;
+	while (*str && !ft_isspace(*str))
+	{
+		if ((subtoken = handle_separators(str)))
+			str += ft_strlen(subtoken);
+		else if (*str == '"')
+			str += double_quotes(str, &subtoken, mini); // check error
+		else if (*str == '\'')
+			str += single_quotes(str, &subtoken); // check error
+		else
+			str += no_quotes(str, &subtoken, mini);
+		tmp = token;
+		token = ft_strjoin(token, subtoken);
+		free(tmp);
+		free(subtoken);
+		if (is_separator(str) || is_separator(token))
+			break ;
+	}
+	*tofill = token;
+	return ((unsigned int)(str - start));
 }
