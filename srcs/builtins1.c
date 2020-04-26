@@ -108,3 +108,35 @@ int builtin_env(t_minishell *mini)
 	}
 	return (0);
 }
+
+int builtin_export(int ac, char* const* av, t_minishell *mini)
+{
+	int		i;
+	char	*eq;
+	char	*key;
+	char	*value;
+
+	i = 0;
+	while (++i < ac)
+	{
+		if ((eq = ft_strchr(av[i], '=')))
+		{
+			*eq = 0;
+			ft_dictrem(&(mini->env), av[i], free);
+			key = ft_strdup(av[i]);
+			value = ft_strdup(eq + 1);
+			ft_dictadd(&(mini->env), ft_dictnew(key, value));
+		}
+	}
+	return(0);
+}
+
+int builtin_unset(int ac, char* const* av, t_minishell *mini)
+{
+	int i;
+
+	i = 0;
+	while (++i < ac)
+		ft_dictrem(&(mini->env), av[i], free);
+	return(0);
+}
