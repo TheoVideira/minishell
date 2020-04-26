@@ -40,9 +40,10 @@ int			loop_until(char *str, char end) // might handle multiline
 
 int			get_next_token(char *str, char **tofill,  t_minishell *mini)
 {
-	char *token;
-	char *start;
-	char *tokenstart;
+	char	*token;
+	char	*start;
+	char	*tokenstart;
+	int		tmp;
 
 	(void)mini;
 	start = str;
@@ -51,14 +52,19 @@ int			get_next_token(char *str, char **tofill,  t_minishell *mini)
 	tokenstart = str;
 	while (*str && !ft_isspace(*str))
 	{
-		if (is_separator(str))
+		if ((tmp = is_separator(str)))
+		{
+			str += tmp;
 			break;
+		}	
 		else if (*str == '"')
 			str += 1 + loop_until(str + 1, '"') + 1; // check error
 		else if (*str == '\'')
 			str += 1 + loop_until(str + 1, '\'') + 1; // check error
 		else
 			str++;
+		if (is_separator(str))
+			break ;
 		//check uneven quotes
 	}
 	if (str - tokenstart == 0)
@@ -66,7 +72,7 @@ int			get_next_token(char *str, char **tofill,  t_minishell *mini)
 		token = 0;
 		return (0);
 	}
-	else if (!(token = handle_separators(str)))
+	else if (!(token = handle_separators(tokenstart)))
 	{
 		token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1));
 		ft_memcpy(token, tokenstart, str - tokenstart);
