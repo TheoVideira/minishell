@@ -65,14 +65,6 @@ int	builtin_exit(int ac, char* const* av)
 {
 	int exit_code;
 
-	printf("%d\n", ac);
-	printf("%d\n", ac);
-	printf("%d\n", ac);
-	printf("%d\n", ac);
-	printf("%d\n", ac);
-	printf("%d\n", ac);
-	printf("%d\n", ac);
-	printf("%d\n", ac);
 	write(1, "exit\n", 5);
 	if (ac == 1)
 		exit(0); //TODO (exit with previous code)
