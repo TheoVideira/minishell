@@ -187,7 +187,7 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 		exit(r);
 	}
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')) && stat(cmd->label, &tmp) >= 0 && tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode))
-		execve(cmd->label, cmd->args, cmd->args); // need to add env tradd
+		execve(cmd->label, cmd->args, mini->envtmp); // need to add env tradd
 	path = find_name(cmd->label, mini);
 	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
 	execve(path, cmd->args, mini->envtmp); // need to add env tradd

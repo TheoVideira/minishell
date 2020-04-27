@@ -119,6 +119,13 @@ int main(int ac, char **av, char **env)
 	char *str = "0123456789";
 	printf("%s\n", ft_strreplace(str, 2, 5, "Plz don t kill me"));
 
+	// int i = 0;
+	// while (env[i])
+	// {
+	// 	printf("%s\n", env[i]);
+	// 	i++;
+	// }
+	
 	mini.env = envtodict(env);
 
 	while (1)
