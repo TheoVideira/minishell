@@ -1,4 +1,4 @@
-#include <minishell.h>
+#include "minishell.h"
 
 static int ft_isnum(char *n)
 {
@@ -36,16 +36,32 @@ int		builtin_echo(int ac, char* const* av)
 
 int		builtin_cd(int ac, char* const* av, t_dict* env)
 {
+	int		i;
+	char	*curr;
 	char	*dir;
+	char	**cdpath;
 
 	if (ac > 2)
-		return (1);
-	if (!ac)
-		dir = ft_dictget(env, "HOME");
-	else
-		dir = av[1];
+		ft_perror_msg("minishell", "cd", NULL, "too many arguments");
+	if (!(curr = getcwd(NULL, 0)))
+		ft_perror("minishell", "cd", NULL);
+	if(!(cdpath = ft_split(ft_dictget(env, "CDPATH"), ':')))
+		return (0);
+
+	i = -1;
+	while (!chdir(curr) && cdpath[++i] && ac)
+		if (!chdir(cdpath[i]) && !chdir(av[1]))
+		{
+			if (!(curr = getcwd(NULL, 0)))
+				ft_perror("minishell", "cd", NULL);
+			write (1, curr, ft_strlen(curr));
+			write(1, "\n", 1);
+			return (0);
+		}
+	dir = (!ac) ? ft_dictget(env, "HOME") : av[1];
+	printf("%s\n", dir);
 	if (chdir(dir))
-		ft_perror("minishell", "cd", av[0]);
+		ft_perror("minishell", "cd", dir);
 	return (0);
 }
 
