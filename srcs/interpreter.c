@@ -182,7 +182,7 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 
 	if ((r = execute_builtin(cmd, mini)) > -1)
 	{
-		mini->lastcall = r;
+		// mini->lastcall = r;
 		// free all shit
 		exit(r);
 	}
@@ -319,11 +319,12 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 	while (i < len)
 	{
 		waitpid(process[i].pid, &(process[i].status), 0);
-		mini->lastcall = process[i].status;
+		mini->lastcall = WIFEXITED(process[i].status);
 		i++;
 	}
 	dup2(save[0], 0);
 	dup2(save[1], 1);
 	free(process);
+	
 	return (mini->lastcall); // value of pipe
 }

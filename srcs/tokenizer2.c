@@ -45,7 +45,6 @@ int		replace_env(char **str, t_minishell *mini)
 
 				tofree = new;
 				varvalue = ft_itoa(mini->lastcall); // check env
-				printf("%d\n", mini->lastcall);
 				new = ft_strreplace(new, start - new, 2, varvalue); // Check error
 				//Couilles TO DO
 			}
