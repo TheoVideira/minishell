@@ -256,7 +256,7 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 	{
 		exit(errno);
 	}
-	close(fd);
+		// close(fd);
 	if ((r = execute_builtin(cmd, mini)) > -1)
 	{
 		// mini->lastcall = r;
@@ -319,15 +319,16 @@ int		close_pipe(int i, int io[2], t_list *cmd)
 		return (0);
 }
 
-int		launch_processes(int save[2], t_list *cmd, t_minishell *mini)
+int		launch_processes(t_process *process, int save[2], t_list *cmd, t_minishell *mini)
 {
 	int i;
 	int io[2];
 
-	i = -1;
-	while (++i < nb)
+	i = 0;
+	while (cmd) 
 	{
-		open_pipe(i, io, save, cmd);
+
+		open_pipe(i, io, save, cmd);// check error
 		if ((process[i].pid = fork()) == 0)
 		{
 			build_cmd((t_cmd *)cmd->content, mini );// panic
@@ -337,23 +338,16 @@ int		launch_processes(int save[2], t_list *cmd, t_minishell *mini)
 		{
 			//panic
 		}
-		close_pipe(i, io, save, cmd);
+		close_pipe(i, io, cmd); // check error
 		cmd = cmd->next;
+		i++;
 	}
+	return (0);
 }
 
-int	run_processes(int save[2], int nb, t_list *cmds, t_minishell *mini)
+int		end_processes(t_process *process, int nb, t_minishell *mini)
 {
-	t_process *process;
-
-	if (!(process = ft_calloc(1, sizeof(t_process)* ft_lstsize(cmd))))
-		return (-1);
-	mini->envtmp = dictoenv(mini->env); // check error and if mini->env == 0
-
-
-	launch_processes(save, cmds, mini);
-		
-	
+	int i;
 
 	i = -1;
 	while (++i < nb)
@@ -361,6 +355,18 @@ int	run_processes(int save[2], int nb, t_list *cmds, t_minishell *mini)
 		waitpid(process[i].pid, &(process[i].status), 0);
 		mini->lastcall = WIFEXITED(process[i].status);
 	}
+	return (0);
+}
+
+int	run_processes(int save[2], int nb, t_list *cmds, t_minishell *mini)
+{
+	t_process *process;
+
+	if (!(process = ft_calloc(1, sizeof(t_process) * nb)))
+		return (-1);
+	mini->envtmp = dictoenv(mini->env); // check error and if mini->env == 0
+	launch_processes(process, save, cmds, mini); // check error
+	end_processes(process, nb, mini); // check error
 	dup2(save[0], 0);
 	dup2(save[1], 1);
 	free(process);
@@ -392,6 +398,7 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 		dup2(save[1], 1);
 		return (mini->lastcall);
 	}
+
 	run_processes(save, len, pi->cmds, mini);	
 	return (mini->lastcall); // value of pipe
 }
