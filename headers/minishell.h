@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 //Useless ?
 typedef struct	s_minishell
@@ -73,8 +74,6 @@ typedef struct	s_cmd
 	char 	*label;
 	char	**args;
 	char	**redir;
-	char	**input;
-	t_list	*toreplace;
 	int		returned;
 }				t_cmd;
 

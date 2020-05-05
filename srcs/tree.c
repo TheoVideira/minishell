@@ -89,7 +89,6 @@ void	print_pipeline(t_pipeline *p)
 		printf ("%s ", c->label);
 		print_subarr(c->args, "ar");
 		print_subarr(c->redir, "r");
-		print_subarr(c->input, "in");
 		l = l->next;
 		if (l)
 			printf (" | ");

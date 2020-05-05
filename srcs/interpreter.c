@@ -96,7 +96,6 @@ char *search_dir(char *dirname, char *label)
 	struct dirent *de;
 	char **tab;
 	int i;
-	(void)label;
 
 	if (!(dir = opendir(dirname)))
 	{
@@ -174,12 +173,90 @@ char *find_name(char *label, t_minishell *mini)
 	return (0);
 }
 
+int		redir_open_out_append(char **redirs, int i, int foi[2])
+{
+	int fd;
+
+	if (foi[0] != -1)
+		close(foi[0]);
+	if ((fd = open(redirs[i] + 2, O_CREAT | O_WRONLY | O_APPEND, 0666)) == -1)
+	{
+		ft_perror("minishell", redirs[i] + 2, 0);
+		return (fd);
+	}
+	foi[0] = fd;
+	dup2(fd, 1);
+	return (fd);
+}
+
+int		redir_open_out(char **redirs, int i, int foi[2])
+{
+	int fd;
+
+	if (foi[0] != -1)
+		close(foi[0]);
+	if ((fd = open(redirs[i] + 1, O_CREAT | O_WRONLY | O_TRUNC, 0666)) == -1)
+	{
+		ft_perror("minishell", redirs[i] + 1, 0);
+		return (fd);
+	}
+	foi[0] = fd;
+	dup2(fd, 1);
+	return (fd);
+}
+
+int		redir_open_in(char **redirs, int i, int foi[2])
+{
+	int fd;
+
+	if (foi[1] != -1)
+		close(foi[1]);
+	if ((fd = open(redirs[i] + 1, O_RDONLY)) == -1)
+	{
+		ft_perror("minishell", redirs[i] + 1, 0);
+		return (fd);
+	}
+	foi[1] = fd;
+	dup2(fd, 0);
+	return (fd);
+}
+
+int handle_redirs(char **redirs)
+{
+	int i;
+	int fd;
+	int foi[2] = { -1, -1 };
+
+	i = 0;
+	if (!redirs)
+		return (0);
+	while (redirs[i])
+	{
+		if (ft_strncmp(">>", redirs[i], 2) == 0)
+			fd = redir_open_out_append(redirs, i, foi);
+		else if (ft_strncmp(">", redirs[i], 1) == 0)
+			fd = redir_open_out(redirs, i, foi);
+		else if (ft_strncmp("<", redirs[i], 1) == 0)
+			fd = redir_open_in(redirs, i, foi);
+		if (fd == -1)
+			break ;
+		i++;
+	}
+	return (fd);
+}
+
 int run_command(t_cmd *cmd, t_minishell *mini)
 {
 	char *path;
 	struct stat tmp;
 	int r;
+	int fd;
 
+	if ((fd = handle_redirs(cmd->redir)) == -1)
+	{
+		exit(errno);
+	}
+	close(fd);
 	if ((r = execute_builtin(cmd, mini)) > -1)
 	{
 		// mini->lastcall = r;
@@ -193,42 +270,6 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 	execve(path, cmd->args, mini->envtmp); // need to add env tradd
 	return (0);
 }
-
-// int init_process_arr(t_process *process)
-// {
-// 	int len;
-
-// 	len = ft_lstsize(l);
-// 	if (!(*pid = ft_calloc(sizeof(pid_t) * len)))
-// 		return (1);
-// 	if (!(*status = ft_calloc(sizeof(int) * len)))
-// 	{
-// 		free(*pid);
-// 		return (1);
-// 	}	
-// 	return (0);
-// }
-
-
-// int		format_args(char **arr)
-// {
-// 	while (/* condition */)
-// 	{
-// 		/* code */
-// 	}
-	
-// }
-
-// int		format_redir(char **redir)
-// {
-	
-// }
-
-// int		format_input(char **redir)
-// {
-	
-// }
-
 
 int	format_arr(char **arr, t_minishell *mini)
 {
@@ -252,79 +293,105 @@ int	build_cmd(t_cmd	*cmd, t_minishell *mini)
 		return (1);
 	if (cmd->redir && format_arr(cmd->redir, mini))
 		return (1);
-	if (cmd->input && format_arr(cmd->input, mini))
-		return (1);
 	return (0);
 }
 
-
-int run_pipeline(t_pipeline *pi, t_minishell *mini)
+int		open_pipe(int i, int io[2], int save[2], t_list *cmd)
 {
-	t_list *l;
-	t_process *process;
+	if (i > 0)
+		dup2(io[0], 0);
+	if (cmd->next)
+	{
+		pipe(io);
+		dup2(io[1], 1);
+	}
+	else
+		dup2(save[1], 1);
+	return (0);
+}
+
+int		close_pipe(int i, int io[2], t_list *cmd)
+{
+		if (i > 1)
+			close(io[0]);
+		if (cmd->next)
+			close(io[1]);	
+		return (0);
+}
+
+int		launch_processes(int save[2], t_list *cmd, t_minishell *mini)
+{
 	int i;
-	int len;
-	int save[2];
 	int io[2];
 
-	l = pi->cmds;
-	len = ft_lstsize(pi->cmds);
-	if (len == 1 && is_builtin((t_cmd *)l->content))
+	i = -1;
+	while (++i < nb)
 	{
-		build_cmd((t_cmd *)l->content, mini);// panic
-		mini->lastcall = execute_builtin((t_cmd *)l->content, mini); // check if label not found
-		return (mini->lastcall);
-	}
-	save[0] = dup(0);
-	save[1] = dup(1);
-	i = 0;
-	if (!(process = ft_calloc(1, sizeof(t_process)* ft_lstsize(pi->cmds))))
-		return (0);	
-	mini->envtmp = dictoenv(mini->env); // check error
-
-	while (i < len)
-	{
-		if (i > 0)
-		{	
-			dup2(io[0], 0);
-		}
-		if (l->next)
-		{
-			pipe(io);
-			dup2(io[1], 1);
-		}
-		else
-		{	
-			dup2(save[1], 1);
-		}
-		
+		open_pipe(i, io, save, cmd);
 		if ((process[i].pid = fork()) == 0)
 		{
-			build_cmd((t_cmd *)l->content, mini);// panic
-			run_command((t_cmd *)l->content, mini); // check if label not found
+			build_cmd((t_cmd *)cmd->content, mini );// panic
+			run_command((t_cmd *)cmd->content, mini); // check if label not found
 		}
 		else if (process[i].pid == -1)
 		{
 			//panic
 		}
-		if (i > 1)
-			close(io[0]);
-		if (l->next)
-			close(io[1]);
-		
-		l = l->next;
-		i++;
+		close_pipe(i, io, save, cmd);
+		cmd = cmd->next;
 	}
-	i = 0;
-	while (i < len)
+}
+
+int	run_processes(int save[2], int nb, t_list *cmds, t_minishell *mini)
+{
+	t_process *process;
+
+	if (!(process = ft_calloc(1, sizeof(t_process)* ft_lstsize(cmd))))
+		return (-1);
+	mini->envtmp = dictoenv(mini->env); // check error and if mini->env == 0
+
+
+	launch_processes(save, cmds, mini);
+		
+	
+
+	i = -1;
+	while (++i < nb)
 	{
 		waitpid(process[i].pid, &(process[i].status), 0);
 		mini->lastcall = WIFEXITED(process[i].status);
-		i++;
 	}
 	dup2(save[0], 0);
 	dup2(save[1], 1);
 	free(process);
-	
+	return (0);
+}
+
+int run_pipeline(t_pipeline *pi, t_minishell *mini)
+{
+	t_list *l;
+	int len;
+	int save[2];
+	int fd;
+
+	l = pi->cmds;
+	len = ft_lstsize(pi->cmds);
+	save[0] = dup(0);
+	save[1] = dup(1);
+	if (len == 1 && is_builtin((t_cmd *)l->content))
+	{
+		if ((fd = handle_redirs(((t_cmd*)l->content)->redir)) != -1)
+		{
+			build_cmd((t_cmd *)l->content, mini);// panic
+			mini->lastcall = execute_builtin((t_cmd *)l->content, mini); // check if label not found
+			close(fd);
+		}
+		else
+			mini->lastcall = 1;
+		dup2(save[0], 0);
+		dup2(save[1], 1);
+		return (mini->lastcall);
+	}
+	run_processes(save, len, pi->cmds, mini);	
 	return (mini->lastcall); // value of pipe
 }

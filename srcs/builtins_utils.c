@@ -9,8 +9,12 @@ void ft_perror(char *shell, char *prg, char *arg)
         write(2, shell, ft_strlen(shell));
         write(2, ": ", 2);
     }
-    write(2, prg, ft_strlen(prg));
-    write(2, ": ", 2);
+    if (prg)
+    {
+        write(2, prg, ft_strlen(prg));
+        write(2, ": ", 2);
+    }
+    
     if (arg)
     {
         write(2, arg, ft_strlen(arg));
