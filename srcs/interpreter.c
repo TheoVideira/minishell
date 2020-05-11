@@ -256,11 +256,11 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 	{
 		exit(errno);
 	}
-		// close(fd);
 	if ((r = execute_builtin(cmd, mini)) > -1)
 	{
 		// mini->lastcall = r;
 		// free all shit
+		close(fd);
 		exit(r);
 	}
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')) && stat(cmd->label, &tmp) >= 0 && tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode))
@@ -352,7 +352,7 @@ int		end_processes(t_process *process, int nb, t_minishell *mini)
 	while (++i < nb)
 	{
 		waitpid(process[i].pid, &(process[i].status), 0);
-		mini->lastcall = WIFEXITED(process[i].status);
+		mini->lastcall = WIFEXITED(process[i].pid);
 	}
 	return (0);
 }
