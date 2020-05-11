@@ -327,7 +327,6 @@ int		launch_processes(t_process *process, int save[2], t_list *cmd, t_minishell 
 	i = 0;
 	while (cmd) 
 	{
-
 		open_pipe(i, io, save, cmd);// check error
 		if ((process[i].pid = fork()) == 0)
 		{
