@@ -141,11 +141,12 @@ int main(int ac, char **av, char **env)
 		// //Execute
 		// execute_instruction(job);
 		// free_instruction(job);
-		// if (r == 0)
-		// {
-		// 	free(line);
-		// 	break ;
-		// }
+		if (r == 0)
+		{
+			// exit builtin
+			free(line);
+			break ;
+		}
 
 		t_list *tokens = tokenize(line, &mini);
 		t_list *tok = tokens;

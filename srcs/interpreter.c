@@ -286,7 +286,6 @@ int	format_arr(char **arr, t_minishell *mini)
 	return (0);
 }
 
-
 int	build_cmd(t_cmd	*cmd, t_minishell *mini)
 {
 	if (cmd->args && format_arr(cmd->args, mini))
