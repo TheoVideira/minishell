@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   interpreter.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/05/15 17:42:55 by user42            #+#    #+#             */
+/*   Updated: 2020/05/15 17:42:55 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include <minishell.h>
 
@@ -76,19 +87,6 @@ int		is_builtin(t_cmd* cmd)
 	return (0);
 }
 
-// WHY it works ?
-void free_char_array(char **arr)
-{
-	char **ptr;
-
-	ptr = arr;
-	while (*ptr)
-	{
-		free(*ptr);
-		ptr++;
-	}
-	free(arr);
-}
 
 char *search_dir(char *dirname, char *label)
 {
@@ -117,6 +115,7 @@ char *search_dir(char *dirname, char *label)
 		}
 		free_char_array(tab);
 	}
+	free(dir);
 	return (0);
 }
 
@@ -268,17 +267,21 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 	path = find_name(cmd->label, mini);
 	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
 	execve(path, cmd->args, mini->envtmp); // need to add env tradd
+	printf("Kill me\n");
 	return (0);
 }
 
 int	format_arr(char **arr, t_minishell *mini)
 {
 	int i;
+	char *tmp;
 
 	i = 0;
 	while (arr[i])
 	{
+		tmp = arr[i];
 		arr[i] = format_arg(arr[i], mini);
+		free(tmp);
 		if (arr[i] == 0)
 			return (2); // panic
 		i++;
@@ -292,6 +295,7 @@ int	build_cmd(t_cmd	*cmd, t_minishell *mini)
 		return (1);
 	if (cmd->redir && format_arr(cmd->redir, mini))
 		return (1);
+	cmd->label = cmd->args[0];
 	return (0);
 }
 

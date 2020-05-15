@@ -65,7 +65,7 @@ char		*format_arg(char *arg,  t_minishell *mini)
 		else
 			arg += no_quotes(arg, &subtoken, mini);
 		tmp = token;
-		token = ft_strjoin(token, subtoken);
+		token = ft_strjoin(token, subtoken); // check error
 		free(tmp);
 		free(subtoken);
 	}

@@ -156,11 +156,10 @@ int		builtin_exit(int ac, char* const* av);
 /*
 **	Freeing
 */
-// void			free_instruction(t_instruction *p);
+void			free_entry(t_entry *e);
 void			free_pipeline(t_pipeline *p);
-void			free_command(t_cmd *p);
-void			free_tokenarray(char **tokens);
-void			free_node(t_node *tofree);
+void			free_command(t_cmd *c);
 void			free_char_array(char **arr);
+void			free_node(t_node *tofree);
 
 #endif

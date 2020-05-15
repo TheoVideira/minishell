@@ -42,21 +42,6 @@ t_node	*create_node_trio(t_nodetype t, t_node *left, t_node *right)
 	return (ptr);
 }
 
-void	free_node(t_node *tofree)
-{
-	if (tofree->left)
-		free_node(tofree->left);
-	if (tofree->right)
-		free_node(tofree->right);
-	free(tofree);
-}
-
-
-
-
-
-
-
 void	print_subarr(char **subl, char *label)
 {
 	int i;
