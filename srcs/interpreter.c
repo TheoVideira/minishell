@@ -368,6 +368,7 @@ int	run_processes(int save[2], int nb, t_list *cmds, t_minishell *mini)
 	dup2(save[0], 0);
 	dup2(save[1], 1);
 	free(process);
+	free_char_array(mini->envtmp);
 	return (0);
 }
 

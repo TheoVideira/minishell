@@ -202,6 +202,7 @@ int main(int ac, char **av, char **env)
 		
 		// free_tokenarray(tokens);
 	}
+	ft_dictclear(mini.env, 0);
 	//Think about freeing if signal caught
 	return (0);
 }
