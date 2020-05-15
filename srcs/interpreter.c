@@ -401,7 +401,6 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 		dup2(save[1], 1);
 		return (mini->lastcall);
 	}
-
 	run_processes(save, len, pi->cmds, mini);	
 	return (mini->lastcall); // value of pipe
 }
