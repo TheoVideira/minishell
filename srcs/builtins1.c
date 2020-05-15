@@ -1,4 +1,4 @@
-#include <minishell.h>
+#include "minishell.h"
 
 static int ft_isnum(char *n)
 {
@@ -36,16 +36,30 @@ int		builtin_echo(int ac, char* const* av)
 
 int		builtin_cd(int ac, char* const* av, t_dict* env)
 {
-	char	*dir;
+	char *dir;
+	char *oldpwd;
+	char *key;
 
+	oldpwd = NULL;
 	if (ac > 2)
 		return (1);
-	if (!ac)
-		dir = ft_dictget(env, "HOME");
-	else
-		dir = av[1];
+	if (!(key = ft_strdup("OLDPWD")) || !(oldpwd = getcwd(NULL, 0)))
+	{
+		ft_perror("minishell", "cd", NULL);
+		free(key);
+		free(oldpwd);
+		return (1);
+	}
+	dir = (ac == 1) ? ft_dictget(env, "HOME") : av[1];
 	if (chdir(dir))
-		ft_perror("minishell", "cd", av[0]);
+	{
+		ft_perror("minishell", "cd", dir);
+		free(key);
+		free(oldpwd);
+		return (1);
+	}
+	ft_dictrem(&env, "OLDPWD", free);
+	ft_dictadd(&env, ft_dictnew(key, oldpwd));
 	return (0);
 }
 
@@ -61,13 +75,14 @@ int		builtin_pwd(void)
 	return (0);
 }
 
-int	builtin_exit(int ac, char* const* av)
+int	builtin_exit(int ac, char* const* av, t_minishell *mini)
 {
 	int exit_code;
 
+	exit_code = mini->lastreturn;
 	write(1, "exit\n", 5);
 	if (ac == 1)
-		exit(0); //TODO (exit with previous code)
+		exit(mini->lastreturn); //TODO (exit with previous code)
 	if (ft_isnum(av[1]))	
 		if (ac > 2)
 			ft_perror_msg("minishell", "exit", NULL, "too many arguments\n");
