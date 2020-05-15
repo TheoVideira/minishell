@@ -64,7 +64,7 @@ int		execute_builtin(t_cmd* cmd, t_minishell *mini)
 	if (!ft_strcmp(cmd->label, "env"))
 		return builtin_env(mini->env);
 	if (!ft_strcmp(cmd->label, "exit"))
-		return builtin_exit(args_size(cmd->args), cmd->args);
+		return builtin_exit(args_size(cmd->args), cmd->args, mini);
 	return (-1);
 }
 
