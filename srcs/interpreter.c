@@ -280,6 +280,8 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 	}
 	//if file
 
+	fprintf(stderr, "OK boomer %s\n", cmd->label);
+
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')))
 		launch_file(cmd, mini);
 	

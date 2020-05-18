@@ -19,7 +19,8 @@ SRCS =		$(GNL_SRCS) \
 			srcs/builtins1.c \
 			srcs/builtins_utils.c \
 			srcs/main.c \
-			srcs/parser/parse_cmd.c
+			srcs/parser/parse_cmd.c \
+			srcs/parser/parse_pipeline.c
 HEADERS =	$(GNL_HEADERS) \
 			headers/minishell.h \
 
