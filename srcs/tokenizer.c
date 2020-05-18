@@ -23,7 +23,6 @@ char		*handle_separators(char *str)
 	return (0);
 }
 
-
 int			loop_until(char *str, char end) // might handle multiline
 {
 	int i;
@@ -72,30 +71,39 @@ int			get_next_token(char *str, char **tofill,  t_minishell *mini)
 		token = 0;
 		return (0);
 	}
-	else if (!(token = handle_separators(tokenstart)))
+	if (is_separator(tokenstart))
 	{
-		token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1)); // check error
+		if (!(token = handle_separators(tokenstart)))
+			return (ALLOC_ERROR);
+	}	
+	else
+	{
+		if (!(token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1)))) // check error
+			return (ALLOC_ERROR);
 		ft_memcpy(token, tokenstart, str - tokenstart);
 	}
 	*tofill = token;
 	return ((unsigned int)(tokenstart - start + ft_strlen(token)));
 }
 
-t_list	*tokenize(char *str, t_minishell *mini)
+int		tokenize(char *str, t_list **tokens, t_minishell *mini)
 {
-	t_list	*tokens;
 	t_list	*new;
-	char	*token;
+	char	*tok;
 	int		tmp;
 
-	tokens = 0;
-	while ((tmp = get_next_token(str, &token, mini)))
+	*tokens = 0;
+	while ((tmp = get_next_token(str, &tok, mini)))
 	{
-		//check tmp value ?
-		if (!(new = ft_lstnew(token)))
-			return (0);
-		ft_lstadd_back(&tokens, new); // check for new null
+		if (tmp == ALLOC_ERROR) 
+			return (ALLOC_ERROR);
+		if ((new = ft_lstnew(tok)) == 0)
+		{
+			free (tok);
+			return (ALLOC_ERROR);
+		}
+		ft_lstadd_back(tokens, new); // check for new null
 		str += tmp;
 	}
-	return (tokens);
+	return (0);
 }

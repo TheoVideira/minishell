@@ -110,6 +110,7 @@ int main(int ac, char **av, char **env)
 	t_minishell mini = {0};
 	int			r;
 	char		*line;
+	t_list		*tokens; 
 	(void)ac;
 	(void)av;
 	(void)env;
@@ -138,8 +139,14 @@ int main(int ac, char **av, char **env)
 			break ;
 		}
 
-		t_list *tokens = tokenize(line, &mini);
-
+		r = tokenize(line, &tokens,&mini);
+		if (r == ALLOC_ERROR)
+		{
+			ft_lstclear(&tokens, free);
+			free(line);
+			ft_putstr_fd("minishell: allocation error while parsing\n", 2);
+			continue;
+		}
 		printf("\e[1;32m1: TOKENIZER\e[0m\n");
 		printf("Listing tokens\n");
 		t_list *tok = tokens;

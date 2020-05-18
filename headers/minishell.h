@@ -120,7 +120,7 @@ int		single_quotes(char *str, char **token);
 int		no_quotes(char *str, char **token,  t_minishell *mini);
 int		tokencount(char *str);
 int		get_next_token(char *str, char **tofill,  t_minishell *mini);
-t_list	*tokenize(char *str, t_minishell *mini);
+int		tokenize(char *str, t_list **end, t_minishell *mini);
 int		replace_env(char **str, t_minishell *mini);
 char	**list_to_char_array(t_list *l);
 

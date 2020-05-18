@@ -91,7 +91,8 @@ int		parse_entry(t_list **tokens, t_entry **entry)
 	t_node	*tree;
 	t_list	*l;
 
-	*entry = ft_calloc(1, sizeof(t_entry));
+	if ((*entry = ft_calloc(1, sizeof(t_entry))) == 0)
+		return (ALLOC_ERROR);
 	while ((tok = getToken(tokens)))
 	{
 		if (ft_strncmp(tok, ";", 2) == 0)
@@ -132,7 +133,8 @@ int		parse_or(t_list **token, t_node **r)
 			return (-1);
 		}
 		//add another code for malloc errors
-		node = create_node_trio(OR, node, noder);
+		if ((node = create_node_trio(OR, node, noder)) == 0)
+			return (ALLOC_ERROR);
 	}
 	*r = node;
 	return (0);
