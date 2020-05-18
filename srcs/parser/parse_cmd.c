@@ -69,5 +69,5 @@ int		parse_cmd(t_list **token, t_cmd **c)
 		return (ALLOC_ERROR);
 	ft_lstclear(&args, 0);
 	ft_lstclear(&redir, 0);
-	return (1);
+	return (0);
 }

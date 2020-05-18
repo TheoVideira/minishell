@@ -164,10 +164,24 @@ int main(int ac, char **av, char **env)
 		
 		printf("\e[1;32m2: PARSER\e[0m\n");
 		t_entry *entry;
-		if (parse_entry(&tokens, &entry) == -1)
-			printf("\e[1;31mSYNTAX ERROR\e[0m\n");
-		
-		
+
+		r = parse_entry(&tokens, &entry);
+		if (r == PARSING_ERROR)
+		{
+			if (!tokens)
+				ft_putstr_fd("minishell: syntax error: unexpected end of line\n", 2);	
+			else
+				ft_perror_msg("minishell", "syntax error near unexpected token", 0, (char*)tokens->content);	
+			free_entry(entry);
+			continue ;
+		}
+		if (r == ALLOC_ERROR)
+		{
+			ft_lstclear(&tokens, free);
+			ft_putstr_fd("minishell: allocation error while parsing\n", 2);
+			continue;
+		}
+
 		
 		printf("Just parsed\n");
 		t_list *tree;

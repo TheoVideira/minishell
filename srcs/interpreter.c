@@ -287,7 +287,6 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 
 	//if not
 	path = find_name(cmd->label, mini);
-	fprintf(stderr, "OK boomer %s\n", path);
 	execve(path, cmd->args, mini->envtmp); // need to add env trad
 	ft_perror("minishell", "command not found", cmd->label);
 	printf("%d\n", errno);

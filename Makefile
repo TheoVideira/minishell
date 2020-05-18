@@ -9,7 +9,6 @@ GNL_HEADERS =	gnl/get_next_line.h \
 
 
 SRCS =		$(GNL_SRCS) \
-			srcs/parser.c \
 			srcs/freeing.c \
 			srcs/tree.c	\
 			srcs/tokenizer.c \
@@ -18,9 +17,15 @@ SRCS =		$(GNL_SRCS) \
 			srcs/interpreter_utils.c \
 			srcs/builtins1.c \
 			srcs/builtins_utils.c \
+			srcs/utils.c \
 			srcs/main.c \
 			srcs/parser/parse_cmd.c \
-			srcs/parser/parse_pipeline.c
+			srcs/parser/parse_pipeline.c \
+			srcs/parser/parse_entry.c \
+			srcs/parser/parse_or.c \
+			srcs/parser/parse_and.c \
+			srcs/parser/parse_tokens.c
+
 HEADERS =	$(GNL_HEADERS) \
 			headers/minishell.h \
 
