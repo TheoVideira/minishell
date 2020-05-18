@@ -245,10 +245,8 @@ int		parse_cmd(t_list **token, t_cmd **c)
 	while (*token && !is_operator((t = getToken(token))))
 	{
 		r = 0;
-		if (ft_strncmp(t, ">", 2) == 0 || ft_strncmp(t, ">>", 2) == 0)
+		if (ft_strncmp(t, ">", 2) == 0 || ft_strncmp(t, ">>", 2) == 0 || ft_strncmp(t, "<", 2) == 0)
 			r = joinTokens(token, &redir);
-		else if (ft_strncmp(t, "<", 2) == 0)
-			r = joinTokens(token, &input);
 		else
 			ft_lstadd_back(&args, popFirst(token)); // it calls nextToken() in any case
 		if (r < 0)
@@ -256,7 +254,6 @@ int		parse_cmd(t_list **token, t_cmd **c)
 	}
 	(*c)->args = list_to_char_array(args); // check error
 	(*c)->redir = list_to_char_array(redir);  // check error
-	(*c)->input = list_to_char_array(input);  // check error
 	ft_lstclear(&args, 0);
 	ft_lstclear(&redir, 0);
 	ft_lstclear(&input, 0);

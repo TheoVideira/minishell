@@ -115,16 +115,6 @@ int main(int ac, char **av, char **env)
 	(void)env;
 	(void) r;
 
-
-	char *str = "0123456789";
-	printf("%s\n", ft_strreplace(str, 2, 5, "Plz don t kill me"));
-
-	// int i = 0;
-	// while (env[i])
-	// {
-	// 	printf("%s\n", env[i]);
-	// 	i++;
-	// }
 	
 	mini.env = envtodict(env);
 
@@ -141,32 +131,35 @@ int main(int ac, char **av, char **env)
 		// //Execute
 		// execute_instruction(job);
 		// free_instruction(job);
-		// if (r == 0)
-		// {
-		// 	free(line);
-		// 	break ;
-		// }
+		if (r == 0)
+		{
+			// exit builtin
+			free(line);
+			break ;
+		}
 
 		t_list *tokens = tokenize(line, &mini);
-		t_list *tok = tokens;
 
 		printf("\e[1;32m1: TOKENIZER\e[0m\n");
 		printf("Listing tokens\n");
-		while (tokens)
+		t_list *tok = tokens;
+		while (tok)
 		{
-			printf("|%s|\n",(char*)tokens->content);
-			tokens = tokens->next;
+			printf("|%s|\n",(char*)tok->content);
+			tok = tok->next;
 		}
-		tokens = tok;
 		printf("Just tokenized |%s|\n", line);
 		free(line); // IMPORTANT
 		
+		
+		
+		
+		
 		printf("\e[1;32m2: PARSER\e[0m\n");
 		t_entry *entry;
-		if (parse_entry(&tok, &entry) == -1)
+		if (parse_entry(&tokens, &entry) == -1)
 			printf("\e[1;31mSYNTAX ERROR\e[0m\n");
 		printf("Just parsed\n");
-
 		t_list *tree;
 		tree = entry->instructions;
 		while (tree)
@@ -176,6 +169,7 @@ int main(int ac, char **av, char **env)
 			printf("-------------------------------\n");
 		}
 		
+		tok = tokens;
 		while (tok)
 		{
 			printf("THIS SHOULD NOT APPEAR\n");
@@ -185,22 +179,10 @@ int main(int ac, char **av, char **env)
 		printf("\e[1;32m3: INTERPRETER\e[0m\n");
 		printf("-------------OUTPUT------------\n");
 		run_entry(entry, &mini);
+		free_entry(entry);
 		printf("--------------END--------------\n");
-		// ft_lstclear(tokens);
-
-		// t_node *tree;
-		// tree = create_node(OR, 0);
-		// tree->left = create_node(AND, 0);
-		// tree->right = create_node(PIPELINE, 0);
-		// tree->left->left = create_node(PIPELINE, 0);
-		// tree->left->right = create_node(OR, 0);
-		// tree->left->right->left = create_node(PIPELINE, 0);
-		// tree->left->right->right = create_node(PIPELINE, 0);
-		// print_tree(tree);
-		
-		
-		// free_tokenarray(tokens);
 	}
+	ft_dictclear(mini.env, free);
 	//Think about freeing if signal caught
 	return (0);
 }

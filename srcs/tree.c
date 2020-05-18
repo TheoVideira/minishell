@@ -42,21 +42,6 @@ t_node	*create_node_trio(t_nodetype t, t_node *left, t_node *right)
 	return (ptr);
 }
 
-void	free_node(t_node *tofree)
-{
-	if (tofree->left)
-		free_node(tofree->left);
-	if (tofree->right)
-		free_node(tofree->right);
-	free(tofree);
-}
-
-
-
-
-
-
-
 void	print_subarr(char **subl, char *label)
 {
 	int i;
@@ -89,7 +74,6 @@ void	print_pipeline(t_pipeline *p)
 		printf ("%s ", c->label);
 		print_subarr(c->args, "ar");
 		print_subarr(c->redir, "r");
-		print_subarr(c->input, "in");
 		l = l->next;
 		if (l)
 			printf (" | ");

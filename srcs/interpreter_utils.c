@@ -36,7 +36,7 @@ int		no_quotes(char *str, char **token,  t_minishell *mini)
 	int		size;
 
 	size = 0;
-	while (*str && !ft_isspace(*str) && *str != '"' && *str != '\'' && !is_separator(str))
+	while (*str && !ft_isspace(*str) && *str != '"' && *str != '\'')
 	{
 		size++;
 		str++;
@@ -59,13 +59,13 @@ char		*format_arg(char *arg,  t_minishell *mini)
 	while (*arg && !ft_isspace(*arg))
 	{
 		if (*arg == '"')
-			arg += double_quotes(arg, &subtoken, mini); // check error
+			arg += 1 + double_quotes(arg + 1, &subtoken, mini); // check error
 		else if (*arg == '\'')
-			arg += single_quotes(arg, &subtoken); // check error
+			arg += 1 + single_quotes(arg + 1, &subtoken); // check error
 		else
 			arg += no_quotes(arg, &subtoken, mini);
 		tmp = token;
-		token = ft_strjoin(token, subtoken);
+		token = ft_strjoin(token, subtoken); // check error
 		free(tmp);
 		free(subtoken);
 	}

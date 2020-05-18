@@ -74,7 +74,7 @@ int			get_next_token(char *str, char **tofill,  t_minishell *mini)
 	}
 	else if (!(token = handle_separators(tokenstart)))
 	{
-		token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1));
+		token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1)); // check error
 		ft_memcpy(token, tokenstart, str - tokenstart);
 	}
 	*tofill = token;
@@ -84,16 +84,18 @@ int			get_next_token(char *str, char **tofill,  t_minishell *mini)
 t_list	*tokenize(char *str, t_minishell *mini)
 {
 	t_list	*tokens;
+	t_list	*new;
 	char	*token;
 	int		tmp;
 
 	tokens = 0;
 	while ((tmp = get_next_token(str, &token, mini)))
 	{
-		printf("tmp %d\n", tmp);
-		ft_lstadd_back(&tokens, ft_lstnew(token)); // check for new null
+		//check tmp value ?
+		if (!(new = ft_lstnew(token)))
+			return (0);
+		ft_lstadd_back(&tokens, new); // check for new null
 		str += tmp;
 	}
-	printf("tmp last %d\n", tmp);
 	return (tokens);
 }
