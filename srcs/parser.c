@@ -117,7 +117,6 @@ int		parse_or(t_list **token, t_node **r)
 	t_node *node;
 	t_node *noder;
 
-
 	node = 0;
 	noder = 0;
 	if (!*token)
