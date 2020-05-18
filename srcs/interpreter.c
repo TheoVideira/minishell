@@ -244,10 +244,26 @@ int handle_redirs(char **redirs)
 	return (fd);
 }
 
+void	launch_file(t_cmd *cmd, t_minishell *mini)
+{
+	struct stat tmp;
+
+	if (stat(cmd->label, &tmp) == -1)
+		ft_perror("minishell", "cannot access", cmd->label); // check the right error message
+	
+	if(tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode)) 
+		execve(cmd->label, cmd->args, mini->envtmp);
+	else
+	{
+		ft_perror("minishell", "command not found", cmd->label);
+		exit(1);	
+	}
+}
+
+
 int run_command(t_cmd *cmd, t_minishell *mini)
 {
-	char *path;
-	struct stat tmp;
+	char *path;	
 	int r;
 	int fd;
 
@@ -262,15 +278,18 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 		close(fd);
 		exit(r);
 	}
-	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')) 
-		&&	stat(cmd->label, &tmp) >= 0 
-		&& tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode))
-		execve(cmd->label, cmd->args, mini->envtmp); // need to add env trad
+	//if file
+
+	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')))
+		launch_file(cmd, mini);
 	
+
+	//if not
 	path = find_name(cmd->label, mini);
-	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
 	execve(path, cmd->args, mini->envtmp); // need to add env trad
 	ft_perror("minishell", "command not found", cmd->label);
+	printf("%d\n", errno);
+	mini->lastcall = 127;
 	exit(1);
 	return (0);
 }
