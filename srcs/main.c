@@ -166,6 +166,9 @@ int main(int ac, char **av, char **env)
 		t_entry *entry;
 		if (parse_entry(&tokens, &entry) == -1)
 			printf("\e[1;31mSYNTAX ERROR\e[0m\n");
+		
+		
+		
 		printf("Just parsed\n");
 		t_list *tree;
 		tree = entry->instructions;
@@ -176,6 +179,10 @@ int main(int ac, char **av, char **env)
 			printf("-------------------------------\n");
 		}
 		
+
+
+
+
 		tok = tokens;
 		while (tok)
 		{
