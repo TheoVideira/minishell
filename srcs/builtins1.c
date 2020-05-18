@@ -10,7 +10,7 @@ static int ft_isnum(char *n)
 	if (n[i] == '-')
 		i++;
 	while(n[i])
-		if (!ft_isdigit(n[i]))
+		if (!ft_isdigit(n[i++]))
 			return (0);
 	return (1);
 }

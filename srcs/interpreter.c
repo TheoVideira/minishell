@@ -64,7 +64,7 @@ int		execute_builtin(t_cmd* cmd, t_minishell *mini)
 	if (!ft_strcmp(cmd->label, "env"))
 		return builtin_env(mini->env);
 	if (!ft_strcmp(cmd->label, "exit"))
-		return builtin_exit(args_size(cmd->args), cmd->args);
+		return builtin_exit(args_size(cmd->args), cmd->args, mini);
 	return (-1);
 }
 
@@ -262,12 +262,16 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 		close(fd);
 		exit(r);
 	}
-	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')) && stat(cmd->label, &tmp) >= 0 && tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode))
-		execve(cmd->label, cmd->args, mini->envtmp); // need to add env tradd
+	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')) 
+		&&	stat(cmd->label, &tmp) >= 0 
+		&& tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode))
+		execve(cmd->label, cmd->args, mini->envtmp); // need to add env trad
+	
 	path = find_name(cmd->label, mini);
 	printf("chemin trouve for \"%s\": %s\n", cmd->label, path);
-	execve(path, cmd->args, mini->envtmp); // need to add env tradd
-	printf("Kill me\n");
+	execve(path, cmd->args, mini->envtmp); // need to add env trad
+	ft_perror("minishell", "command not found", cmd->label);
+	exit(1);
 	return (0);
 }
 
@@ -401,6 +405,6 @@ int run_pipeline(t_pipeline *pi, t_minishell *mini)
 		dup2(save[1], 1);
 		return (mini->lastcall);
 	}
-	run_processes(save, len, pi->cmds, mini);	
+	run_processes(save, len, pi->cmds, mini);
 	return (mini->lastcall); // value of pipe
 }
