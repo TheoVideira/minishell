@@ -280,7 +280,6 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 	}
 	//if file
 
-	fprintf(stderr, "OK boomer %s\n", cmd->label);
 
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')))
 		launch_file(cmd, mini);
@@ -288,6 +287,7 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 
 	//if not
 	path = find_name(cmd->label, mini);
+	fprintf(stderr, "OK boomer %s\n", path);
 	execve(path, cmd->args, mini->envtmp); // need to add env trad
 	ft_perror("minishell", "command not found", cmd->label);
 	printf("%d\n", errno);
@@ -338,12 +338,10 @@ int		open_pipe(int i, int io[2], int save[2], t_list *cmd)
 	return (0);
 }
 
-int		close_pipe(int i, int io[2], t_list *cmd)
+int		close_pipe(int io[2], t_list *cmd)
 {
-		if (i > 1)
-			close(io[0]);
 		if (cmd->next)
-			close(io[1]);	
+			close(io[1]);
 		return (0);
 }
 
@@ -363,9 +361,9 @@ int		launch_processes(t_process *process, int save[2], t_list *cmd, t_minishell 
 		}
 		else if (process[i].pid == -1)
 		{
-			//panic
+			// panic
 		}
-		close_pipe(i, io, cmd); // check error
+		close_pipe(io, cmd); 
 		cmd = cmd->next;
 		i++;
 	}
@@ -381,6 +379,7 @@ int		end_processes(t_process *process, int nb, t_minishell *mini)
 	{
 		waitpid(process[i].pid, &(process[i].status), 0);
 		mini->lastcall = WIFEXITED(process[i].pid);
+		fprintf(stderr, "ECHO\n");
 	}
 	return (0);
 }
