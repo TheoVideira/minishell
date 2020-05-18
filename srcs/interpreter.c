@@ -379,7 +379,6 @@ int		end_processes(t_process *process, int nb, t_minishell *mini)
 	{
 		waitpid(process[i].pid, &(process[i].status), 0);
 		mini->lastcall = WIFEXITED(process[i].pid);
-		fprintf(stderr, "ECHO\n");
 	}
 	return (0);
 }
