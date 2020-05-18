@@ -13,18 +13,21 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <libft.h>
-#include <errno.h>
-#include <stdio.h>
-#include <string.h>
-#include <get_next_line.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <dirent.h>
-#include <sys/wait.h>
-#include <fcntl.h>
+# include <libft.h>
+# include <errno.h>
+# include <stdio.h>
+# include <string.h>
+# include <get_next_line.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <unistd.h>
+# include <dirent.h>
+# include <sys/wait.h>
+# include <fcntl.h>
 
+# define FATAL_ERROR -1
+# define ALLOC_ERROR -2
+# define PARSING_ERROR -3
 //Useless ?
 typedef struct	s_minishell
 {
