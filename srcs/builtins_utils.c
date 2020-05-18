@@ -39,6 +39,6 @@ void ft_perror_msg(char *shell, char *prg, char *arg, char *msg)
         write(2, arg, ft_strlen(arg));
         write(2, ": ", 2);
     }
-    write(2, "msg", ft_strlen(msg));
+    write(2, msg, ft_strlen(msg));
    	write(2, "\n", 1);
 }
