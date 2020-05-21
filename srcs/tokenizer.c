@@ -37,14 +37,13 @@ int			loop_until(char *str, char end) // might handle multiline
 	return (i);
 }
 
-int			get_next_token(char *str, char **tofill,  t_minishell *mini)
+int			get_next_token(char *str, char **tofill)
 {
 	char	*token;
 	char	*start;
 	char	*tokenstart;
 	int		tmp;
 
-	(void)mini;
 	start = str;
 	while (ft_isspace(*str))
 		str++;
@@ -86,14 +85,14 @@ int			get_next_token(char *str, char **tofill,  t_minishell *mini)
 	return ((unsigned int)(tokenstart - start + ft_strlen(token)));
 }
 
-int		tokenize(char *str, t_list **tokens, t_minishell *mini)
+int		tokenize(char *str, t_list **tokens)
 {
 	t_list	*new;
 	char	*tok;
 	int		tmp;
 
 	*tokens = 0;
-	while ((tmp = get_next_token(str, &tok, mini)))
+	while ((tmp = get_next_token(str, &tok)))
 	{
 		if (tmp == ALLOC_ERROR) 
 			return (ALLOC_ERROR);

@@ -139,7 +139,7 @@ int main(int ac, char **av, char **env)
 			break ;
 		}
 
-		r = tokenize(line, &tokens,&mini);
+		r = tokenize(line, &tokens);
 		if (r == ALLOC_ERROR)
 		{
 			ft_lstclear(&tokens, free);
@@ -179,6 +179,13 @@ int main(int ac, char **av, char **env)
 		{
 			ft_lstclear(&tokens, free);
 			ft_putstr_fd("minishell: allocation error while parsing\n", 2);
+			continue;
+		}
+		if (r == FATAL_ERROR)
+		{
+			ft_perror("minishell", "a weird error has occured", 0);
+			ft_lstclear(&tokens, free);
+			free_entry(entry);
 			continue;
 		}
 

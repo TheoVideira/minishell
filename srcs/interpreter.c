@@ -255,7 +255,7 @@ void	launch_file(t_cmd *cmd, t_minishell *mini)
 		execve(cmd->label, cmd->args, mini->envtmp);
 	else
 	{
-		ft_perror("minishell", "command not found", cmd->label);
+		ft_perror(0, "command not found", cmd->label);
 		exit(1);	
 	}
 }

@@ -86,6 +86,13 @@ typedef struct	s_process
 	int status;
 }				t_process;
 
+
+typedef struct	s_logic
+{
+	t_list	*entries;
+	int		returned;
+}				t_logic;
+
 typedef struct	s_entry
 {
 	t_list	*instructions;
@@ -109,18 +116,16 @@ int		parse_or(t_list **tokens, t_node **r);
 int		parse_and(t_list **tokens, t_node **r);
 int		parse_pipeline(t_list **tokens, t_node **r);
 int		parse_cmd(t_list **token, t_cmd **c);
+int		ask_for_more(t_list **token);
 
 /*
 **	Lexer / tokenizer
 */
 int		is_separator(char *str);
 char	*handle_separators(char *str);
-int		double_quotes(char *str, char **token,  t_minishell *mini);
-int		single_quotes(char *str, char **token);
-int		no_quotes(char *str, char **token,  t_minishell *mini);
 int		tokencount(char *str);
-int		get_next_token(char *str, char **tofill,  t_minishell *mini);
-int		tokenize(char *str, t_list **end, t_minishell *mini);
+int		get_next_token(char *str, char **tofill);
+int		tokenize(char *str, t_list **end);
 int		replace_env(char **str, t_minishell *mini);
 char	**list_to_char_array(t_list *l);
 
@@ -131,6 +136,13 @@ void	print_node(t_node *n, int level);
 void	print_tree(t_node *n);
 
 /*
+**	Pre exec build
+*/
+char	*format_arg(char *arg,  t_minishell *mini);
+int		double_quotes(char *str, char **token,  t_minishell *mini);
+int		single_quotes(char *str, char **token);
+int		no_quotes(char *str, char **token,  t_minishell *mini);
+/*
 **	Execution
 */
 int		run_entry(t_entry *entry, t_minishell *mini);
@@ -140,7 +152,6 @@ int		run_command(t_cmd *cmd, t_minishell *mini);
 char	**dictoenv(t_dict *dict);
 int		is_builtin(t_cmd* cmd);
 int		execute_builtin(t_cmd* cmd, t_minishell *mini);
-char	*format_arg(char *arg,  t_minishell *mini);
 
 /*
 **	Built-ins

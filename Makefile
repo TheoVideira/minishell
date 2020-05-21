@@ -24,7 +24,8 @@ SRCS =		$(GNL_SRCS) \
 			srcs/parser/parse_entry.c \
 			srcs/parser/parse_or.c \
 			srcs/parser/parse_and.c \
-			srcs/parser/parse_tokens.c
+			srcs/parser/parse_tokens.c \
+			srcs/parser/ask_for_more.c
 
 HEADERS =	$(GNL_HEADERS) \
 			headers/minishell.h \
