@@ -15,6 +15,8 @@ int		parse_or(t_list **token, t_node **n)
 	while (*token && ft_strncmp(getToken(token), "||", 3) == 0)
 	{
 		destroyToken(token);
+		if (!*token && ask_for_more(token) != 0)
+			return (FATAL_ERROR);
 		if ((r = parse_and(token, &noder)) != 0)
 		{
 			free_node(node);

@@ -20,6 +20,7 @@ int		single_quotes(char *str, char **token)
 {
 	int		size;
 
+	printf("HORE\n");
 	size = 0;
 	while (*str && *str != '\'')
 	{

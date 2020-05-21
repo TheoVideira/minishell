@@ -7,10 +7,10 @@ static int	parse_parentheses(t_list **token, t_node **n)
 
 	destroyToken(token);
 	r = parse_or(token, n);
-	if (r == PARSING_ERROR)
-		return (PARSING_ERROR);
-	if (r == ALLOC_ERROR || !*token || ft_strncmp(getToken(token), ")", 2))
-		return (PARSING_ERROR); // unexpcted end of line multiline ?
+	if (r != 0)
+		return (r);
+	if ((!*token || ft_strncmp(getToken(token), ")", 2) != 0) && ask_for_more(token) != 0)
+		return (FATAL_ERROR);
 	destroyToken(token);
 	return (0);
 }
@@ -23,8 +23,6 @@ static int	parse_commands(t_list **token, t_pipeline *p)
 
 	while (*token)
 	{
-		if (ft_strncmp(getToken(token), "|", 2) == 0)
-			destroyToken(token);
 		r = parse_cmd(token, &c);
 		if (r != 0)
 			return (r);
@@ -35,6 +33,17 @@ static int	parse_commands(t_list **token, t_pipeline *p)
 			return (ALLOC_ERROR);
 		}
 		ft_lstadd_back(&p->cmds, tmp);
+		if (*token && ft_strncmp(getToken(token), "|", 2) == 0)
+		{
+			destroyToken(token);
+			if (!*token && ask_for_more(token) != 0)
+			{
+				free_command(c);
+				return (FATAL_ERROR);
+			}
+		}		
+		else if (*token && is_operator(getToken(token)))
+			return (0);
 	}
 	return (r);
 }
@@ -46,11 +55,9 @@ int		parse_pipeline(t_list **token, t_node **n)
 
 	r = 0;
 	if (!*token)
-		return (0);
+		return (PARSING_ERROR);
 	if (ft_strncmp(getToken(token), "(", 2) == 0)
-		r = parse_parentheses(token, n);
-	if (r != 0)
-		return (r);
+		return (parse_parentheses(token, n));
 	if ((p = ft_calloc(1, sizeof(t_pipeline))) == 0)
 		return (ALLOC_ERROR);
 	r = parse_commands(token, p);
