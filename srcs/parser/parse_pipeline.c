@@ -9,8 +9,24 @@ static int	parse_parentheses(t_list **token, t_node **n)
 	r = parse_or(token, n);
 	if (r != 0)
 		return (r);
-	if ((!*token || ft_strncmp(getToken(token), ")", 2) != 0) && ask_for_more(token) != 0)
-		return (FATAL_ERROR);
+	if (*token && ft_strncmp(getToken(token), ")", 2) != 0)
+		return (PARSING_ERROR);
+	if (!*token)
+	{
+		while (1)
+		{
+			if (ask_for_more(token) != 0)
+				return (FATAL_ERROR);
+			if (ft_strncmp(getToken(token), ")", 2) == 0)
+				break ;
+			r = parse_or(token, n);
+			if (r != 0)
+				return (r);
+			if (*token && ft_strncmp(getToken(token), ")", 2) == 0)
+				break ;
+		}
+	} 
+	printf("OK BOOMER\n");
 	destroyToken(token);
 	return (0);
 }
