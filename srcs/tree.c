@@ -12,7 +12,7 @@
 
 #include <minishell.h>
 
-t_node	*create_node(t_nodetype t, t_pipeline *p)
+t_node	*create_node(t_nodetype t, void *obj)
 {
 	t_node *ptr;
 
@@ -20,7 +20,7 @@ t_node	*create_node(t_nodetype t, t_pipeline *p)
 	if (!ptr)
 		return (0);
 	ptr->type = t;
-	ptr->pipeline = p;
+	ptr->obj = obj;
 	return (ptr);
 }
 
@@ -80,6 +80,22 @@ void	print_pipeline(t_pipeline *p)
 	}
 }
 
+void	print_entry(t_entry *entry, int level)
+{
+	t_list	*l;
+
+	(void) level;
+	l = entry->instructions;
+	printf (" ENTRY ");
+	while (l)
+	{
+		print_node((t_node*)l->content, level + 1);
+		l = l->next;
+		
+		// printf (" E ");
+	}
+}
+
 void	print_node(t_node *n, int level)
 {
 	int i = 0;
@@ -99,7 +115,9 @@ void	print_node(t_node *n, int level)
 	if (n->type == AND)
 		printf("&&\n");
 	if (n->type == PIPELINE)
-		print_pipeline(n->pipeline);
+		print_pipeline((t_pipeline*)n->obj);
+	if (n->type == ENTRY)
+		print_entry((t_entry*)n->obj, level + 1);
 	printf("\n");
 	if (n->left)
 		print_node(n->left, level + 1);

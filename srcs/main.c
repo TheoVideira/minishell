@@ -163,16 +163,16 @@ int main(int ac, char **av, char **env)
 		
 		
 		printf("\e[1;32m2: PARSER\e[0m\n");
-		t_entry *entry;
+		t_node *root = { 0 };
 
-		r = parse_entry(&tokens, &entry);
+		r = parse_entry(&tokens, &root);
 		if (r == PARSING_ERROR)
 		{
 			if (!tokens)
 				ft_putstr_fd("minishell: syntax error: unexpected end of line\n", 2);	
 			else
 				ft_perror_msg("minishell", "syntax error near unexpected token", 0, (char*)tokens->content);	
-			free_entry(entry);
+			free_node(root);
 			continue ;
 		}
 		if (r == ALLOC_ERROR)
@@ -185,37 +185,32 @@ int main(int ac, char **av, char **env)
 		{
 			ft_perror("minishell", "a weird error has occured", 0);
 			ft_lstclear(&tokens, free);
-			free_entry(entry);
+			free_node(root);
 			continue;
 		}
 
 		
 		printf("Just parsed\n");
-		t_list *tree;
-		tree = entry->instructions;
-		while (tree)
-		{
-			print_tree((t_node*)tree->content);
-			tree = tree->next;
-			printf("-------------------------------\n");
-		}
+		print_tree(root);
+		printf("-------------------------------\n");
 		
 
 
 
 
-		tok = tokens;
-		while (tok)
-		{
-			printf("THIS SHOULD NOT APPEAR\n");
-			printf("\"%s\"\n",(char*)tok->content);
-			tok = tok->next;
-		}
-		printf("\e[1;32m3: INTERPRETER\e[0m\n");
-		printf("-------------OUTPUT------------\n");
-		run_entry(entry, &mini);
-		free_entry(entry);
-		printf("--------------END--------------\n");
+		// tok = tokens;
+		// while (tok)
+		// {
+		// 	printf("THIS SHOULD NOT APPEAR\n");
+		// 	printf("\"%s\"\n",(char*)tok->content);
+		// 	tok = tok->next;
+		// }
+		// printf("\e[1;32m3: INTERPRETER\e[0m\n");
+		// printf("-------------OUTPUT------------\n");
+		
+		// run_tree(root->obj, &mini);
+		// free_node(root);
+		// printf("--------------END--------------\n");
 	}
 	ft_dictclear(mini.env, free);
 	//Think about freeing if signal caught

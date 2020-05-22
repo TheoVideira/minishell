@@ -28,8 +28,10 @@ int run_entry(t_entry *entry, t_minishell *mini)
 
 int run_tree(t_node *tree, t_minishell *mini)
 {
+	if (tree->type == ENTRY)
+		return (run_entry((t_entry*)tree->obj, mini));
 	if (tree->type == PIPELINE)
-		return (run_pipeline(tree->pipeline, mini));
+		return (run_pipeline((t_pipeline*)tree->obj, mini));
 	if (tree->type == OR)
 		return (!(run_tree(tree->left, mini) == 0 || run_tree(tree->right, mini) == 0));
 	if (tree->type == AND)

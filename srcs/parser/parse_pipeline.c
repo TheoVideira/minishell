@@ -6,27 +6,31 @@ static int	parse_parentheses(t_list **token, t_node **n)
 	int r;
 
 	destroyToken(token);
-	r = parse_or(token, n);
+	r = parse_entry(token, n);
 	if (r != 0)
 		return (r);
 	if (*token && ft_strncmp(getToken(token), ")", 2) != 0)
-		return (PARSING_ERROR);
-	if (!*token)
 	{
-		while (1)
-		{
-			if (ask_for_more(token) != 0)
-				return (FATAL_ERROR);
-			if (ft_strncmp(getToken(token), ")", 2) == 0)
-				break ;
-			r = parse_or(token, n);
-			if (r != 0)
-				return (r);
-			if (*token && ft_strncmp(getToken(token), ")", 2) == 0)
-				break ;
-		}
-	} 
-	printf("OK BOOMER\n");
+		printf("OK BOOMER\n");
+
+		return (PARSING_ERROR);
+	}
+	
+	// if (!*token)
+	// {
+		// while (1)
+		// {
+		// 	if (ask_for_more(token) != 0)
+		// 		return (FATAL_ERROR);
+		// 	if (ft_strncmp(getToken(token), ")", 2) == 0)
+		// 		break ;
+		// 	r = parse_or(token, n);
+		// 	if (r != 0)
+		// 		return (r);
+		// 	if (*token && ft_strncmp(getToken(token), ")", 2) == 0)
+		// 		break ;
+		// }
+	// } 
 	destroyToken(token);
 	return (0);
 }

@@ -54,6 +54,7 @@ typedef enum	e_nodetype
 {
 	AND,
 	OR,
+	ENTRY,
 	PIPELINE
 }				t_nodetype;
 
@@ -63,7 +64,7 @@ typedef enum	e_nodetype
 typedef struct s_node
 {
 	t_nodetype		type;
-	t_pipeline 		*pipeline;
+	void 			*obj;
 	struct s_node 	*left;
 	struct s_node 	*right;
 }				t_node;
@@ -86,13 +87,6 @@ typedef struct	s_process
 	int status;
 }				t_process;
 
-
-typedef struct	s_logic
-{
-	t_list	*entries;
-	int		returned;
-}				t_logic;
-
 typedef struct	s_entry
 {
 	t_list	*instructions;
@@ -109,9 +103,9 @@ void	destroyToken(t_list **token);
 t_list	*popFirst(t_list **l);
 int		get_next_arg(t_list **token, t_list **target);
 int		is_operator(char *str);
-t_node	*create_node(t_nodetype t, t_pipeline *p);
+t_node	*create_node(t_nodetype t, void *p);
 t_node	*create_node_trio(t_nodetype t, t_node *left, t_node *right);
-int		parse_entry(t_list **tokens, t_entry **i);
+int		parse_entry(t_list **tokens, t_node **root);
 int		parse_or(t_list **tokens, t_node **r);
 int		parse_and(t_list **tokens, t_node **r);
 int		parse_pipeline(t_list **tokens, t_node **r);

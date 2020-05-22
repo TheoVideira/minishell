@@ -33,8 +33,10 @@ void	free_node(t_node *tofree)
 		free_node(tofree->left);
 	if (tofree->right)
 		free_node(tofree->right);
+	if (tofree->type == ENTRY)
+		free_entry((t_entry*)(tofree->obj));
 	if (tofree->type == PIPELINE)
-		free_pipeline(tofree->pipeline);
+		free_pipeline((t_pipeline*)(tofree->obj));
 	free(tofree);
 }
 
@@ -43,6 +45,7 @@ void			free_entry(t_entry *e)
 	ft_lstclear(&e->instructions, (void (*)(void *))free_node);
 	free(e);
 }
+
 void			free_pipeline(t_pipeline *p)
 {
 	ft_lstclear(&p->cmds, (void (*)(void *))free_command);
