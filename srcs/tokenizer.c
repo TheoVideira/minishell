@@ -106,3 +106,20 @@ int		tokenize(char *str, t_list **tokens)
 	}
 	return (0);
 }
+
+int		is_operator(char *str)
+{
+	if (*str == '&' && *(str + 1) == '&')
+		return (2);
+	if (*str == '|' && *(str + 1) == '|')
+		return (2);
+	if (*str == '(' && *(str + 1) == '\0')
+		return (1);
+	if (*str == ')' && *(str + 1) == '\0')
+		return (1);
+	if (*str == '|' && *(str + 1) == '\0')
+		return (1);
+	if (*str == ';' && *(str + 1) == '\0')
+		return (1);
+	return (0);
+}

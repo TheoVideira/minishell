@@ -138,9 +138,12 @@ int		no_quotes(char *str, char **token,  t_minishell *mini);
 /*
 **	Execution
 */
+int		handle_redirs(char **redirs);
+int		build_cmd(t_cmd	*cmd, t_minishell *mini);
 int		run_entry(t_entry *entry, t_minishell *mini);
 int		run_tree(t_node *tree, t_minishell *mini);
 int		run_pipeline(t_pipeline *pipe, t_minishell *mini);
+int		run_processes(int save[2], int nb, t_list *cmds, t_minishell *mini);
 int		run_command(t_cmd *cmd, t_minishell *mini);
 char	**dictoenv(t_dict *dict);
 int		is_builtin(t_cmd* cmd);
@@ -169,4 +172,8 @@ void			free_command(t_cmd *c);
 void			free_char_array(char **arr);
 void			free_node(t_node *tofree);
 
+/*
+**	Utils
+*/
+int		string_arr_size(char **args);
 #endif
