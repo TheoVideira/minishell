@@ -86,13 +86,6 @@ typedef struct	s_process
 	int status;
 }				t_process;
 
-
-typedef struct	s_logic
-{
-	t_list	*entries;
-	int		returned;
-}				t_logic;
-
 typedef struct	s_entry
 {
 	t_list	*instructions;
