@@ -33,7 +33,7 @@ static int lexer(char *line, t_list	**tokens)
 	{
 		ft_lstclear(tokens, free);
 		free(line);
-		ft_putstr_fd("minishell: allocation error while parsing\n", 2);
+		alloc_error();
 		return (r);
 	}
 			printf("\e[1;32m1: TOKENIZER\e[0m\n");
@@ -65,11 +65,11 @@ static int parser(t_list **tokens, t_entry **entry)
 		else if (r == ALLOC_ERROR)
 		{
 			ft_lstclear(tokens, free);
-			ft_putstr_fd("minishell: allocation error while parsing\n", 2);
+			alloc_error();
 		}
 		else if (r == FATAL_ERROR)
 		{
-			ft_perror("minishell", "a weird error has occured", 0);
+			fatal_error();
 			ft_lstclear(tokens, free);
 			free_entry(*entry);
 		}
@@ -94,9 +94,14 @@ static int parser(t_list **tokens, t_entry **entry)
 
 static void interpreter(t_entry *entry, t_minishell *mini)
 {
+		int r;
 		printf("\e[1;32m3: INTERPRETER\e[0m\n");
 		printf("-------------OUTPUT------------\n");
-		run_entry(entry, mini);
+		r = run_entry(entry, mini);
+		if (r == ALLOC_ERROR)
+			alloc_error();
+		else if (r == FATAL_ERROR)
+			fatal_error();
 		printf("--------------END--------------\n");
 }
 

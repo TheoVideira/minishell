@@ -31,6 +31,7 @@ SRCS =		$(GNL_SRCS) \
 			srcs/interpreter/run_pipeline.c \
 			srcs/interpreter/run_tree.c \
 			srcs/misc/env.c \
+			srcs/misc/errors.c \
 			srcs/misc/tree.c \
 			srcs/misc/freeing.c \
 			srcs/misc/utils.c \

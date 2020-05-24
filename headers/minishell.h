@@ -180,4 +180,11 @@ int		string_arr_size(char **args);
 **	Env
 */
 t_dict	*envtodict(char **env);
+
+/*
+**	Error management
+*/
+void alloc_error();
+void fatal_error();
+
 #endif

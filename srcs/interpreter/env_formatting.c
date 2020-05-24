@@ -1,6 +1,5 @@
 #include <minishell.h>
 
-
 static int		replace_last_call(char **new, char *start, t_minishell *mini)
 {
 	char *tofree;
