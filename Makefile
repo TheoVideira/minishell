@@ -36,6 +36,7 @@ SRCS =		$(GNL_SRCS) \
 			srcs/misc/freeing.c \
 			srcs/misc/utils.c \
 			srcs/builtins1.c \
+			srcs/builtins_export.c \
 			srcs/builtins_utils.c \
 			srcs/main.c
 
