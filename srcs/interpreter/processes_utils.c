@@ -28,3 +28,17 @@ int	build_cmd(t_cmd	*cmd, t_minishell *mini)
 	cmd->label = cmd->args[0];
 	return (0);
 }
+
+void		brutally_murder_childrens(t_minishell *mini)
+{
+	int i;
+
+	i = 0;
+	while (mini->childs[i].pid != 0)
+	{
+		kill(mini->childs[i].pid, SIGKILL);
+		i++;
+	}
+	free(mini->childs);
+	mini->childs = 0;
+}

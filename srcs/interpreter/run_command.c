@@ -129,7 +129,6 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 	path = find_name(cmd->label, mini);
 	execve(path, cmd->args, mini->envtmp); // need to add env trad
 	ft_perror("minishell", "command not found", cmd->label);
-	printf("%d\n", errno);
 	mini->lastcall = 127;
 	exit(1);
 	return (0);

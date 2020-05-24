@@ -28,13 +28,20 @@
 # define FATAL_ERROR -1
 # define ALLOC_ERROR -2
 # define PARSING_ERROR -3
-//Useless ?
+
+typedef struct	s_process
+{
+	pid_t pid;
+	int status;
+}				t_process;
+
 typedef struct	s_minishell
 {
-	t_dict	*env;
-	char	**envtmp;
-	int		lastreturn;
-	int		lastcall;
+	t_dict		*env;
+	t_process	*childs;
+	char		**envtmp;
+	int			lastreturn;
+	int			lastcall;
 }				t_minishell;
 
 /*
@@ -79,12 +86,6 @@ typedef struct	s_cmd
 	char	**redir;
 	int		returned;
 }				t_cmd;
-
-typedef struct	s_process
-{
-	pid_t pid;
-	int status;
-}				t_process;
 
 typedef struct	s_entry
 {
@@ -138,15 +139,15 @@ int		no_quotes(char *str, char **token,  t_minishell *mini);
 **	Execution
 */
 int		handle_redirs(char **redirs);
+int		is_builtin(t_cmd* cmd);
+int		execute_builtin(t_cmd* cmd, t_minishell *mini);
 int		build_cmd(t_cmd	*cmd, t_minishell *mini);
 int		run_entry(t_entry *entry, t_minishell *mini);
 int		run_tree(t_node *tree, t_minishell *mini);
 int		run_pipeline(t_pipeline *pipe, t_minishell *mini);
 int		run_processes(int save[2], int nb, t_list *cmds, t_minishell *mini);
 int		run_command(t_cmd *cmd, t_minishell *mini);
-char	**dictoenv(t_dict *dict);
-int		is_builtin(t_cmd* cmd);
-int		execute_builtin(t_cmd* cmd, t_minishell *mini);
+void	brutally_murder_childrens(t_minishell *mini);
 
 /*
 **	Built-ins
@@ -180,6 +181,7 @@ int		string_arr_size(char **args);
 **	Env
 */
 t_dict	*envtodict(char **env);
+char	**dictoenv(t_dict *dict);
 
 /*
 **	Error management
