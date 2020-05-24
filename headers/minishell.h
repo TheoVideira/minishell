@@ -175,4 +175,9 @@ void			free_node(t_node *tofree);
 **	Utils
 */
 int		string_arr_size(char **args);
+
+/*
+**	Env
+*/
+t_dict	*envtodict(char **env);
 #endif

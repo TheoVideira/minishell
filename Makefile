@@ -30,10 +30,10 @@ SRCS =		$(GNL_SRCS) \
 			srcs/interpreter/run_entry.c \
 			srcs/interpreter/run_pipeline.c \
 			srcs/interpreter/run_tree.c \
+			srcs/misc/env.c \
 			srcs/misc/tree.c \
 			srcs/misc/freeing.c \
 			srcs/misc/utils.c \
-			srcs/tokenizer2.c \
 			srcs/builtins1.c \
 			srcs/builtins_utils.c \
 			srcs/main.c
