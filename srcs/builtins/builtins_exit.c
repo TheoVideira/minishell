@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 17:13:00 by marvin            #+#    #+#             */
-/*   Updated: 2020/05/24 17:14:24 by marvin           ###   ########.fr       */
+/*   Updated: 2020/05/24 18:19:09 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	builtin_exit(int ac, char* const* av, t_minishell *mini)
 	if (ac == 1)
 	{
 		printf("%d\n",mini->lastreturn);
-		exit(mini->lastreturn); //TODO (exit with previous code)
+		exit(mini->lastreturn);
 	}
 	if (ft_isnum(av[1]))	
 		if (ac > 2)
