@@ -154,6 +154,7 @@ void	brutally_murder_childrens();
 **	Signals
 */
 void handle_sigint(int sig);
+void handle_sigquit(int sig);
 
 /*
 **	Built-ins

@@ -101,9 +101,10 @@ static void run_dat_shit(char *line)
 	t_list		*tokens;
 	t_entry		*entry;
 
+	if (ft_strlen(line) == 0)
+		return ;
 	if (lexer(line, &tokens))
 		return ;
-	free(line);
 	if (parser(&tokens, &entry))
 		return ;
 	interpreter(entry);
@@ -118,6 +119,7 @@ int main(int ac, char **av, char **env)
 	(void) ac;
 	(void) av;
 	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, handle_sigquit);
 	mini.env = envtodict(env);
 	mini.isparent = 1;
 	while (1)
@@ -130,6 +132,7 @@ int main(int ac, char **av, char **env)
 			break ;
 		}
 		run_dat_shit(line);				
+		free(line);
 	}
 	ft_dictclear(mini.env, free);
 	return (0);

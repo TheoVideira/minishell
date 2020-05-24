@@ -37,6 +37,7 @@ static int replace_env_value(char **new, char *ptr, char *start)
 	*new = ft_strreplace(*new, start - *new, ft_strlen(varkey) + 1, varvalue); // Check error
 	if (!new)
 		return (ALLOC_ERROR);
+	free(varkey);
 	free(tofree);
 	return (0);
 }

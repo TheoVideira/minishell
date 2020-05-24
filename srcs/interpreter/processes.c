@@ -32,6 +32,7 @@ static int		launch_processes(int save[2], t_list *cmd)
 		open_pipe(i, io, save, cmd);// check error
 		if ((mini.childs[i].pid = fork()) == 0)
 		{
+			// signal(SIGQUIT, 0);
 			mini.isparent = 0;
 			build_cmd((t_cmd *)cmd->content );// panic
 			run_command((t_cmd *)cmd->content); // check if label not found
