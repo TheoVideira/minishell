@@ -30,14 +30,18 @@ SRCS =		$(GNL_SRCS) \
 			srcs/interpreter/run_entry.c \
 			srcs/interpreter/run_pipeline.c \
 			srcs/interpreter/run_tree.c \
+			srcs/builtins/builtins_cd.c \
+			srcs/builtins/builtins_echo.c \
+			srcs/builtins/builtins_env.c \
+			srcs/builtins/builtins_exit.c \
+			srcs/builtins/builtins_export.c \
+			srcs/builtins/builtins_pwd.c \
+			srcs/builtins/builtins_unset.c \
 			srcs/misc/env.c \
 			srcs/misc/errors.c \
 			srcs/misc/tree.c \
 			srcs/misc/freeing.c \
 			srcs/misc/utils.c \
-			srcs/builtins1.c \
-			srcs/builtins_export.c \
-			srcs/builtins_utils.c \
 			srcs/main.c
 
 
