@@ -51,7 +51,7 @@ static char *compute_full_path(char *dirname, char *bin)
 	return (fullname);
 }
 
-static char *find_name(char *label, t_minishell *mini)
+static char *find_name(char *label)
 {
 	char *path;
 	char **entries;
@@ -60,7 +60,7 @@ static char *find_name(char *label, t_minishell *mini)
 	int i;
 
 	name = 0;
-	path = (char *)ft_dictget(mini->env, "PATH");
+	path = (char *)ft_dictget(mini.env, "PATH");
 	if (!(entries = ft_split(path, ':')))
 	{
 		// panic
@@ -85,7 +85,7 @@ static char *find_name(char *label, t_minishell *mini)
 	return (0);
 }
 
-static void	launch_file(t_cmd *cmd, t_minishell *mini)
+static void	launch_file(t_cmd *cmd)
 {
 	struct stat tmp;
 
@@ -93,7 +93,7 @@ static void	launch_file(t_cmd *cmd, t_minishell *mini)
 		ft_perror("minishell", "cannot access", cmd->label); // check the right error message
 	
 	if(tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode)) 
-		execve(cmd->label, cmd->args, mini->envtmp);
+		execve(cmd->label, cmd->args, mini.envtmp);
 	else
 	{
 		ft_perror(0, "command not found", cmd->label);
@@ -101,7 +101,7 @@ static void	launch_file(t_cmd *cmd, t_minishell *mini)
 	}
 }
 
-int run_command(t_cmd *cmd, t_minishell *mini)
+int run_command(t_cmd *cmd)
 {
 	char *path;	
 	int r;
@@ -111,9 +111,9 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 	{
 		exit(errno);
 	}
-	if ((r = execute_builtin(cmd, mini)) > -1)
+	if ((r = execute_builtin(cmd)) > -1)
 	{
-		// mini->lastcall = r;
+		// mini.lastcall = r;
 		// free all shit
 		close(fd);
 		exit(r);
@@ -122,14 +122,14 @@ int run_command(t_cmd *cmd, t_minishell *mini)
 
 
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')))
-		launch_file(cmd, mini);
+		launch_file(cmd);
 	
 
 	//if not
-	path = find_name(cmd->label, mini);
-	execve(path, cmd->args, mini->envtmp); // need to add env trad
+	path = find_name(cmd->label);
+	execve(path, cmd->args, mini.envtmp); // need to add env trad
 	ft_perror("minishell", "command not found", cmd->label);
-	mini->lastcall = 127;
+	mini.lastcall = 127;
 	exit(1);
 	return (0);
 }

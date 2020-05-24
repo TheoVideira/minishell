@@ -13,16 +13,7 @@
 #include <minishell.h>
 
 
-//DEBUG
-void	printdict(t_dict *dict)
-{
-	printf("\e[31;1m ENV \e[0m\n");
-	while(dict)
-	{
-		printf("%s=%s\n", dict->key, (char *)dict->value);
-		dict = dict->next;
-	}
-}
+t_minishell mini = {0};
 
 static int lexer(char *line, t_list	**tokens)
 {
@@ -92,12 +83,12 @@ static int parser(t_list **tokens, t_entry **entry)
 		return (r);
 }
 
-static void interpreter(t_entry *entry, t_minishell *mini)
+static void interpreter(t_entry *entry)
 {
 		int r;
 		printf("\e[1;32m3: INTERPRETER\e[0m\n");
 		printf("-------------OUTPUT------------\n");
-		r = run_entry(entry, mini);
+		r = run_entry(entry);
 		if (r == ALLOC_ERROR)
 			alloc_error();
 		else if (r == FATAL_ERROR)
@@ -105,7 +96,7 @@ static void interpreter(t_entry *entry, t_minishell *mini)
 		printf("--------------END--------------\n");
 }
 
-static void run_dat_shit(char *line, t_minishell *mini)
+static void run_dat_shit(char *line)
 {
 	t_list		*tokens;
 	t_entry		*entry;
@@ -115,19 +106,20 @@ static void run_dat_shit(char *line, t_minishell *mini)
 	free(line);
 	if (parser(&tokens, &entry))
 		return ;
-	interpreter(entry, mini);
+	interpreter(entry);
 	free_entry(entry);
 }
 
 int main(int ac, char **av, char **env)
 {
-	t_minishell mini = {0};
 	int			r;
 	char		*line;
 	
 	(void) ac;
 	(void) av;
+	signal(SIGINT, handle_sigint);
 	mini.env = envtodict(env);
+	mini.isparent = 1;
 	while (1)
 	{
 		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
@@ -137,7 +129,7 @@ int main(int ac, char **av, char **env)
 			free(line);
 			break ;
 		}
-		run_dat_shit(line, &mini);				
+		run_dat_shit(line);				
 	}
 	ft_dictclear(mini.env, free);
 	return (0);

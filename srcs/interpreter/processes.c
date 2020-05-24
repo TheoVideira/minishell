@@ -21,7 +21,7 @@ static int		close_pipe(int io[2], t_list *cmd)
 		return (0);
 }
 
-static int		launch_processes(int save[2], t_list *cmd, t_minishell *mini)
+static int		launch_processes(int save[2], t_list *cmd)
 {
 	int i;
 	int io[2];
@@ -30,12 +30,13 @@ static int		launch_processes(int save[2], t_list *cmd, t_minishell *mini)
 	while (cmd) 
 	{
 		open_pipe(i, io, save, cmd);// check error
-		if ((mini->childs[i].pid = fork()) == 0)
+		if ((mini.childs[i].pid = fork()) == 0)
 		{
-			build_cmd((t_cmd *)cmd->content, mini );// panic
-			run_command((t_cmd *)cmd->content, mini); // check if label not found
+			mini.isparent = 0;
+			build_cmd((t_cmd *)cmd->content );// panic
+			run_command((t_cmd *)cmd->content); // check if label not found
 		}
-		else if (mini->childs[i].pid == -1)
+		else if (mini.childs[i].pid == -1)
 			return (FATAL_ERROR);
 		close_pipe(io, cmd); 
 		cmd = cmd->next;
@@ -44,36 +45,36 @@ static int		launch_processes(int save[2], t_list *cmd, t_minishell *mini)
 	return (0);
 }
 
-static int		end_processes(int nb, t_minishell *mini)
+static int		end_processes(int nb)
 {
 	int i;
 
 	i = -1;
 	while (++i < nb)
 	{
-		waitpid(mini->childs[i].pid, &(mini->childs[i].status), 0);
-		mini->lastcall = WIFEXITED(mini->childs[i].pid);
+		waitpid(mini.childs[i].pid, &(mini.childs[i].status), 0);
+		mini.lastcall = WIFEXITED(mini.childs[i].pid);
 	}
-	free(mini->childs);
-	mini->childs = 0;
 	return (0);
 }
 
-int	run_processes(int save[2], int nb, t_list *cmds, t_minishell *mini)
+int	run_processes(int save[2], int nb, t_list *cmds)
 {
 	int r;
 
-	if (!(mini->childs = ft_calloc(1, sizeof(t_process) * nb)))
+	if (!(mini.childs = ft_calloc(1, sizeof(t_process) * (nb + 1))))
 		return (ALLOC_ERROR);
-	if (mini->env && (mini->envtmp = dictoenv(mini->env)) == 0)
+	if (mini.env && (mini.envtmp = dictoenv(mini.env)) == 0)
 		return (ALLOC_ERROR);
-	if ((r = launch_processes(save, cmds, mini)))
+	if ((r = launch_processes(save, cmds)))
 		brutally_murder_childrens(mini);
 	else
-		end_processes(nb, mini);
+		end_processes(nb);
 	dup2(save[0], 0);
 	dup2(save[1], 1);
-	free_char_array(mini->envtmp);
+	free(mini.childs);
+	mini.childs = 0;
+	free_char_array(mini.envtmp);
 	return (r);
 }
 

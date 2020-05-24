@@ -1,7 +1,7 @@
 
 #include <minishell.h>
 
-int	format_arr(char **arr, t_minishell *mini)
+int	format_arr(char **arr)
 {
 	int i;
 	char *tmp;
@@ -10,7 +10,7 @@ int	format_arr(char **arr, t_minishell *mini)
 	while (arr[i])
 	{
 		tmp = arr[i];
-		arr[i] = format_arg(arr[i], mini);
+		arr[i] = format_arg(arr[i]);
 		free(tmp);
 		if (arr[i] == 0)
 			return (2); // panic
@@ -19,26 +19,28 @@ int	format_arr(char **arr, t_minishell *mini)
 	return (0);
 }
 
-int	build_cmd(t_cmd	*cmd, t_minishell *mini)
+int	build_cmd(t_cmd	*cmd)
 {
-	if (cmd->args && format_arr(cmd->args, mini))
+	if (cmd->args && format_arr(cmd->args))
 		return (1);
-	if (cmd->redir && format_arr(cmd->redir, mini))
+	if (cmd->redir && format_arr(cmd->redir))
 		return (1);
 	cmd->label = cmd->args[0];
 	return (0);
 }
 
-void		brutally_murder_childrens(t_minishell *mini)
+void		brutally_murder_childrens()
 {
 	int i;
 
+	if (mini.isparent == 0)
+		return ;
+	if (mini.childs == 0)
+		return ;
 	i = 0;
-	while (mini->childs[i].pid != 0)
+	while (mini.childs[i].pid != 0)
 	{
-		kill(mini->childs[i].pid, SIGKILL);
+		kill(mini.childs[i].pid, SIGKILL);
 		i++;
 	}
-	free(mini->childs);
-	mini->childs = 0;
 }

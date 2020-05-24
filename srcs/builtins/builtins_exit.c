@@ -27,15 +27,15 @@ static int ft_isnum(char *n)
 	return (1);
 }
 
-int	builtin_exit(int ac, char* const* av, t_minishell *mini)
+int	builtin_exit(int ac, char* const* av)
 {
 	int exit_code;
 
 	write(1, "exit\n", 5);
 	if (ac == 1)
 	{
-		printf("%d\n",mini->lastreturn);
-		exit(mini->lastreturn); //TODO (exit with previous code)
+		printf("%d\n",mini.lastreturn);
+		exit(mini.lastreturn); //TODO (exit with previous code)
 	}
 	if (ft_isnum(av[1]))	
 		if (ac > 2)

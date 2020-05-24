@@ -1,12 +1,12 @@
 #include <minishell.h>
 
-static int		replace_last_call(char **new, char *start, t_minishell *mini)
+static int		replace_last_call(char **new, char *start)
 {
 	char *tofree;
 	char *varvalue;
 
 	tofree = *new;
-	varvalue = ft_itoa(mini->lastcall); // check env
+	varvalue = ft_itoa(mini.lastcall); // check env
 	if (varvalue == 0)
 		return (ALLOC_ERROR);
 	*new = ft_strreplace(*new, start - *new, 2, varvalue); // Check error
@@ -20,7 +20,7 @@ static int		replace_last_call(char **new, char *start, t_minishell *mini)
 	return (0);
 }
 
-static int replace_env_value(char **new, char *ptr, char *start, t_minishell *mini)
+static int replace_env_value(char **new, char *ptr, char *start)
 {
 	char *tofree;
 	char *varkey;
@@ -31,7 +31,7 @@ static int replace_env_value(char **new, char *ptr, char *start, t_minishell *mi
 	varkey = ft_substr(*new, start - *new + 1, ptr - start - 1); // check error
 	if (!varkey)
 		return (ALLOC_ERROR);
-	if (!(varvalue = (char*)ft_dictget(mini->env, varkey)))
+	if (!(varvalue = (char*)ft_dictget(mini.env, varkey)))
 		varvalue = "";
 	tofree = *new;
 	*new = ft_strreplace(*new, start - *new, ft_strlen(varkey) + 1, varvalue); // Check error
@@ -41,7 +41,7 @@ static int replace_env_value(char **new, char *ptr, char *start, t_minishell *mi
 	return (0);
 }
 
-int		replace_env(char **str, t_minishell *mini)
+int		replace_env(char **str)
 {
 	char *ptr;
 	char *start;
@@ -53,9 +53,9 @@ int		replace_env(char **str, t_minishell *mini)
 		{
 			start = ptr;
 			if (*(++ptr) == '?')
-				r = replace_last_call(str, start, mini);
+				r = replace_last_call(str, start);
 			else
-				r = replace_env_value(str, ptr, start, mini);
+				r = replace_env_value(str, ptr, start);
 			if (r)
 				return (r);
 			ptr = *str;

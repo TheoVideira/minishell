@@ -39,6 +39,7 @@ typedef struct	s_minishell
 {
 	t_dict		*env;
 	t_process	*childs;
+	int			isparent;
 	char		**envtmp;
 	int			lastreturn;
 	int			lastcall;
@@ -111,7 +112,7 @@ int		parse_and(t_list **tokens, t_node **r);
 int		parse_pipeline(t_list **tokens, t_node **r);
 int		parse_cmd(t_list **token, t_cmd **c);
 int		ask_for_more(t_list **token);
-int		replace_env(char **str, t_minishell *mini);
+int		replace_env(char **str);
 
 /*
 **	Lexer / tokenizer
@@ -131,23 +132,28 @@ void	print_tree(t_node *n);
 /*
 **	Pre exec build
 */
-char	*format_arg(char *arg,  t_minishell *mini);
-int		double_quotes(char *str, char **token,  t_minishell *mini);
+char	*format_arg(char *arg);
+int		double_quotes(char *str, char **token);
 int		single_quotes(char *str, char **token);
-int		no_quotes(char *str, char **token,  t_minishell *mini);
+int		no_quotes(char *str, char **token);
 /*
 **	Execution
 */
 int		handle_redirs(char **redirs);
 int		is_builtin(t_cmd* cmd);
-int		execute_builtin(t_cmd* cmd, t_minishell *mini);
-int		build_cmd(t_cmd	*cmd, t_minishell *mini);
-int		run_entry(t_entry *entry, t_minishell *mini);
-int		run_tree(t_node *tree, t_minishell *mini);
-int		run_pipeline(t_pipeline *pipe, t_minishell *mini);
-int		run_processes(int save[2], int nb, t_list *cmds, t_minishell *mini);
-int		run_command(t_cmd *cmd, t_minishell *mini);
-void	brutally_murder_childrens(t_minishell *mini);
+int		execute_builtin(t_cmd* cmd);
+int		build_cmd(t_cmd	*cmd);
+int		run_entry(t_entry *entry);
+int		run_tree(t_node *tree);
+int		run_pipeline(t_pipeline *pipe);
+int		run_processes(int save[2], int nb, t_list *cmds);
+int		run_command(t_cmd *cmd);
+void	brutally_murder_childrens();
+
+/*
+**	Signals
+*/
+void handle_sigint(int sig);
 
 /*
 **	Built-ins
@@ -160,7 +166,7 @@ int		builtin_pwd(void);
 int		builtin_export(int ac, char* const* av, t_dict *env);
 int		builtin_unset(int ac, char* const* av, t_dict *env);
 int		builtin_env(t_dict *env);
-int		builtin_exit(int ac, char* const* av, t_minishell *mini);
+int		builtin_exit(int ac, char* const* av);
 
 
 /*
@@ -189,4 +195,5 @@ char	**dictoenv(t_dict *dict);
 void alloc_error();
 void fatal_error();
 
+extern t_minishell mini;
 #endif
