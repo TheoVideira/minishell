@@ -17,6 +17,7 @@ SRCS =		$(GNL_SRCS) \
 			srcs/interpreter.c \
 			srcs/interpreter_utils.c \
 			srcs/builtins1.c \
+			srcs/builtins_export.c \
 			srcs/builtins_utils.c \
 			srcs/main.c
 HEADERS =	$(GNL_HEADERS) \
