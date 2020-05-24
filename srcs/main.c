@@ -24,7 +24,6 @@ void	printdict(t_dict *dict)
 	}
 }
 
-
 static int lexer(char *line, t_list	**tokens)
 {
 	int r;
@@ -77,30 +76,28 @@ static int parser(t_list **tokens, t_entry **entry)
 		else
 		{
 			/* code */
-		printf("\e[1;32m2: PARSER\e[0m\n");
+			printf("\e[1;32m2: PARSER\e[0m\n");
 
-		
-		printf("Just parsed\n");
-		t_list *tree;
-		tree = (*entry)->instructions;
-		while (tree)
-		{
-			print_tree((t_node*)tree->content);
-			tree = tree->next;
-			printf("-------------------------------\n");
-		}
+			
+			printf("Just parsed\n");
+			t_list *tree;
+			tree = (*entry)->instructions;
+			while (tree)
+			{
+				print_tree((t_node*)tree->content);
+				tree = tree->next;
+				printf("-------------------------------\n");
+			}
 		}
 		return (r);
 }
 
-static int interpreter(t_entry *entry, t_minishell *mini)
+static void interpreter(t_entry *entry, t_minishell *mini)
 {
-		int r;
 		printf("\e[1;32m3: INTERPRETER\e[0m\n");
 		printf("-------------OUTPUT------------\n");
-		r = run_entry(entry, mini);
+		run_entry(entry, mini);
 		printf("--------------END--------------\n");
-		return (r);
 }
 
 static void run_dat_shit(char *line, t_minishell *mini)
@@ -113,8 +110,7 @@ static void run_dat_shit(char *line, t_minishell *mini)
 	free(line);
 	if (parser(&tokens, &entry))
 		return ;
-	if (interpreter(entry, mini))
-		return ;
+	interpreter(entry, mini);
 	free_entry(entry);
 }
 

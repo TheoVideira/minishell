@@ -11,5 +11,5 @@ int run_entry(t_entry *entry, t_minishell *mini)
 		r = run_tree((t_node *)tree->content, mini);
 		tree = tree->next;
 	}
-	return (r); // check what's right to do here
+	return (r);
 }
