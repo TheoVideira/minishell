@@ -110,16 +110,15 @@ int		parse_and(t_list **tokens, t_node **r);
 int		parse_pipeline(t_list **tokens, t_node **r);
 int		parse_cmd(t_list **token, t_cmd **c);
 int		ask_for_more(t_list **token);
+int		replace_env(char **str, t_minishell *mini);
 
 /*
 **	Lexer / tokenizer
 */
 int		is_separator(char *str);
-char	*handle_separators(char *str);
 int		tokencount(char *str);
 int		get_next_token(char *str, char **tofill);
 int		tokenize(char *str, t_list **end);
-int		replace_env(char **str, t_minishell *mini);
 char	**list_to_char_array(t_list *l);
 
 /*

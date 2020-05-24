@@ -9,6 +9,10 @@ GNL_HEADERS =	gnl/get_next_line.h \
 
 
 SRCS =		$(GNL_SRCS) \
+			srcs/lexer/get_next_token.c \
+			srcs/lexer/lexer_utils.c \
+			srcs/lexer/tokenize.c \
+			srcs/parser/parsing_utils.c \
 			srcs/parser/parse_cmd.c \
 			srcs/parser/parse_pipeline.c \
 			srcs/parser/parse_entry.c \
@@ -16,6 +20,7 @@ SRCS =		$(GNL_SRCS) \
 			srcs/parser/parse_and.c \
 			srcs/parser/parse_tokens.c \
 			srcs/parser/ask_for_more.c \
+			srcs/interpreter/env_formatting.c \
 			srcs/interpreter/arg_formatting.c \
 			srcs/interpreter/builtins.c \
 			srcs/interpreter/processes.c \
@@ -28,7 +33,6 @@ SRCS =		$(GNL_SRCS) \
 			srcs/misc/tree.c \
 			srcs/misc/freeing.c \
 			srcs/misc/utils.c \
-			srcs/tokenizer.c \
 			srcs/tokenizer2.c \
 			srcs/builtins1.c \
 			srcs/builtins_utils.c \
