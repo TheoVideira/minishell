@@ -14,5 +14,7 @@ void handle_sigquit(int sig)
 {
 	(void) sig;
 	brutally_murder_childrens(sig);
+	printf("CATCHED\n");
+
 	mini.lastcall = 131;
 }

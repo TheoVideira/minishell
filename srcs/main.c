@@ -121,17 +121,22 @@ int main(int ac, char **av, char **env)
 	signal(SIGQUIT, handle_sigquit);
 	mini.env = envtodict(env);
 	mini.isparent = 1;
+	r = 1;
+	line = 0;
 	while (1)
 	{
+		if (!(r == 0 && *line))
 		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
+		free(line);
 		r = get_next_line(0, &line);
+		if (r == 0 && *line)
+			continue ;
 		if (r == 0)
 		{
-			free(line);
 			ft_dictclear(mini.env, free);
 			builtin_exit(1, 0);
 		}
-		run_dat_shit(line);				
+		run_dat_shit(line);
 		free(line);
 	}
 	ft_dictclear(mini.env, free);
