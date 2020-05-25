@@ -29,7 +29,7 @@ int	build_cmd(t_cmd	*cmd)
 	return (0);
 }
 
-void		brutally_murder_childrens()
+void		brutally_murder_childrens(int sig)
 {
 	int i;
 
@@ -40,7 +40,7 @@ void		brutally_murder_childrens()
 	i = 0;
 	while (mini.childs[i].pid != 0)
 	{
-		kill(mini.childs[i].pid, SIGKILL);
+		kill(mini.childs[i].pid, sig);
 		i++;
 	}
 }

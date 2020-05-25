@@ -68,7 +68,7 @@ int	run_processes(int save[2], int nb, t_list *cmds)
 	if (mini.env && (mini.envtmp = dictoenv(mini.env)) == 0)
 		return (ALLOC_ERROR);
 	if ((r = launch_processes(save, cmds)))
-		brutally_murder_childrens(mini);
+		brutally_murder_childrens(SIGKILL);
 	else
 		end_processes(nb);
 	dup2(save[0], 0);

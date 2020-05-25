@@ -148,7 +148,7 @@ int		run_tree(t_node *tree);
 int		run_pipeline(t_pipeline *pipe);
 int		run_processes(int save[2], int nb, t_list *cmds);
 int		run_command(t_cmd *cmd);
-void	brutally_murder_childrens();
+void	brutally_murder_childrens(int sig);
 
 /*
 **	Signals

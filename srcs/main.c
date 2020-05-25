@@ -12,7 +12,6 @@
 
 #include <minishell.h>
 
-
 t_minishell mini = {0};
 
 static int lexer(char *line, t_list	**tokens)
