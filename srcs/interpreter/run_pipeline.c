@@ -29,8 +29,8 @@ int run_pipeline(t_pipeline *pi)
 	save[0] = dup(0);
 	save[1] = dup(1);
 	if (len == 1 && is_builtin((t_cmd *)l->content))
-		return (run_single_builtin(save, l));
-	if ((r = run_processes(save, len, pi->cmds)))
+		r = run_single_builtin(save, l);
+	else if ((r = run_processes(save, len, pi->cmds)))
 		return (r);
 	return (mini.lastcall); // value of pipe
 }

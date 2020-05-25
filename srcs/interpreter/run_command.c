@@ -113,8 +113,6 @@ int run_command(t_cmd *cmd)
 	}
 	if ((r = execute_builtin(cmd)) > -1)
 	{
-		// mini.lastcall = r;
-		// free all shit
 		close(fd);
 		exit(r);
 	}
@@ -130,6 +128,6 @@ int run_command(t_cmd *cmd)
 	execve(path, cmd->args, mini.envtmp); // need to add env trad
 	ft_perror("minishell", "command not found", cmd->label);
 	mini.lastcall = 127;
-	exit(1);
+	exit(mini.lastcall);
 	return (0);
 }

@@ -54,7 +54,7 @@ static int		end_processes(int nb)
 	while (++i < nb)
 	{
 		waitpid(mini.childs[i].pid, &(mini.childs[i].status), 0);
-		mini.lastcall = WIFEXITED(mini.childs[i].pid);
+		mini.lastcall = WEXITSTATUS(mini.childs[i].status);
 	}
 	return (0);
 }

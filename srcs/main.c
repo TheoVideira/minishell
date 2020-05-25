@@ -51,7 +51,7 @@ static int parser(t_list **tokens, t_entry **entry)
 			else
 				ft_perror_msg("minishell", "syntax error near unexpected token", 0, (char*)(*tokens)->content);	
 			free_entry(*entry);
-	
+			mini.lastcall = 2;
 		}
 		else if (r == ALLOC_ERROR)
 		{
