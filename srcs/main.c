@@ -129,7 +129,8 @@ int main(int ac, char **av, char **env)
 		if (r == 0)
 		{
 			free(line);
-			break ;
+			ft_dictclear(mini.env, free);
+			builtin_exit(1, 0);
 		}
 		run_dat_shit(line);				
 		free(line);

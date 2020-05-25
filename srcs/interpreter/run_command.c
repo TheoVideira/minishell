@@ -108,22 +108,14 @@ int run_command(t_cmd *cmd)
 	int fd;
 
 	if ((fd = handle_redirs(cmd->redir)) == -1)
-	{
 		exit(errno);
-	}
 	if ((r = execute_builtin(cmd)) > -1)
 	{
 		close(fd);
 		exit(r);
 	}
-	//if file
-
-
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')))
 		launch_file(cmd);
-	
-
-	//if not
 	path = find_name(cmd->label);
 	execve(path, cmd->args, mini.envtmp); // need to add env trad
 	ft_perror("minishell", "command not found", cmd->label);
