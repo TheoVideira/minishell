@@ -6,11 +6,35 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/22 17:56:12 by marvin            #+#    #+#             */
-/*   Updated: 2020/05/22 19:04:31 by marvin           ###   ########.fr       */
+/*   Updated: 2020/05/26 15:14:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	valid_key(char *key)
+{
+	int i;
+	int nan;
+
+	i = -1;
+	nan = 0;
+	if (!key)
+		return (0);
+	while (++i)
+	{
+		if (ft_isalnum(key[i]) || key[i] == '_')
+		{
+			if (ft_isalpha(key[i]) || key[i] == '_')
+				nan = 1;
+			if (!i && ft_isdigit(key[i]))
+				return (0);
+		}
+		else
+			return (0);
+	}
+	return ((!i || !nan) ? 0 : 1);
+}
 
 static void builtin_export_tri(t_dict *env, int *tab)
 {
@@ -72,19 +96,17 @@ static int  builtin_export_add(int ac, char* const* av, t_dict *env)
     i = 0;
 	while (++i < ac)
 	{
-		if ((eq = ft_strchr(av[i], '=')))
+		eq = ft_strchr(av[i], '=');
+		key = (eq) ? ft_substr(av[i], 0, eq - av[i]) : ft_strdup(av[i]);
+		if (!valid_key(key))
 		{
-			*eq = 0;
-			ft_dictrem(&env, av[i], free);
-			key = ft_strdup(av[i]);
-			value = ft_strdup(eq + 1);
-			ft_dictadd(&env, ft_dictnew(key, value));
+			ft_perror_msg("-minishell", "export", key, "not a valid identifier");
+			free(key);
+			continue;
 		}
-        else
-        {
-	    	ft_dictrem(&env, av[i], free);
-		    ft_dictadd(&env, ft_dictnew(ft_strdup(av[i]), NULL));
-        }
+		value = (eq) ? ft_strdup(eq + 1) : NULL;
+		ft_dictrem(&env, key, free);
+	    ft_dictadd(&env, ft_dictnew(key, value));
     }
 	return(0);
 }
