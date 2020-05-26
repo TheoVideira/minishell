@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_entry.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/05/26 15:04:13 by user42            #+#    #+#             */
+/*   Updated: 2020/05/26 15:09:51 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
 int		parse_entry(t_list **tokens, t_entry **entry)
@@ -9,11 +21,11 @@ int		parse_entry(t_list **tokens, t_entry **entry)
 
 	if ((*entry = ft_calloc(1, sizeof(t_entry))) == 0)
 		return (ALLOC_ERROR);
-	while ((tok = getToken(tokens)))
+	while ((tok = get_token(tokens)))
 	{
 		if (ft_strncmp(tok, ";", 2) == 0)
 		{
-			destroyToken(tokens);
+			destroy_token(tokens);
 			continue ;
 		}
 		r = parse_or(tokens, &tree);
@@ -21,7 +33,7 @@ int		parse_entry(t_list **tokens, t_entry **entry)
 			return (r);
 		if (!(l = ft_lstnew(tree)))
 			return (ALLOC_ERROR);
-		nextToken(tokens);
+		next_token(tokens);
 		ft_lstadd_back(&(*entry)->instructions, l);
 	}
 	*tokens = 0;

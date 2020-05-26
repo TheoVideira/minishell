@@ -1,40 +1,52 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_tokens.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/05/26 15:09:58 by user42            #+#    #+#             */
+/*   Updated: 2020/05/26 15:09:59 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
-void	nextToken(t_list **token)
+void	next_token(t_list **token)
 {
 	if (*token)
 		*token = (*token)->next;
 }
 
-char	*getToken(t_list **token)
+char	*get_token(t_list **token)
 {
 	if ((char*)(*token))
 		return ((char*)(*token)->content);
 	return (0);
 }
 
-char	*getTokenHard(t_list **token)
+char	*get_token_hard(t_list **token)
 {
-	char *tok;
-	t_list *tofree;
+	char	*tok;
+	t_list	*tofree;
 
-	tok = getToken(token);
+	tok = get_token(token);
 	tofree = *token;
-	nextToken(token);
+	next_token(token);
 	free(tofree);
 	return (tok);
 }
 
-void	destroyToken(t_list **token)
+void	destroy_token(t_list **token)
 {
 	t_list *tofree;
-	
+
 	tofree = *token;
-	nextToken(token);
+	next_token(token);
 	ft_lstdelone(tofree, free);
 }
 
-t_list	*popFirst(t_list **token)
+t_list	*pop_first(t_list **token)
 {
 	t_list *topop;
 
