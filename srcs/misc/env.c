@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/05/26 15:50:37 by user42            #+#    #+#             */
+/*   Updated: 2020/05/26 15:51:09 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include <minishell.h>
 
@@ -55,11 +66,11 @@ t_dict	*envtodict(char **env)
 }
 
 char	**dictoenv(t_dict *dict)
-{ 
-	int len1;
-	int len2;
-	int i;
-	char **env;
+{
+	int		len1;
+	int		len2;
+	int		i;
+	char	**env;
 
 	len1 = ft_dictsize(dict);
 	if (!(env = ft_calloc(1, (len1 + 1) * sizeof(char*))))
@@ -72,7 +83,7 @@ char	**dictoenv(t_dict *dict)
 		if (!(env[i] = ft_calloc(1, (len1 + 1 + len2 + 1) * sizeof(char))))
 		{
 			free_char_array(env);
-			return (0);	
+			return (0);
 		}
 		ft_memcpy(env[i], dict->key, len1);
 		env[i][len1] = '=';

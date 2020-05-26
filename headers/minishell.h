@@ -97,11 +97,11 @@ typedef struct	s_entry
 /*
 **	Parse tree
 */
-void	nextToken(t_list **token);
-char	*getToken(t_list **token);
-char	*getTokenHard(t_list **token);
-void	destroyToken(t_list **token);
-t_list	*popFirst(t_list **l);
+void	next_token(t_list **token);
+char	*get_token(t_list **token);
+char	*get_token_hard(t_list **token);
+void	destroy_token(t_list **token);
+t_list	*pop_first(t_list **l);
 int		get_next_arg(t_list **token, t_list **target);
 int		is_operator(char *str);
 t_node	*create_node(t_nodetype t, t_pipeline *p);
