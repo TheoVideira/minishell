@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_token.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/05/26 15:02:36 by user42            #+#    #+#             */
+/*   Updated: 2020/05/26 15:02:36 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
-static int			loop_until(char *str, char end)
+static int	loop_until(char *str, char end)
 {
 	int i;
 
@@ -23,17 +35,16 @@ static int	read_token(char **str)
 		if ((tmp = is_separator(*str)))
 		{
 			*str += tmp;
-			break;
-		}	
+			break ;
+		}
 		else if (**str == '"')
-			*str += 1 + loop_until(*str + 1, '"') + 1; // check error
+			*str += 1 + loop_until(*str + 1, '"') + 1;
 		else if (**str == '\'')
-			*str += 1 + loop_until(*str + 1, '\'') + 1; // check error
+			*str += 1 + loop_until(*str + 1, '\'') + 1;
 		else
 			(*str)++;
 		if (is_separator(*str))
 			break ;
-		//check uneven quotes
 	}
 	return (0);
 }
@@ -56,7 +67,7 @@ int			get_next_token(char *str, char **tofill)
 		token = 0;
 		return (0);
 	}
-	if (!(token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1)))) // check error
+	if (!(token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1))))
 		return (ALLOC_ERROR);
 	ft_memcpy(token, tokenstart, str - tokenstart);
 	*tofill = token;

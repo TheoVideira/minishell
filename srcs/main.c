@@ -127,7 +127,6 @@ int main(int ac, char **av, char **env)
 	{
 		if (!(r == 0 && *line))
 		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
-		free(line);
 		r = get_next_line(0, &line);
 		if (r == 0 && *line)
 			continue ;
