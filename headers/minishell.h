@@ -153,13 +153,13 @@ int		execute_builtin(t_cmd* cmd, t_minishell *mini);
 */
 void	ft_perror(char *shell, char *prg, char *arg);
 void	ft_perror_msg(char *shell, char *prg, char *arg, char *msg);
-int		builtin_echo(int ac, char* const* av);
+int		builtin_echo(int ac, char *const *av);
 int		builtin_cd(int ac, char *const *av, t_dict* env);
 int		builtin_pwd(void);
-int		builtin_export(int ac, char* const* av, t_dict *env);
-int		builtin_unset(int ac, char* const* av, t_dict *env);
+int		builtin_export(int ac, char *const *av, t_dict *env);
+int		builtin_unset(int ac, char *const *av, t_dict *env);
 int		builtin_env(t_dict *env);
-int		builtin_exit(int ac, char* const* av, t_minishell *mini);
+int		builtin_exit(int ac, char *const *av, t_minishell *mini);
 
 
 /*
