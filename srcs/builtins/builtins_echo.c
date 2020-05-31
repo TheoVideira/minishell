@@ -6,13 +6,13 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 17:12:25 by marvin            #+#    #+#             */
-/*   Updated: 2020/05/24 17:12:41 by marvin           ###   ########.fr       */
+/*   Updated: 2020/05/30 15:23:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		builtin_echo(int ac, char* const* av)
+int		builtin_echo(int ac, char *const *av)
 {
 	int i;
 	int flagn;

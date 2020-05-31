@@ -6,37 +6,57 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 17:11:43 by marvin            #+#    #+#             */
-/*   Updated: 2020/05/24 17:12:01 by marvin           ###   ########.fr       */
+/*   Updated: 2020/05/24 19:56:48 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		builtin_cd(int ac, char* const* av, t_dict* env)
+static t_dict	*ft_get_pwd(char *keyname)
 {
-	char *dir;
-	char *oldpwd;
 	char *key;
+	char *value;
+
+	if (!(key = ft_strdup(keyname)))
+		return (NULL);
+	if (!(value = getcwd(NULL, 0)))
+	{
+		free(key);
+		return (NULL);
+	}
+	return (ft_dictnew(key, value));
+}
+
+static int		cd_return(char *dir, t_dict *oldpwd, t_dict *pwd)
+{
+	ft_perror("minishell", "cd", dir);
+	if (oldpwd)
+		ft_dictrem(&oldpwd, "OLDPWD", free);
+	if (pwd)
+		ft_dictrem(&pwd, "PWD", free);
+	return (1);
+}
+
+int				builtin_cd(int ac, char *const *av, t_dict *env)
+{
+	char	*dir;
+	t_dict	*oldpwd;
+	t_dict	*pwd;
 
 	oldpwd = NULL;
+	pwd = NULL;
 	if (ac > 2)
 		return (1);
-	if (!(key = ft_strdup("OLDPWD")) || !(oldpwd = getcwd(NULL, 0)))
-	{
-		ft_perror("minishell", "cd", NULL);
-		free(key);
-		free(oldpwd);
-		return (1);
-	}
 	dir = (ac == 1) ? ft_dictget(env, "HOME") : av[1];
+	if (!(oldpwd = ft_get_pwd("OLDPWD")))
+		return (cd_return(dir, oldpwd, pwd));
 	if (chdir(dir))
-	{
-		ft_perror("minishell", "cd", dir);
-		free(key);
-		free(oldpwd);
-		return (1);
-	}
+		return (cd_return(dir, oldpwd, pwd));
+	if (!(pwd = ft_get_pwd("PWD")))
+		return (cd_return(dir, oldpwd, pwd));
 	ft_dictrem(&env, "OLDPWD", free);
-	ft_dictadd(&env, ft_dictnew(key, oldpwd));
+	ft_dictadd(&env, oldpwd);
+	ft_dictrem(&env, "PWD", free);
+	ft_dictadd(&env, pwd);
 	return (0);
 }

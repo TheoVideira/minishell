@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_exit.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 17:13:00 by marvin            #+#    #+#             */
-/*   Updated: 2020/05/24 17:14:24 by marvin           ###   ########.fr       */
+/*   Updated: 2020/05/31 13:30:43 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int ft_isnum(char *n)
+static int	ft_isnum(char *n)
 {
 	int i;
 
@@ -21,23 +21,20 @@ static int ft_isnum(char *n)
 		return (0);
 	if (n[i] == '-')
 		i++;
-	while(n[i])
+	while (n[i])
 		if (!ft_isdigit(n[i++]))
 			return (0);
 	return (1);
 }
 
-int	builtin_exit(int ac, char* const* av)
+int			builtin_exit(int ac, char *const *av)
 {
 	int exit_code;
 
 	write(1, "exit\n", 5);
 	if (ac == 1)
-	{
-		printf("%d\n",mini.lastreturn);
-		exit(mini.lastreturn); //TODO (exit with previous code)
-	}
-	if (ft_isnum(av[1]))	
+		exit(mini.lastreturn);
+	if (ft_isnum(av[1]))
 		if (ac > 2)
 			ft_perror_msg("minishell", "exit", NULL, "too many arguments\n");
 		else
@@ -48,7 +45,8 @@ int	builtin_exit(int ac, char* const* av)
 		}
 	else
 	{
-		ft_perror_msg("minishell", "exit", av[1], "numeric argument required\n");
+		ft_perror_msg("minishell", "exit", av[1],
+			"numeric argument required\n");
 		exit(2);
 	}
 	return (1);
