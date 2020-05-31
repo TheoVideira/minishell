@@ -132,7 +132,7 @@ void	print_tree(t_node *n);
 /*
 **	Pre exec build
 */
-char	*format_arg(char *arg);
+int		format_arg(char *arg, char **into);
 /*
 **	Execution
 */

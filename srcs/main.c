@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/03/12 17:07:57 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/05/31 13:38:36 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,73 +26,70 @@ static int lexer(char *line, t_list	**tokens)
 		alloc_error();
 		return (r);
 	}
-			printf("\e[1;32m1: TOKENIZER\e[0m\n");
-		printf("Listing tokens\n");
-		t_list *tok = *tokens;
-		while (tok)
-		{
-			printf("|%s|\n",(char*)tok->content);
-			tok = tok->next;
-		}
-		printf("Just tokenized |%s|\n", line);
-		return (0);
+	printf("\e[1;32m1: TOKENIZER\e[0m\n");
+	printf("Listing tokens\n");
+	t_list *tok = *tokens;
+	while (tok)
+	{
+		printf("|%s|\n",(char*)tok->content);
+		tok = tok->next;
+	}
+	printf("Just tokenized |%s|\n", line);
+	return (0);
 }
 
 static int parser(t_list **tokens, t_entry **entry)
 {
-		int r;
+	int r;
 
-		r = parse_entry(tokens, entry);
-		if (r == PARSING_ERROR)
-		{
-			if (!*tokens)
-				ft_putstr_fd("minishell: syntax error: unexpected end of line\n", 2);	
-			else
-				ft_perror_msg("minishell", "syntax error near unexpected token", 0, (char*)(*tokens)->content);	
-			free_entry(*entry);
-			mini.lastcall = 2;
-		}
-		else if (r == ALLOC_ERROR)
-		{
-			ft_lstclear(tokens, free);
-			alloc_error();
-		}
-		else if (r == FATAL_ERROR)
-		{
-			fatal_error();
-			ft_lstclear(tokens, free);
-			free_entry(*entry);
-		}
+	r = parse_entry(tokens, entry);
+	if (r == PARSING_ERROR)
+	{
+		if (!*tokens)
+			ft_putstr_fd("minishell: syntax error: unexpected end of line\n", 2);	
 		else
+			ft_perror_msg("minishell", "syntax error near unexpected token", 0, (char*)(*tokens)->content);	
+		free_entry(*entry);
+		mini.lastcall = 2;
+	}
+	else if (r == ALLOC_ERROR)
+	{
+		ft_lstclear(tokens, free);
+		alloc_error();
+	}
+	else if (r == FATAL_ERROR)
+	{
+		fatal_error();
+		ft_lstclear(tokens, free);
+		free_entry(*entry);
+	}
+	else
+	{
+		printf("\e[1;32m2: PARSER\e[0m\n");
+		printf("Just parsed\n");
+		t_list *tree;
+		tree = (*entry)->instructions;
+		while (tree)
 		{
-			/* code */
-			printf("\e[1;32m2: PARSER\e[0m\n");
-
-			
-			printf("Just parsed\n");
-			t_list *tree;
-			tree = (*entry)->instructions;
-			while (tree)
-			{
-				print_tree((t_node*)tree->content);
-				tree = tree->next;
-				printf("-------------------------------\n");
-			}
+			print_tree((t_node*)tree->content);
+			tree = tree->next;
+			printf("-------------------------------\n");
 		}
-		return (r);
+	}
+	return (r);
 }
 
 static void interpreter(t_entry *entry)
 {
-		int r;
-		printf("\e[1;32m3: INTERPRETER\e[0m\n");
-		printf("-------------OUTPUT------------\n");
-		r = run_entry(entry);
-		if (r == ALLOC_ERROR)
-			alloc_error();
-		else if (r == FATAL_ERROR)
-			fatal_error();
-		printf("--------------END--------------\n");
+	int r;
+	printf("\e[1;32m3: INTERPRETER\e[0m\n");
+	printf("-------------OUTPUT------------\n");
+	r = run_entry(entry);
+	if (r == ALLOC_ERROR)
+		alloc_error();
+	else if (r == FATAL_ERROR)
+		fatal_error();
+	printf("--------------END--------------\n");
 }
 
 static void run_dat_shit(char *line)

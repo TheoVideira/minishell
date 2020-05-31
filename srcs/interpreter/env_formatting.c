@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:02:14 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 16:16:54 by user42           ###   ########.fr       */
+/*   Updated: 2020/05/31 16:26:52 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ static int replace_env_value(char **new, char *ptr, char *start)
 		varvalue = "";
 	tofree = *new;
 	*new = ft_strreplace(*new, start - *new, ft_strlen(varkey) + 1, varvalue); // Check error
-	if (!new)
-		return (ALLOC_ERROR);
 	free(varkey);
 	free(tofree);
+	if (!new)
+		return (ALLOC_ERROR);
 	return (0);
 }
 

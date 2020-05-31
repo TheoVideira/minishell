@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:53 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 16:15:56 by user42           ###   ########.fr       */
+/*   Updated: 2020/05/31 17:13:55 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static int		double_quotes(char *str, char **token)
 {
 	int		size;
+	int		r;
 
 	size = 0;
 	while (*str && *str != '"')
@@ -22,9 +23,16 @@ static int		double_quotes(char *str, char **token)
 		size++;
 		str++;
 	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1)); // CHECK ALLOC
+	*token = ft_calloc(1, sizeof(char) * (size + 1));
+	if (*token == 0)
+		return (ALLOC_ERROR);
 	ft_memcpy(*token, str - size, size);
-	replace_env(token); // check error
+	r = replace_env(token);
+	if (r)
+	{
+		free(*token);
+		return (r);
+	}
 	return (size);
 }
 
@@ -38,7 +46,9 @@ static int		single_quotes(char *str, char **token)
 		size++;
 		str++;
 	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1)); // CHECK ALLOC
+	*token = ft_calloc(1, sizeof(char) * (size + 1));
+	if (*token == 0)
+		return (ALLOC_ERROR);
 	ft_memcpy(*token, str - size, size);
 	return (size);
 }
@@ -46,6 +56,7 @@ static int		single_quotes(char *str, char **token)
 static int		no_quotes(char *str, char **token)
 {
 	int		size;
+	int		r;
 
 	size = 0;
 	while (*str && !ft_isspace(*str) && *str != '"' && *str != '\'')
@@ -53,33 +64,64 @@ static int		no_quotes(char *str, char **token)
 		size++;
 		str++;
 	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1)); // CHECK ALLOC
+	*token = ft_calloc(1, sizeof(char) * (size + 1));
+	if (*token == 0)
+		return (ALLOC_ERROR);
 	ft_memcpy(*token, str - size, size);
-	replace_env(token); // check error
+	r = replace_env(token);
+	if (r)
+	{
+		free(*token);
+		return (r);
+	}
 	return (size);
 }
 
-char			*format_arg(char *arg)
+static int		read_subtoken(char *arg, char **subtoken, char *token)
 {
-	char *token;
-	char *subtoken;
-	char *tmp;
+	int r;
+	int quote;
 
-	token = ft_calloc(1, 1); // check if null or redo strjoin to handle null
+	quote = 0;
+	if (*arg == '"' && (quote = 1))
+		r = double_quotes(arg + 1, subtoken);
+	else if (*arg == '\'' && (quote = 1))
+		r = single_quotes(arg + 1, subtoken);
+	else
+		r = no_quotes(arg, subtoken);
+	if (r < 0)
+	{
+		if (r != ALLOC_ERROR)
+			free(subtoken);
+		free(token);
+		return (r);
+	}
+	return (r + quote);
+}
+
+int				format_arg(char *arg, char **into)
+{
+	char	*token;
+	char	*subtoken;
+	char	*tmp;
+	int		r;
+
+	if ((token = ft_calloc(1, 1)) == 0)
+		return (0);
 	while (ft_isspace(*arg))
 		arg++;
 	while (*arg && !ft_isspace(*arg))
 	{
-		if (*arg == '"')
-			arg += 1 + double_quotes(arg + 1, &subtoken); // check error
-		else if (*arg == '\'')
-			arg += 1 + single_quotes(arg + 1, &subtoken); // check error
-		else
-			arg += no_quotes(arg, &subtoken);
+		if ((r = read_subtoken(arg, &subtoken, token)) < 0)
+			return (r);
+		arg += r;
 		tmp = token;
-		token = ft_strjoin(token, subtoken); // check error
+		token = ft_strjoin(token, subtoken);
 		free(tmp);
 		free(subtoken);
+		if (!token)
+			return (ALLOC_ERROR);
 	}
-	return (token);
+	*into = token;
+	return (0);
 }

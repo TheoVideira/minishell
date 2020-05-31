@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 14:01:44 by user42           ###   ########.fr       */
+/*   Updated: 2020/05/31 16:26:11 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int		launch_processes(int save[2], t_list *cmd)
 	i = 0;
 	while (cmd) 
 	{
-		open_pipe(i, io, save, cmd);// check error
+		open_pipe(i, io, save, cmd);
 		if ((mini.childs[i].pid = fork()) == 0)
 		{
 			// signal(SIGQUIT, 0);
