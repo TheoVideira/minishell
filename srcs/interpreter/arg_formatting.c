@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:53 by user42            #+#    #+#             */
-/*   Updated: 2020/05/31 17:13:55 by user42           ###   ########.fr       */
+/*   Updated: 2020/05/31 17:15:43 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ static int		no_quotes(char *str, char **token)
 		size++;
 		str++;
 	}
-	*token = ft_calloc(1, sizeof(char) * (size + 1));
+	// *token = ft_calloc(1, sizeof(char) * (size + 1));
+	*token = 0;
 	if (*token == 0)
 		return (ALLOC_ERROR);
 	ft_memcpy(*token, str - size, size);
