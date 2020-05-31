@@ -133,9 +133,6 @@ void	print_tree(t_node *n);
 **	Pre exec build
 */
 char	*format_arg(char *arg);
-int		double_quotes(char *str, char **token);
-int		single_quotes(char *str, char **token);
-int		no_quotes(char *str, char **token);
 /*
 **	Execution
 */

@@ -6,13 +6,13 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:53 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 14:01:53 by user42           ###   ########.fr       */
+/*   Updated: 2020/05/26 16:15:56 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		double_quotes(char *str, char **token)
+static int		double_quotes(char *str, char **token)
 {
 	int		size;
 
@@ -28,7 +28,7 @@ int		double_quotes(char *str, char **token)
 	return (size);
 }
 
-int		single_quotes(char *str, char **token)
+static int		single_quotes(char *str, char **token)
 {
 	int		size;
 
@@ -43,7 +43,7 @@ int		single_quotes(char *str, char **token)
 	return (size);
 }
 
-int		no_quotes(char *str, char **token)
+static int		no_quotes(char *str, char **token)
 {
 	int		size;
 
@@ -59,7 +59,7 @@ int		no_quotes(char *str, char **token)
 	return (size);
 }
 
-char		*format_arg(char *arg)
+char			*format_arg(char *arg)
 {
 	char *token;
 	char *subtoken;
