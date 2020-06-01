@@ -3,10 +3,12 @@
 static int	run_single_builtin(int save[2], t_list *l)
 {
 	int fd;
+	int r;
 
 	if ((fd = handle_redirs(((t_cmd*)l->content)->redir)) != -1)
 	{
-		build_cmd((t_cmd *)l->content);// panic
+		if ((r = build_cmd((t_cmd *)l->content)))
+			return (r);
 		mini.lastcall = execute_builtin((t_cmd *)l->content); // check if label not found
 		close(fd);
 	}
@@ -30,7 +32,9 @@ int run_pipeline(t_pipeline *pi)
 	save[1] = dup(1);
 	if (len == 1 && is_builtin((t_cmd *)l->content))
 		r = run_single_builtin(save, l);
-	else if ((r = run_processes(save, len, pi->cmds)))
+	else
+		r = run_processes(save, len, pi->cmds);
+	if (r)
 		return (r);
 	return (mini.lastcall); // value of pipe
 }

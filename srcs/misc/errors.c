@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:49:12 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 15:49:13 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/01 10:23:04 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,27 @@ void	alloc_error(void)
 void	fatal_error(void)
 {
 	ft_perror("minishell", "a weird error has occured", 0);
+}
+
+void	command_not_found(char *label)
+{
+	char *str1;
+	char *str2;
+
+	if ((str1 = ft_strjoin("minishell: command not found: ", label)) == 0)
+	{
+		alloc_error();
+		return ;
+	}
+	if ((str2 = ft_strjoin(str1, "\n")) == 0)
+	{
+		free(str1);
+		alloc_error();
+		return ;
+	}
+	ft_putstr_fd(str2, 2);
+	free(str1);
+	free(str2);
 }
 
 void	ft_perror(char *shell, char *prg, char *arg)

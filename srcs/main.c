@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/05/31 13:38:36 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/01 21:08:23 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,13 @@ static int lexer(char *line, t_list	**tokens)
 	if (r == ALLOC_ERROR)
 	{
 		ft_lstclear(tokens, free);
-		free(line);
 		alloc_error();
+		return (r);
+	}
+	if (r == QUOTE_NOT_CLOSED)
+	{
+		ft_lstclear(tokens, free);
+		ft_putstr_fd("minishell: unclosed quote you scumbag\n", 2);
 		return (r);
 	}
 	printf("\e[1;32m1: TOKENIZER\e[0m\n");
@@ -123,6 +128,7 @@ int main(int ac, char **av, char **env)
 	while (1)
 	{
 		if (!(r == 0 && *line))
+			free(line);
 		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
 		r = get_next_line(0, &line);
 		if (r == 0 && *line)
@@ -130,6 +136,7 @@ int main(int ac, char **av, char **env)
 		if (r == 0)
 		{
 			ft_dictclear(mini.env, free);
+			free(line);
 			builtin_exit(1, 0);
 		}
 		run_dat_shit(line);

@@ -28,6 +28,7 @@
 # define FATAL_ERROR -1
 # define ALLOC_ERROR -2
 # define PARSING_ERROR -3
+# define QUOTE_NOT_CLOSED -4
 
 typedef struct	s_process
 {
@@ -133,6 +134,7 @@ void	print_tree(t_node *n);
 **	Pre exec build
 */
 int		format_arg(char *arg, char **into);
+int		replace_escaped(char **token);
 /*
 **	Execution
 */
@@ -146,6 +148,9 @@ int		run_pipeline(t_pipeline *pipe);
 int		run_processes(int save[2], int nb, t_list *cmds);
 int		run_command(t_cmd *cmd);
 void	brutally_murder_childrens(int sig);
+int		open_pipe(int i, int io[2], int save[2], t_list *cmd);
+int		close_pipe(int io[2], t_list *cmd);
+
 
 /*
 **	Signals
@@ -170,11 +175,11 @@ int		builtin_exit(int ac, char* const* av);
 /*
 **	Freeing
 */
-void			free_entry(t_entry *e);
-void			free_pipeline(t_pipeline *p);
-void			free_command(t_cmd *c);
-void			free_char_array(char **arr);
-void			free_node(t_node *tofree);
+void	free_entry(t_entry *e);
+void	free_pipeline(t_pipeline *p);
+void	free_command(t_cmd *c);
+void	free_char_array(char **arr);
+void	free_node(t_node *tofree);
 
 /*
 **	Utils
@@ -190,8 +195,9 @@ char	**dictoenv(t_dict *dict);
 /*
 **	Error management
 */
-void alloc_error();
-void fatal_error();
+void	alloc_error();
+void	fatal_error();
+void	command_not_found(char *label);
 
 extern t_minishell mini;
 #endif

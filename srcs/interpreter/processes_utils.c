@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:02:20 by user42            #+#    #+#             */
-/*   Updated: 2020/05/31 16:58:26 by user42           ###   ########.fr       */
+/*   Updated: 2020/05/31 17:23:29 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@ int		format_arr(char **arr)
 	{
 		tmp = arr[i];
 		r = format_arg(arr[i], &(arr[i]));
-		free(tmp);
 		if (r)
 			return (r);
+		else
+			free(tmp);
 		i++;
 	}
 	return (0);
@@ -33,10 +34,12 @@ int		format_arr(char **arr)
 
 int		build_cmd(t_cmd *cmd)
 {
-	if (cmd->args && format_arr(cmd->args))
-		return (1);
-	if (cmd->redir && format_arr(cmd->redir))
-		return (1);
+	int r;
+
+	if (cmd->args && (r = format_arr(cmd->args)))
+		return (r);
+	if (cmd->redir && (r = format_arr(cmd->redir)))
+		return (r);
 	cmd->label = cmd->args[0];
 	return (0);
 }

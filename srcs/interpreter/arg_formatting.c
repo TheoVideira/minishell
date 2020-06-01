@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:53 by user42            #+#    #+#             */
-/*   Updated: 2020/05/31 17:15:43 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/01 20:08:18 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@ static int		double_quotes(char *str, char **token)
 	int		r;
 
 	size = 0;
-	while (*str && *str != '"')
+	while (*str)
 	{
+		if (*str == '"' && *(str - 1) != '\\')
+			break ;
 		size++;
 		str++;
 	}
@@ -28,11 +30,12 @@ static int		double_quotes(char *str, char **token)
 		return (ALLOC_ERROR);
 	ft_memcpy(*token, str - size, size);
 	r = replace_env(token);
-	if (r)
+	if (r || (r = replace_escaped(token)))
 	{
 		free(*token);
 		return (r);
 	}
+	printf("DBQ |%s|\n", *token);
 	return (size);
 }
 
@@ -41,8 +44,10 @@ static int		single_quotes(char *str, char **token)
 	int		size;
 
 	size = 0;
-	while (*str && *str != '\'')
+	while (*str)
 	{
+		if (*str == '\'' && *(str - 1) != '\\')
+			break ;
 		size++;
 		str++;
 	}
@@ -58,14 +63,16 @@ static int		no_quotes(char *str, char **token)
 	int		size;
 	int		r;
 
+	printf("HERE\n");
 	size = 0;
-	while (*str && !ft_isspace(*str) && *str != '"' && *str != '\'')
+	while (*str && !ft_isspace(*str))
 	{
 		size++;
 		str++;
+		if ((*str == '\'' || *str == '"') && *(str - 1) != '\\')
+			break ;
 	}
-	// *token = ft_calloc(1, sizeof(char) * (size + 1));
-	*token = 0;
+	*token = ft_calloc(1, sizeof(char) * (size + 1));
 	if (*token == 0)
 		return (ALLOC_ERROR);
 	ft_memcpy(*token, str - size, size);

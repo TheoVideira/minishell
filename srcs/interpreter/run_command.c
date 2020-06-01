@@ -9,10 +9,7 @@ static char *search_dir(char *dirname, char *label)
 	int i;
 
 	if (!(dir = opendir(dirname)))
-	{
-		//could not open directory
 		return (0);
-	}
 	while ((de = readdir(dir)))
 	{
 		i = 0;
@@ -117,8 +114,8 @@ int run_command(t_cmd *cmd)
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')))
 		launch_file(cmd);
 	path = find_name(cmd->label);
-	execve(path, cmd->args, mini.envtmp); // need to add env trad
-	ft_perror("minishell", "command not found", cmd->label);
+	execve(path, cmd->args, mini.envtmp);
+	command_not_found(cmd->label);
 	mini.lastcall = 127;
 	exit(mini.lastcall);
 	return (0);

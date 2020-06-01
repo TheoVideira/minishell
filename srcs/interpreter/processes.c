@@ -6,52 +6,44 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/05/31 16:26:11 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/01 09:59:46 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static int		open_pipe(int i, int io[2], int save[2], t_list *cmd)
-{
-	if (i > 0)
-		dup2(io[0], 0);
-	if (cmd->next)
-	{
-		pipe(io);
-		dup2(io[1], 1);
-	}
-	else
-		dup2(save[1], 1);
-	return (0);
-}
 
-static int		close_pipe(int io[2], t_list *cmd)
+static int		fork_process(int i, t_list* cmd)
 {
-		if (cmd->next)
-			close(io[1]);
-		return (0);
+	if ((mini.childs[i].pid = fork()) == 0)
+	{
+		mini.isparent = 0;
+		build_cmd((t_cmd *)cmd->content);
+		run_command((t_cmd *)cmd->content);
+	}
+	else if (mini.childs[i].pid == -1)
+		return (FATAL_ERROR);
+	return (0);
 }
 
 static int		launch_processes(int save[2], t_list *cmd)
 {
 	int i;
+	int r;
 	int io[2];
 
 	i = 0;
 	while (cmd) 
 	{
-		open_pipe(i, io, save, cmd);
-		if ((mini.childs[i].pid = fork()) == 0)
-		{
-			// signal(SIGQUIT, 0);
-			mini.isparent = 0;
-			build_cmd((t_cmd *)cmd->content );// panic
-			run_command((t_cmd *)cmd->content); // check if label not found
-		}
-		else if (mini.childs[i].pid == -1)
-			return (FATAL_ERROR);
-		close_pipe(io, cmd); 
+		r = open_pipe(i, io, save, cmd);
+		if (r)
+			return (r);
+		r = fork_process(i, cmd);
+		if (r)
+			return (r);
+		r = close_pipe(io, cmd);
+		if (r)
+			return (r);
 		cmd = cmd->next;
 		i++;
 	}
