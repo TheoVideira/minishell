@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:02:36 by user42            #+#    #+#             */
-/*   Updated: 2020/06/01 19:19:13 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/01 22:00:40 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,12 @@ static int	loop_until(char *str, char end)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == end && str[i - 1] != '\\')
+		if (str[i] == end && (str[i - 1] != '\\' || end == '\''))
 			break ;
 		i++;
 	}
-	printf("HERE TOO\n");
 	if (!str[i])
 		return (QUOTE_NOT_CLOSED);
-	printf("asdsad HERE TOO\n");
 	return (i);
 }
 

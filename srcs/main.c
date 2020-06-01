@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/01 21:08:23 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/01 21:10:26 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,8 +128,7 @@ int main(int ac, char **av, char **env)
 	while (1)
 	{
 		if (!(r == 0 && *line))
-			free(line);
-		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
+			write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
 		r = get_next_line(0, &line);
 		if (r == 0 && *line)
 			continue ;

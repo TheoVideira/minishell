@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/01 19:28:29 by user42            #+#    #+#             */
-/*   Updated: 2020/06/01 20:59:56 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 00:44:41 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ static int merge_tokens(char *ptr, size_t len, int nb, char **tok)
 		}
 		ptr++;
 	}
-	printf("asdsad |%s|\n", new);
 	*tok = new;
 	return (0);
 }
@@ -43,6 +42,7 @@ static int replace_backslash(char **ptr)
 {
 	int nb;
 
+	nb = 0;
 	while(**ptr)
 	{
 		if (**ptr == '\\')
@@ -52,7 +52,7 @@ static int replace_backslash(char **ptr)
 			nb++;
 		}
 		(*ptr)++;
-	}
+	} 
 	return (nb);
 }
 
@@ -68,7 +68,7 @@ int		replace_escaped(char **token)
 		return (0);
 	len = ft_strlen(ptr);
 	nb = replace_backslash(&ptr);
-	if ((r = merge_tokens(*token, len, nb, &ptr)))
+	if ((r = merge_tokens(*token, len + 1, nb, &ptr)))
 		return (r);
 	free(*token);
 	*token = ptr;
