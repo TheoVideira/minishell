@@ -6,25 +6,53 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:02:36 by user42            #+#    #+#             */
-/*   Updated: 2020/06/01 22:00:40 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 01:28:09 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static int	loop_until(char *str, char end)
+static int	single_quotes(char *str)
+{
+	int i;
+
+	i = 1;
+	while (str[i])
+	{
+		if (str[i] == '\'')
+			return (i + 1);
+		i++;
+	}
+	return (QUOTE_NOT_CLOSED);
+}
+
+static int	double_quotes(char *str)
+{
+	int i;
+
+	i = 1;
+	while (str[i])
+	{
+		if (str[i] == '\\')
+			i++;
+		else if (str[i] == '"')
+			return (i + 1);
+		i++;
+	}
+	return (QUOTE_NOT_CLOSED);
+}
+
+static int	no_quotes(char *str)
 {
 	int i;
 
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == end && (str[i - 1] != '\\' || end == '\''))
+		if ((str[i] == '\'' || str[i] == '"' || ft_isspace(str[i])) && str[i - 1] != '\\')
 			break ;
 		i++;
 	}
-	if (!str[i])
-		return (QUOTE_NOT_CLOSED);
 	return (i);
 }
 
@@ -40,24 +68,16 @@ static int	read_token(char *str)
 	{
 		if (is_separator(str))
 			break ;
-		if (*str == '\\')
-		{
-			r = (*(str + 1) != 0); 
-			str += 1 + r;
-			len += 1 + r;
-		}
-		else if ((*str == '\'' || *str == '"') && ((*str - 1) != '\\' || len == 0))
-		{
-			if ((r = loop_until(str + 1, *str)) < 0)
-				return (r);
-			str += 1 + r + 1;
-			len += 1 + r + 1;
-		}
+		else if (*str == '\'')
+			r = single_quotes(str);
+		else if (*str == '"')
+			r = double_quotes(str);
 		else
-		{
-			len++;
-			str++;
-		}
+			r = no_quotes(str);
+		if (r < 0)
+			return (r);
+		len += r;
+		str += r;
 	}
 	return (len);
 }

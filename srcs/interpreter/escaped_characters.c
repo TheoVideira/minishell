@@ -6,18 +6,18 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/01 19:28:29 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 00:44:41 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 00:48:54 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static int merge_tokens(char *ptr, size_t len, int nb, char **tok)
+static int	merge_tokens(char *ptr, size_t len, int nb, char **tok)
 {
-	char *start;
-	char *new;
-	char *offset;
-	size_t l;
+	char	*start;
+	char	*new;
+	char	*offset;
+	size_t	l;
 
 	if ((new = ft_calloc(1, sizeof(char) * (len - nb + 1))) == 0)
 		return (ALLOC_ERROR);
@@ -38,12 +38,12 @@ static int merge_tokens(char *ptr, size_t len, int nb, char **tok)
 	return (0);
 }
 
-static int replace_backslash(char **ptr)
+static int	replace_backslash(char **ptr)
 {
 	int nb;
 
 	nb = 0;
-	while(**ptr)
+	while (**ptr)
 	{
 		if (**ptr == '\\')
 		{
@@ -52,11 +52,11 @@ static int replace_backslash(char **ptr)
 			nb++;
 		}
 		(*ptr)++;
-	} 
+	}
 	return (nb);
 }
 
-int		replace_escaped(char **token)
+int			replace_escaped(char **token)
 {
 	char	*ptr;
 	size_t	len;

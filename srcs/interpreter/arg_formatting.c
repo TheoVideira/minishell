@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:53 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 00:43:58 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 01:34:51 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,12 @@ static int		double_quotes(char *str, char **token)
 	size = 0;
 	while (*str)
 	{
-		if (*str == '"' && *(str - 1) != '\\')
+		if (*str == '\\')
+		{
+			size++;
+			str++;		
+		}
+		else if (*str == '"')
 			break ;
 		size++;
 		str++;
@@ -29,8 +34,7 @@ static int		double_quotes(char *str, char **token)
 	if (*token == 0)
 		return (ALLOC_ERROR);
 	ft_memcpy(*token, str - size, size);
-	r = replace_env(token);
-	if (r || (r = replace_escaped(token)))
+	if ((r = replace_env(token)) || (r = replace_escaped(token)))
 	{
 		free(*token);
 		return (r);
@@ -65,10 +69,10 @@ static int		no_quotes(char *str, char **token)
 	size = 0;
 	while (*str)
 	{
-		size++;
-		str++;
 		if ((*str == '\'' || *str == '"' || ft_isspace(*str)) && *(str - 1) != '\\')
 			break ;
+		size++;
+		str++;
 	}
 	*token = ft_calloc(1, sizeof(char) * (size + 1));
 	if (*token == 0)
