@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:04:13 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 04:43:28 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 04:53:24 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,9 @@
 
 static int	check_emptylines(t_list **tokens)
 {
-	char *str;
-
 	destroy_token(tokens);
-	if (ft_strncmp(get_token(tokens), ";", 2) == 0)
-	{
-		if ((str = ft_strdup(";;")) == 0)
-			return (ALLOC_ERROR);
-		free((*tokens)->content);
-		(*tokens)->content = str;
+	if (ft_strncmp(get_token(tokens), ";", 1) == 0)
 		return (PARSING_ERROR);
-	}
 	return (0);
 }
 
@@ -37,10 +29,12 @@ int		parse_entry(t_list **tokens, t_entry **entry)
 
 	if ((*entry = ft_calloc(1, sizeof(t_entry))) == 0)
 		return (ALLOC_ERROR);
-	if (ft_strncmp(get_token(tokens), ";", 2) == 0)
+	if (ft_strncmp(get_token(tokens), ";", 1) == 0)
 		return (PARSING_ERROR);
 	while ((tok = get_token(tokens)))
 	{
+		if (ft_strncmp(tok, ";;", 3) == 0)
+			return (PARSING_ERROR);
 		if (ft_strncmp(tok, ";", 2) == 0 && (r = check_emptylines(tokens)))
 			return (r);
 		if ((r = parse_or(tokens, &tree)) != 0)
