@@ -6,13 +6,13 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 21:36:56 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 23:17:49 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 23:37:13 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		lexer(char *line, t_list **tokens)
+int				lexer(char *line, t_list **tokens)
 {
 	int	r;
 
@@ -29,34 +29,29 @@ int		lexer(char *line, t_list **tokens)
 		ft_putstr_fd("minishell: unclosed quote\n", 2);
 		return (r);
 	}
-	printf("\e[1;32m1: TOKENIZER\e[0m\n");
-	printf("Listing tokens\n");
-	t_list *tok = *tokens;
-	while (tok)
-	{
-		printf("|%s|\n",(char*)tok->content);
-		tok = tok->next;
-	}
-	printf("Just tokenized |%s|\n", line);
 	return (0);
 }
 
-int		parser(t_list **tokens, t_entry **entry)
+static void		parsing_error(t_list **tokens, t_entry **entry)
+{
+	if (!*tokens)
+		ft_putstr_fd(
+				"minishell: syntax error: unexpected end of line\n", 2);
+	else
+		ft_perror_msg("minishell", "syntax error near unexpected token",
+											0, (char*)(*tokens)->content);
+	ft_lstclear(tokens, free);
+	free_entry(*entry);
+	g_mini.lastcall = 2;
+}
+
+int				parser(t_list **tokens, t_entry **entry)
 {
 	int r;
 
-	printf("\e[1;32m2: PARSER\e[0m\n");
 	r = parse_entry(tokens, entry);
 	if (r == PARSING_ERROR)
-	{
-		if (!*tokens)
-			ft_putstr_fd("minishell: syntax error: unexpected end of line\n", 2);	
-		else
-			ft_perror_msg("minishell", "syntax error near unexpected token", 0, (char*)(*tokens)->content);	
-		ft_lstclear(tokens, free);
-		free_entry(*entry);
-		g_mini.lastcall = 2;
-	}
+		parsing_error(tokens, entry);
 	else if (r == ALLOC_ERROR)
 	{
 		ft_lstclear(tokens, free);
@@ -68,25 +63,10 @@ int		parser(t_list **tokens, t_entry **entry)
 		ft_lstclear(tokens, free);
 		free_entry(*entry);
 	}
-	else
-	{
-		printf("Just parsed\n");
-		t_list *tree;
-		tree = (*entry)->instructions;
-		while (tree)
-		{
-			print_tree((t_node*)tree->content);
-			tree = tree->next;
-		}
-	}
-	printf("-------------------------------\n");
 	return (r);
 }
 
-void	interpreter(t_entry *entry)
+void			interpreter(t_entry *entry)
 {
-	printf("\e[1;32m3: INTERPRETER\e[0m\n");
-	printf("-------------OUTPUT------------\n");
 	run_entry(entry);
-	printf("--------------END--------------\n");
 }
