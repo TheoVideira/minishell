@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/22 17:56:12 by marvin            #+#    #+#             */
-/*   Updated: 2020/05/30 15:32:08 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/02 22:30:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	valid_key(char *key)
 	nan = 0;
 	if (!key)
 		return (0);
-	while (++i)
+	while (key[++i])
 	{
 		if (ft_isalnum(key[i]) || key[i] == '_')
 		{
@@ -98,10 +98,11 @@ static int	builtin_export_add(int ac, char *const *av, t_dict *env)
 	{
 		eq = ft_strchr(av[i], '=');
 		key = (eq) ? ft_substr(av[i], 0, eq - av[i]) : ft_strdup(av[i]);
-		if (!valid_key(key))
+		if (!valid_key(key) || (key[0] == '_' && !key[1]))
 		{
-			ft_perror_msg("-minishell", "export", key,
-				"not a valid identifier");
+			if (!(key[0] == '_' && !key[1]))
+				ft_perror_msg("-minishell", "export", key,
+					"not a valid identifier");
 			free(key);
 			continue;
 		}
