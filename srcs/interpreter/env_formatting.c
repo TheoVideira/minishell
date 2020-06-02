@@ -6,11 +6,18 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:02:14 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 22:29:09 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 22:38:40 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+static int		is_valid_char(char c)
+{
+	return (c
+			&& !ft_isspace(c)
+			&& (ft_isalnum(c) || c == '_'));
+}
 
 static int		replace_last_call(char **new, char *start)
 {
@@ -38,7 +45,7 @@ static int		replace_env_value(char **new, char *ptr, char *start)
 	char *varkey;
 	char *varvalue;
 
-	while (*ptr && !ft_isspace(*ptr) && *ptr != '$' && !is_separator(ptr))
+	while (is_valid_char(*ptr))
 		ptr++;
 	varkey = ft_substr(*new, start - *new + 1, ptr - start - 1);
 	if (!varkey)
