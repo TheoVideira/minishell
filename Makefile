@@ -46,6 +46,7 @@ SRCS =		$(GNL_SRCS) \
 			srcs/misc/tree.c \
 			srcs/misc/freeing.c \
 			srcs/misc/utils.c \
+			srcs/main_utils.c \
 			srcs/main.c
 
 

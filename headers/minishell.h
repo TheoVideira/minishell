@@ -175,6 +175,13 @@ int		builtin_exit(int ac, char* const* av);
 
 
 /*
+**	Main
+*/
+int lexer(char *line, t_list **tokens);
+int parser(t_list **tokens, t_entry **entry);
+void interpreter(t_entry *entry);
+
+/*
 **	Freeing
 */
 void	free_entry(t_entry *e);
@@ -187,7 +194,7 @@ void	free_node(t_node *tofree);
 **	Utils
 */
 int		string_arr_size(char **args);
-
+int		is_only_space(char *str);
 /*
 **	Env
 */
