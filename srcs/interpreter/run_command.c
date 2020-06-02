@@ -1,81 +1,47 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   run_command.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/06/02 16:07:17 by user42            #+#    #+#             */
+/*   Updated: 2020/06/02 20:48:16 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
-
-static char *search_dir(char *dirname, char *label)
+static int	search_entry(char *entry, char *label, char **ex)
 {
-	DIR *dir;
-	struct dirent *de;
-	char **tab;
-	int i;
+	struct stat	tmp;
 
-	if (!(dir = opendir(dirname)))
+	if (stat(entry, &tmp) == -1)
 		return (0);
-	while ((de = readdir(dir)))
-	{
-		i = 0;
-		tab = ft_split(de->d_name, '/');
-		while (tab[i])
-		{
-			if (ft_strcmp(label, tab[i]) == 0)
-			{
-				free_char_array(tab);
-				return (de->d_name);
-			}
-			i++;
-		}
-		free_char_array(tab);
-	}
-	free(dir);
+	if (S_ISDIR(tmp.st_mode))
+		return (search_dir(entry, label, ex));
 	return (0);
 }
 
-static char *compute_full_path(char *dirname, char *bin)
+static int	find_name(char *label, char **ex)
 {
-	size_t lendir;
-	size_t lenbin;
-	unsigned int slash;
-	char *fullname;
+	char	*path;
+	char	**entries;
+	int		i;
+	int		r;
 
-	lendir = ft_strlen(dirname);
-	lenbin = +ft_strlen(bin);
-	slash = dirname[lendir - 1] == '/';
-	if (!(fullname = ft_calloc(1, sizeof(char) * (lendir + lenbin + !slash + 1))))
+	*ex = 0;
+	if ((path = (char *)ft_dictget(mini.env, "PATH")) == 0)
 		return (0);
-	ft_strlcpy(fullname, dirname, lendir + 1);
-	if (!slash)
-		fullname[lendir] = '/';
-	ft_strlcpy(fullname + lendir + !slash, bin, lenbin + 1);
-	return (fullname);
-}
-
-static char *find_name(char *label)
-{
-	char *path;
-	char **entries;
-	char *name;
-	char *r;
-	int i;
-
-	name = 0;
-	path = (char *)ft_dictget(mini.env, "PATH");
 	if (!(entries = ft_split(path, ':')))
-	{
-		// panic
-		return (0);
-	}
+		return (ALLOC_ERROR);
 	i = 0;
 	while (entries[i])
 	{
-		if ((name = search_dir(entries[i], label)))
-		{
-			if (!(r = compute_full_path(entries[i], name)))
-			{
-				// panic
-				return (0);
-			}
+		if ((r = search_entry(entries[i], label, ex)) < 0)
 			free_char_array(entries);
+		if (r)
 			return (r);
-		}
 		i++;
 	}
 	free_char_array(entries);
@@ -87,22 +53,32 @@ static void	launch_file(t_cmd *cmd)
 	struct stat tmp;
 
 	if (stat(cmd->label, &tmp) == -1)
-		ft_perror("minishell", "cannot access", cmd->label); // check the right error message
-	
-	if(tmp.st_mode & S_IEXEC && !S_ISDIR(tmp.st_mode)) 
-		execve(cmd->label, cmd->args, mini.envtmp);
-	else
 	{
-		ft_perror(0, "command not found", cmd->label);
-		exit(1);	
+		ft_perror("minishell", cmd->label, 0);
+		exit(127);
 	}
+	if (S_ISDIR(tmp.st_mode))
+	{
+		errno = EISDIR;
+		ft_perror("minishell", cmd->label, 0);
+		exit(126);
+	}
+	if ((tmp.st_mode & S_IEXEC) == 0)
+	{
+		errno = EACCES;
+		ft_perror("minishell", cmd->label, 0);
+		exit(126);
+	}
+	execve(cmd->label, cmd->args, mini.envtmp);
+	ft_perror("minishell", cmd->label, 0);
+	exit(1);
 }
 
-int run_command(t_cmd *cmd)
+int			run_command(t_cmd *cmd)
 {
-	char *path;	
-	int r;
-	int fd;
+	char	*path;
+	int		r;
+	int		fd;
 
 	if ((fd = handle_redirs(cmd->redir)) == -1)
 		exit(errno);
@@ -113,10 +89,15 @@ int run_command(t_cmd *cmd)
 	}
 	if ((ft_strncmp("./", cmd->label, 2) == 0 || ft_strchr(cmd->label, '/')))
 		launch_file(cmd);
-	path = find_name(cmd->label);
+	if ((r = find_name(cmd->label, &path)) < 0)
+		return (r);
+	if (r == 0)
+	{
+		command_not_found(cmd->label);
+		exit(127);
+	}
 	execve(path, cmd->args, mini.envtmp);
-	command_not_found(cmd->label);
-	mini.lastcall = 127;
-	exit(mini.lastcall);
+	ft_perror("minishell", path, 0);
+	exit(126);
 	return (0);
 }

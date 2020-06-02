@@ -6,20 +6,20 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/06/01 09:59:46 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 20:49:53 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-
-static int		fork_process(int i, t_list* cmd)
+static int		fork_process(int i, t_list *cmd)
 {
 	if ((mini.childs[i].pid = fork()) == 0)
 	{
 		mini.isparent = 0;
 		build_cmd((t_cmd *)cmd->content);
-		run_command((t_cmd *)cmd->content);
+		if (run_command((t_cmd *)cmd->content))
+			exit(1);
 	}
 	else if (mini.childs[i].pid == -1)
 		return (FATAL_ERROR);
@@ -33,7 +33,7 @@ static int		launch_processes(int save[2], t_list *cmd)
 	int io[2];
 
 	i = 0;
-	while (cmd) 
+	while (cmd)
 	{
 		r = open_pipe(i, io, save, cmd);
 		if (r)
@@ -63,7 +63,7 @@ static int		end_processes(int nb)
 	return (0);
 }
 
-int	run_processes(int save[2], int nb, t_list *cmds)
+int				run_processes(int save[2], int nb, t_list *cmds)
 {
 	int r;
 
@@ -82,4 +82,3 @@ int	run_processes(int save[2], int nb, t_list *cmds)
 	free_char_array(mini.envtmp);
 	return (r);
 }
-

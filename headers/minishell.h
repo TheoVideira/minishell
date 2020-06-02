@@ -135,6 +135,8 @@ void	print_tree(t_node *n);
 */
 int		format_arg(char *arg, char **into);
 int		replace_escaped(char **token);
+int		search_dir(char *dirname, char *label, char **target);
+
 /*
 **	Execution
 */

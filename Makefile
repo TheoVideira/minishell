@@ -21,6 +21,7 @@ SRCS =		$(GNL_SRCS) \
 			srcs/parser/parse_tokens.c \
 			srcs/parser/ask_for_more.c \
 			srcs/interpreter/env_formatting.c \
+			srcs/interpreter/search_directory.c \
 			srcs/interpreter/arg_formatting.c \
 			srcs/interpreter/escaped_characters.c \
 			srcs/interpreter/builtins.c \
