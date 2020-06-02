@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 15:41:15 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/02 23:29:16 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 00:15:07 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ int				builtin_pwd(void);
 int				builtin_export(int ac, char *const *av, t_dict *env);
 int				builtin_unset(int ac, char *const *av, t_dict *env);
 int				builtin_env(t_dict *env);
-int				builtin_exit(int ac, char const **av);
+int				builtin_exit(int ac, char *const *av);
 
 /*
 **	Main

@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:02:04 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 23:10:27 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 00:14:36 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int		execute_builtin(t_cmd *c)
 	if (!ft_strcmp(c->label, "env"))
 		return (builtin_env(g_mini.env));
 	if (!ft_strcmp(c->label, "exit"))
-		return (builtin_exit(string_arr_size(c->args), c->args));
+		return (builtin_exit(string_arr_size(c->args), (const char**)c->args));
 	return (-1);
 }
 
