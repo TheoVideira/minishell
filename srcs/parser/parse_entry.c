@@ -6,11 +6,27 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:04:13 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 02:17:23 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 04:43:28 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+static int	check_emptylines(t_list **tokens)
+{
+	char *str;
+
+	destroy_token(tokens);
+	if (ft_strncmp(get_token(tokens), ";", 2) == 0)
+	{
+		if ((str = ft_strdup(";;")) == 0)
+			return (ALLOC_ERROR);
+		free((*tokens)->content);
+		(*tokens)->content = str;
+		return (PARSING_ERROR);
+	}
+	return (0);
+}
 
 int		parse_entry(t_list **tokens, t_entry **entry)
 {
@@ -21,13 +37,12 @@ int		parse_entry(t_list **tokens, t_entry **entry)
 
 	if ((*entry = ft_calloc(1, sizeof(t_entry))) == 0)
 		return (ALLOC_ERROR);
+	if (ft_strncmp(get_token(tokens), ";", 2) == 0)
+		return (PARSING_ERROR);
 	while ((tok = get_token(tokens)))
 	{
-		if (ft_strncmp(tok, ";", 2) == 0)
-		{
-			destroy_token(tokens);
-			continue ;
-		}
+		if (ft_strncmp(tok, ";", 2) == 0 && (r = check_emptylines(tokens)))
+			return (r);
 		if ((r = parse_or(tokens, &tree)) != 0)
 			return (r);
 		if (!(l = ft_lstnew(tree)))
