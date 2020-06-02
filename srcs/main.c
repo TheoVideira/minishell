@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/01 21:10:26 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 01:51:56 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,9 @@ static int parser(t_list **tokens, t_entry **entry)
 
 static void interpreter(t_entry *entry)
 {
-	int r;
 	printf("\e[1;32m3: INTERPRETER\e[0m\n");
 	printf("-------------OUTPUT------------\n");
-	r = run_entry(entry);
-	if (r == ALLOC_ERROR)
-		alloc_error();
-	else if (r == FATAL_ERROR)
-		fatal_error();
+	run_entry(entry);
 	printf("--------------END--------------\n");
 }
 

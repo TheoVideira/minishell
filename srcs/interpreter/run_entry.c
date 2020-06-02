@@ -10,9 +10,11 @@ int run_entry(t_entry *entry)
 	while (tree)
 	{
 		r = run_tree((t_node *)tree->content);
-		if (!r)
-			return (r);
+		if (r == ALLOC_ERROR)
+			alloc_error();
+		else if (r == FATAL_ERROR)
+			fatal_error();
 		tree = tree->next;
 	}
-	return (r);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:04:13 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 15:09:51 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 02:17:23 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,10 @@ int		parse_entry(t_list **tokens, t_entry **entry)
 			destroy_token(tokens);
 			continue ;
 		}
-		r = parse_or(tokens, &tree);
-		if (r != 0)
+		if ((r = parse_or(tokens, &tree)) != 0)
 			return (r);
 		if (!(l = ft_lstnew(tree)))
 			return (ALLOC_ERROR);
-		next_token(tokens);
 		ft_lstadd_back(&(*entry)->instructions, l);
 	}
 	*tokens = 0;
