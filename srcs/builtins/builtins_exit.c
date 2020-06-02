@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 17:13:00 by marvin            #+#    #+#             */
-/*   Updated: 2020/05/31 13:30:43 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 23:10:27 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int			builtin_exit(int ac, char *const *av)
 
 	write(1, "exit\n", 5);
 	if (ac == 1)
-		exit(mini.lastreturn);
+		exit(g_mini.lastreturn);
 	if (ft_isnum(av[1]))
 		if (ac > 2)
 			ft_perror_msg("minishell", "exit", NULL, "too many arguments\n");

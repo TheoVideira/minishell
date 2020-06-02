@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:02:20 by user42            #+#    #+#             */
-/*   Updated: 2020/05/31 17:23:29 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 23:10:27 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,14 @@ void	brutally_murder_childrens(int sig)
 {
 	int i;
 
-	if (mini.isparent == 0)
+	if (g_mini.isparent == 0)
 		return ;
-	if (mini.childs == 0)
+	if (g_mini.childs == 0)
 		return ;
 	i = 0;
-	while (mini.childs[i].pid != 0)
+	while (g_mini.childs[i].pid != 0)
 	{
-		kill(mini.childs[i].pid, sig);
+		kill(g_mini.childs[i].pid, sig);
 		i++;
 	}
 }

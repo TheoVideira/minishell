@@ -6,15 +6,15 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/02 22:41:08 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 23:14:49 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-t_minishell mini = {0};
+t_minishell g_mini = {0};
 
-static void run_dat_shit(char *line)
+static void	run_dat_shit(char *line)
 {
 	t_list		*tokens;
 	t_entry		*entry;
@@ -29,19 +29,31 @@ static void run_dat_shit(char *line)
 	free_entry(entry);
 }
 
-int main(int ac, char **av, char **env)
+static void	init(int ac, char **av, char **env)
+{
+	(void)ac;
+	(void)av;
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, handle_sigquit);
+	g_mini.env = envtodict(env);
+	g_mini.isparent = 1;
+}
+
+static void	quit(char *line)
+{
+	ft_dictclear(g_mini.env, free);
+	free(line);
+	builtin_exit(1, 0);
+}
+
+int			main(int ac, char **av, char **env)
 {
 	int			r;
 	char		*line;
-	
-	(void) ac;
-	(void) av;
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, handle_sigquit);
-	mini.env = envtodict(env);
-	mini.isparent = 1;
+
 	r = 1;
 	line = 0;
+	init(ac, av, env);
 	while (1)
 	{
 		if (r != 0)
@@ -49,18 +61,14 @@ int main(int ac, char **av, char **env)
 		r = get_next_line(0, &line);
 		if (r == 0 && *line)
 		{
-			free (line);
+			free(line);
 			continue ;
 		}
 		if (r == 0)
-		{
-			ft_dictclear(mini.env, free);
-			free(line);
-			builtin_exit(1, 0);
-		}
+			quit(line);
 		run_dat_shit(line);
 		free(line);
 	}
-	ft_dictclear(mini.env, free);
+	ft_dictclear(g_mini.env, free);
 	return (0);
 }

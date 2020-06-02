@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:02:14 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 22:51:48 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 23:10:27 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int		replace_last_call(char **new, char *start)
 	char *varvalue;
 
 	tofree = *new;
-	varvalue = ft_itoa(mini.lastcall);
+	varvalue = ft_itoa(g_mini.lastcall);
 	if (varvalue == 0)
 		return (ALLOC_ERROR);
 	*new = ft_strreplace(*new, start - *new, 2, varvalue);
@@ -50,7 +50,7 @@ static int		replace_env_value(char **new, char *ptr, char *start)
 	varkey = ft_substr(*new, start - *new + 1, ptr - start - 1);
 	if (!varkey)
 		return (ALLOC_ERROR);
-	if (!(varvalue = (char*)ft_dictget(mini.env, varkey)))
+	if (!(varvalue = (char*)ft_dictget(g_mini.env, varkey)))
 		varvalue = "";
 	tofree = *new;
 	*new = ft_strreplace(*new, start - *new,

@@ -6,15 +6,15 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 21:36:56 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 22:41:05 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 23:17:49 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int lexer(char *line, t_list **tokens)
+int		lexer(char *line, t_list **tokens)
 {
-	int r;
+	int	r;
 
 	r = tokenize(line, tokens);
 	if (r == ALLOC_ERROR)
@@ -41,7 +41,7 @@ int lexer(char *line, t_list **tokens)
 	return (0);
 }
 
-int parser(t_list **tokens, t_entry **entry)
+int		parser(t_list **tokens, t_entry **entry)
 {
 	int r;
 
@@ -55,7 +55,7 @@ int parser(t_list **tokens, t_entry **entry)
 			ft_perror_msg("minishell", "syntax error near unexpected token", 0, (char*)(*tokens)->content);	
 		ft_lstclear(tokens, free);
 		free_entry(*entry);
-		mini.lastcall = 2;
+		g_mini.lastcall = 2;
 	}
 	else if (r == ALLOC_ERROR)
 	{
@@ -83,7 +83,7 @@ int parser(t_list **tokens, t_entry **entry)
 	return (r);
 }
 
-void interpreter(t_entry *entry)
+void	interpreter(t_entry *entry)
 {
 	printf("\e[1;32m3: INTERPRETER\e[0m\n");
 	printf("-------------OUTPUT------------\n");

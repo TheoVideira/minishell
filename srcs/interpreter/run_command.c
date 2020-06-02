@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:07:17 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 20:48:16 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 23:11:39 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	find_name(char *label, char **ex)
 	int		r;
 
 	*ex = 0;
-	if ((path = (char *)ft_dictget(mini.env, "PATH")) == 0)
+	if ((path = (char *)ft_dictget(g_mini.env, "PATH")) == 0)
 		return (0);
 	if (!(entries = ft_split(path, ':')))
 		return (ALLOC_ERROR);
@@ -69,7 +69,7 @@ static void	launch_file(t_cmd *cmd)
 		ft_perror("minishell", cmd->label, 0);
 		exit(126);
 	}
-	execve(cmd->label, cmd->args, mini.envtmp);
+	execve(cmd->label, cmd->args, g_mini.envtmp);
 	ft_perror("minishell", cmd->label, 0);
 	exit(1);
 }
@@ -96,7 +96,7 @@ int			run_command(t_cmd *cmd)
 		command_not_found(cmd->label);
 		exit(127);
 	}
-	execve(path, cmd->args, mini.envtmp);
+	execve(path, cmd->args, g_mini.envtmp);
 	ft_perror("minishell", path, 0);
 	exit(126);
 	return (0);
