@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 15:41:15 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/02/04 17:44:19 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/06/02 23:29:16 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@
 
 typedef struct	s_process
 {
-	pid_t pid;
-	int status;
+	pid_t	pid;
+	int		status;
 }				t_process;
 
 typedef struct	s_minishell
@@ -55,7 +55,6 @@ typedef struct	s_pipeline
 	int		returned;
 }				t_pipeline;
 
-
 /*
 **	Types of nodes in parse tree
 */
@@ -69,21 +68,20 @@ typedef enum	e_nodetype
 /*
 **	Basic structure for parse tree
 */
-typedef struct s_node
+typedef struct	s_node
 {
 	t_nodetype		type;
-	t_pipeline 		*pipeline;
-	struct s_node 	*left;
-	struct s_node 	*right;
+	t_pipeline		*pipeline;
+	struct s_node	*left;
+	struct s_node	*right;
 }				t_node;
-
 
 /*
 **	Simple command
 */
 typedef struct	s_cmd
 {
-	char 	*label;
+	char	*label;
 	char	**args;
 	char	**redir;
 	int		returned;
@@ -98,115 +96,113 @@ typedef struct	s_entry
 /*
 **	Parse tree
 */
-void	next_token(t_list **token);
-char	*get_token(t_list **token);
-char	*get_token_hard(t_list **token);
-void	destroy_token(t_list **token);
-t_list	*pop_first(t_list **l);
-int		get_next_arg(t_list **token, t_list **target);
-int		is_operator(char *str);
-t_node	*create_node(t_nodetype t, t_pipeline *p);
-t_node	*create_node_trio(t_nodetype t, t_node *left, t_node *right);
-int		parse_entry(t_list **tokens, t_entry **i);
-int		parse_or(t_list **tokens, t_node **r);
-int		parse_and(t_list **tokens, t_node **r);
-int		parse_pipeline(t_list **tokens, t_node **r);
-int		parse_cmd(t_list **token, t_cmd **c);
-int		ask_for_more(t_list **token);
-int		replace_env(char **str);
+void			next_token(t_list **token);
+char			*get_token(t_list **token);
+char			*get_token_hard(t_list **token);
+void			destroy_token(t_list **token);
+t_list			*pop_first(t_list **l);
+int				get_next_arg(t_list **token, t_list **target);
+int				is_operator(char *str);
+t_node			*create_node(t_nodetype t, t_pipeline *p);
+t_node			*create_node_trio(t_nodetype t, t_node *left, t_node *right);
+int				parse_entry(t_list **tokens, t_entry **i);
+int				parse_or(t_list **tokens, t_node **r);
+int				parse_and(t_list **tokens, t_node **r);
+int				parse_pipeline(t_list **tokens, t_node **r);
+int				parse_cmd(t_list **token, t_cmd **c);
+int				ask_for_more(t_list **token);
+int				replace_env(char **str);
 
 /*
 **	Lexer / tokenizer
 */
-int		is_separator(char *str);
-int		tokencount(char *str);
-int		get_next_token(char *str, char **tofill);
-int		tokenize(char *str, t_list **end);
-char	**list_to_char_array(t_list *l);
+int				is_separator(char *str);
+int				tokencount(char *str);
+int				get_next_token(char *str, char **tofill);
+int				tokenize(char *str, t_list **end);
+char			**list_to_char_array(t_list *l);
 
 /*
 **	Tree debugging
 */
-void	print_node(t_node *n, int level);
-void	print_tree(t_node *n);
+void			print_node(t_node *n, int level);
+void			print_tree(t_node *n);
 
 /*
 **	Pre exec build
 */
-int		format_arg(char *arg, char **into);
-int		replace_escaped(char **token);
-int		search_dir(char *dirname, char *label, char **target);
+int				format_arg(char *arg, char **into);
+int				replace_escaped(char **token);
+int				search_dir(char *dirname, char *label, char **target);
 
 /*
 **	Execution
 */
-int		handle_redirs(char **redirs);
-int		is_builtin(t_cmd* cmd);
-int		execute_builtin(t_cmd* cmd);
-int		build_cmd(t_cmd	*cmd);
-int		run_entry(t_entry *entry);
-int		run_tree(t_node *tree);
-int		run_pipeline(t_pipeline *pipe);
-int		run_processes(int save[2], int nb, t_list *cmds);
-int		run_command(t_cmd *cmd);
-void	brutally_murder_childrens(int sig);
-int		open_pipe(int i, int io[2], int save[2], t_list *cmd);
-int		close_pipe(int io[2], t_list *cmd);
-
+int				handle_redirs(char **redirs);
+int				is_builtin(t_cmd *cmd);
+int				execute_builtin(t_cmd *cmd);
+int				build_cmd(t_cmd	*cmd);
+int				run_entry(t_entry *entry);
+int				run_tree(t_node *tree);
+int				run_pipeline(t_pipeline *pipe);
+int				run_processes(int save[2], int nb, t_list *cmds);
+int				run_command(t_cmd *cmd);
+void			brutally_murder_childrens(int sig);
+int				open_pipe(int i, int io[2], int save[2], t_list *cmd);
+int				close_pipe(int io[2], t_list *cmd);
 
 /*
 **	Signals
 */
-void handle_sigint(int sig);
-void handle_sigquit(int sig);
+void			handle_sigint(int sig);
+void			handle_sigquit(int sig);
 
 /*
 **	Built-ins
 */
-void	ft_perror(char *shell, char *prg, char *arg);
-void	ft_perror_msg(char *shell, char *prg, char *arg, char *msg);
-int		builtin_echo(int ac, char *const *av);
-int		builtin_cd(int ac, char *const *av, t_dict* env);
-int		builtin_pwd(void);
-int		builtin_export(int ac, char *const *av, t_dict *env);
-int		builtin_unset(int ac, char *const *av, t_dict *env);
-int		builtin_env(t_dict *env);
-int		builtin_exit(int ac, char* const* av);
-
+void			ft_perror(char *shell, char *prg, char *arg);
+void			ft_perror_msg(char *shell, char *prg, char *arg, char *msg);
+int				builtin_echo(int ac, char *const *av);
+int				builtin_cd(int ac, char *const *av, t_dict *env);
+int				builtin_pwd(void);
+int				builtin_export(int ac, char *const *av, t_dict *env);
+int				builtin_unset(int ac, char *const *av, t_dict *env);
+int				builtin_env(t_dict *env);
+int				builtin_exit(int ac, char const **av);
 
 /*
 **	Main
 */
-int lexer(char *line, t_list **tokens);
-int parser(t_list **tokens, t_entry **entry);
-void interpreter(t_entry *entry);
+int				lexer(char *line, t_list **tokens);
+int				parser(t_list **tokens, t_entry **entry);
+void			interpreter(t_entry *entry);
 
 /*
 **	Freeing
 */
-void	free_entry(t_entry *e);
-void	free_pipeline(t_pipeline *p);
-void	free_command(t_cmd *c);
-void	free_char_array(char **arr);
-void	free_node(t_node *tofree);
+void			free_entry(t_entry *e);
+void			free_pipeline(t_pipeline *p);
+void			free_command(t_cmd *c);
+void			free_char_array(char **arr);
+void			free_node(t_node *tofree);
 
 /*
 **	Utils
 */
-int		string_arr_size(char **args);
-int		is_only_space(char *str);
+int				string_arr_size(char **args);
+int				is_only_space(char *str);
 /*
 **	Env
 */
-t_dict	*envtodict(char **env);
-char	**dictoenv(t_dict *dict);
+t_dict			*envtodict(char **env);
+char			**dictoenv(t_dict *dict);
 
 /*
 **	Error management
 */
-void	alloc_error();
-void	fatal_error();
-void	command_not_found(char *label);
+void			alloc_error();
+void			fatal_error();
+void			command_not_found(char *label);
 
-extern t_minishell mini;
+extern t_minishell g_mini;
 #endif
