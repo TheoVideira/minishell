@@ -6,46 +6,46 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:02:04 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 14:02:04 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 05:07:53 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		execute_builtin(t_cmd* cmd)
+int		execute_builtin(t_cmd *c)
 {
-	if (!ft_strcmp(cmd->label, "echo"))
-		return (builtin_echo(string_arr_size(cmd->args), cmd->args));
-	if (!ft_strcmp(cmd->label, "cd"))
-		return (builtin_cd(string_arr_size(cmd->args), cmd->args, mini.env));
-	if (!ft_strcmp(cmd->label, "pwd"))
+	if (!ft_strcmp(c->label, "echo"))
+		return (builtin_echo(string_arr_size(c->args), c->args));
+	if (!ft_strcmp(c->label, "cd"))
+		return (builtin_cd(string_arr_size(c->args), c->args, mini.env));
+	if (!ft_strcmp(c->label, "pwd"))
 		return (builtin_pwd());
-	if (!ft_strcmp(cmd->label, "export"))
-		return builtin_export(string_arr_size(cmd->args), cmd->args, mini.env);
-	if (!ft_strcmp(cmd->label, "unset"))
-		return builtin_unset(string_arr_size(cmd->args), cmd->args, mini.env);
-	if (!ft_strcmp(cmd->label, "env"))
-		return builtin_env(mini.env);
-	if (!ft_strcmp(cmd->label, "exit"))
-		return builtin_exit(string_arr_size(cmd->args), cmd->args);
+	if (!ft_strcmp(c->label, "export"))
+		return (builtin_export(string_arr_size(c->args), c->args, mini.env));
+	if (!ft_strcmp(c->label, "unset"))
+		return (builtin_unset(string_arr_size(c->args), c->args, mini.env));
+	if (!ft_strcmp(c->label, "env"))
+		return (builtin_env(mini.env));
+	if (!ft_strcmp(c->label, "exit"))
+		return (builtin_exit(string_arr_size(c->args), c->args));
 	return (-1);
 }
 
-int		is_builtin(t_cmd* cmd)
+int		is_builtin(t_cmd *c)
 {
-	if (!ft_strcmp(cmd->label, "echo"))
+	if (!ft_strcmp(c->label, "echo"))
 		return (1);
-	if (!ft_strcmp(cmd->label, "cd"))
+	if (!ft_strcmp(c->label, "cd"))
 		return (1);
-	if (!ft_strcmp(cmd->label, "pwd"))
+	if (!ft_strcmp(c->label, "pwd"))
 		return (1);
-	if (!ft_strcmp(cmd->label, "export"))
+	if (!ft_strcmp(c->label, "export"))
 		return (1);
-	if (!ft_strcmp(cmd->label, "unset"))
+	if (!ft_strcmp(c->label, "unset"))
 		return (1);
-	if (!ft_strcmp(cmd->label, "env"))
+	if (!ft_strcmp(c->label, "env"))
 		return (1);
-	if (!ft_strcmp(cmd->label, "exit"))
+	if (!ft_strcmp(c->label, "exit"))
 		return (1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:02:14 by user42            #+#    #+#             */
-/*   Updated: 2020/05/31 16:26:52 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 04:59:03 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ static int		replace_last_call(char **new, char *start)
 	char *varvalue;
 
 	tofree = *new;
-	varvalue = ft_itoa(mini.lastcall); // check env
+	varvalue = ft_itoa(mini.lastcall);
 	if (varvalue == 0)
 		return (ALLOC_ERROR);
-	*new = ft_strreplace(*new, start - *new, 2, varvalue); // Check error
+	*new = ft_strreplace(*new, start - *new, 2, varvalue);
 	if (*new == 0)
 	{
 		free(varvalue);
@@ -32,7 +32,7 @@ static int		replace_last_call(char **new, char *start)
 	return (0);
 }
 
-static int replace_env_value(char **new, char *ptr, char *start)
+static int		replace_env_value(char **new, char *ptr, char *start)
 {
 	char *tofree;
 	char *varkey;
@@ -40,13 +40,14 @@ static int replace_env_value(char **new, char *ptr, char *start)
 
 	while (*ptr && !ft_isspace(*ptr) && *ptr != '$' && !is_separator(ptr))
 		ptr++;
-	varkey = ft_substr(*new, start - *new + 1, ptr - start - 1); // check error
+	varkey = ft_substr(*new, start - *new + 1, ptr - start - 1);
 	if (!varkey)
 		return (ALLOC_ERROR);
 	if (!(varvalue = (char*)ft_dictget(mini.env, varkey)))
 		varvalue = "";
 	tofree = *new;
-	*new = ft_strreplace(*new, start - *new, ft_strlen(varkey) + 1, varvalue); // Check error
+	*new = ft_strreplace(*new, start - *new,
+					ft_strlen(varkey) + 1, varvalue);
 	free(varkey);
 	free(tofree);
 	if (!new)
@@ -54,11 +55,11 @@ static int replace_env_value(char **new, char *ptr, char *start)
 	return (0);
 }
 
-int		replace_env(char **str)
+int				replace_env(char **str)
 {
-	char *ptr;
-	char *start;
-	int r;
+	char	*ptr;
+	char	*start;
+	int		r;
 
 	ptr = *str;
 	while (*ptr)

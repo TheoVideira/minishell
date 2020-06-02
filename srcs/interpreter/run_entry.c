@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   run_entry.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/06/02 04:59:21 by user42            #+#    #+#             */
+/*   Updated: 2020/06/02 05:08:50 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
-int run_entry(t_entry *entry)
+int	run_entry(t_entry *entry)
 {
-	t_list *tree;
-	int r;
+	t_list	*tree;
+	int		r;
 
 	tree = entry->instructions;
 	r = 0;

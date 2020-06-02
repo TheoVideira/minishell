@@ -1,15 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   run_pipeline.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/06/02 05:08:55 by user42            #+#    #+#             */
+/*   Updated: 2020/06/02 05:10:19 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
 static int	run_single_builtin(int save[2], t_list *l)
 {
-	int fd;
-	int r;
+	int	fd;
+	int	r;
 
 	if ((fd = handle_redirs(((t_cmd*)l->content)->redir)) != -1)
 	{
 		if ((r = build_cmd((t_cmd *)l->content)))
 			return (r);
-		mini.lastcall = execute_builtin((t_cmd *)l->content); // check if label not found
+		mini.lastcall = execute_builtin((t_cmd *)l->content);
 		close(fd);
 	}
 	else
@@ -19,12 +31,12 @@ static int	run_single_builtin(int save[2], t_list *l)
 	return (mini.lastcall);
 }
 
-int run_pipeline(t_pipeline *pi)
+int			run_pipeline(t_pipeline *pi)
 {
-	t_list *l;
-	int len;
-	int save[2];
-	int r;
+	t_list	*l;
+	int		len;
+	int		save[2];
+	int		r;
 
 	l = pi->cmds;
 	len = ft_lstsize(pi->cmds);
@@ -36,5 +48,5 @@ int run_pipeline(t_pipeline *pi)
 		r = run_processes(save, len, pi->cmds);
 	if (r)
 		return (r);
-	return (mini.lastcall); // value of pipe
+	return (mini.lastcall);
 }

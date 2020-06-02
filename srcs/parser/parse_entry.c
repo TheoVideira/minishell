@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:04:13 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 04:53:24 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 04:56:06 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int	check_emptylines(t_list **tokens)
 	return (0);
 }
 
-int		parse_entry(t_list **tokens, t_entry **entry)
+int			parse_entry(t_list **tokens, t_entry **entry)
 {
 	int		r;
 	char	*tok;

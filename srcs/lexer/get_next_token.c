@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:02:36 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 02:02:27 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/02 04:56:41 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ static int	no_quotes(char *str)
 	{
 		if (is_separator(&str[i]) && str[i - 1] != '\\')
 			break ;
-		if ((str[i] == '\'' || str[i] == '"' || ft_isspace(str[i])) && str[i - 1] != '\\')
+		if ((str[i] == '\'' || str[i] == '"'
+			|| ft_isspace(str[i])) && str[i - 1] != '\\')
 			break ;
 		i++;
 	}
