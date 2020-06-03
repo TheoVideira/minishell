@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:16:30 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 15:16:31 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 16:50:18 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,6 @@ static int		join_tokens(t_list **token, t_list **target)
 	return (0);
 }
 
-static int		parse_label(t_list **args, t_cmd **c, t_list **token)
-{
-	*args = 0;
-	if ((*c = ft_calloc(1, sizeof(t_cmd))) == NULL)
-		return (ALLOC_ERROR);
-	ft_lstadd_back(args, pop_first(token));
-	(*c)->label = (char*)(*args)->content;
-	return (0);
-}
-
 static int		parse_args(t_list **token, t_list **args, t_list **redir)
 {
 	char	*t;
@@ -60,6 +50,32 @@ static int		parse_args(t_list **token, t_list **args, t_list **redir)
 		else
 			ft_lstadd_back(args, pop_first(token));
 	}
+	return (0);
+}
+
+static int		is_redir(char *str)
+{
+	return (ft_strncmp(str, ">", 2) == 0 ||
+			ft_strncmp(str, ">>", 2) == 0 ||
+			ft_strncmp(str, "<", 2) == 0);
+}
+
+static int		parse_label(t_list **args, t_cmd **c, t_list **token)
+{
+	t_list *new;
+
+	*args = 0;
+	if ((*c = ft_calloc(1, sizeof(t_cmd))) == NULL)
+		return (ALLOC_ERROR);
+	if (is_redir(get_token(token)))
+	{
+		if ((new = ft_lstnew(0)) == 0)
+			return (ALLOC_ERROR);
+	}
+	else
+		new = pop_first(token);
+	ft_lstadd_back(args, new);
+	(*c)->label = (char*)(*args)->content;
 	return (0);
 }
 
