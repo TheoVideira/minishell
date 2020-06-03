@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:07:17 by user42            #+#    #+#             */
-/*   Updated: 2020/06/03 15:00:05 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 15:38:28 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static int	find_name(char *label, char **ex)
 		i++;
 	}
 	free_char_array(entries);
+	free(path);
 	return (0);
 }
 

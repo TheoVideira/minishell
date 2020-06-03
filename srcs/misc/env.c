@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:50:37 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 15:51:09 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 15:37:22 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,11 @@ char	**dictoenv(t_dict *dict)
 	i = 0;
 	while (dict)
 	{
+		if (dict->value == 0)
+		{
+			dict = dict->next;
+			continue ;
+		}
 		len1 = ft_strlen(dict->key);
 		len2 = ft_strlen((char*)dict->value);
 		if (!(env[i] = ft_calloc(1, (len1 + 1 + len2 + 1) * sizeof(char))))
