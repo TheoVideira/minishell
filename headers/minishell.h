@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 15:41:15 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/03 00:15:07 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 02:51:54 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,7 @@ int				builtin_exit(int ac, char *const *av);
 int				lexer(char *line, t_list **tokens);
 int				parser(t_list **tokens, t_entry **entry);
 void			interpreter(t_entry *entry);
+void			run_dat_shit(char *line);
 
 /*
 **	Freeing
