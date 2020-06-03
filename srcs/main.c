@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/03 01:17:04 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 02:13:40 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ static void	quit(char *line)
 {
 	ft_dictclear(g_mini.env, free);
 	free(line);
-	builtin_exit(1, g_mini.lastcall);
+	write(1,"exit\n", 5);
+	exit(g_mini.lastcall);
 }
 
 int			main(int ac, char **av, char **env)
