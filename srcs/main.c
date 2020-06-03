@@ -6,28 +6,13 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/03 02:13:40 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 03:13:42 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
 t_minishell g_mini = {0};
-
-static void	run_dat_shit(char *line)
-{
-	t_list		*tokens;
-	t_entry		*entry;
-
-	if (ft_strlen(line) == 0 || is_only_space(line))
-		return ;
-	if (lexer(line, &tokens))
-		return ;
-	if (parser(&tokens, &entry))
-		return ;
-	interpreter(entry);
-	free_entry(entry);
-}
 
 static void	init(int ac, char **av, char **env)
 {
@@ -47,6 +32,31 @@ static void	quit(char *line)
 	exit(g_mini.lastcall);
 }
 
+static void	quit_error(char *line)
+{
+	ft_dictclear(g_mini.env, free);
+	if (line)
+		free(line);
+	write(1,"\n", 1);
+	ft_perror("minishell", "stdin error", 0);
+	write(1,"exit\n", 5);
+	exit(1);
+}
+
+static int	handle_eof(char **line)
+{
+	int r;
+
+	while ((r = get_next_line(0, line)) == 0)
+	{
+		free(*line);
+		continue;
+	}
+	if (r == -1)
+		return (-1);
+	return (1);
+}
+
 int			main(int ac, char **av, char **env)
 {
 	int			r;
@@ -57,15 +67,16 @@ int			main(int ac, char **av, char **env)
 	init(ac, av, env);
 	while (1)
 	{
-		if (r != 0)
-			write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
-		r = get_next_line(0, &line);
+		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
+		if ((r = get_next_line(0, &line)) == -1)
+			quit_error(line);
 		if (r == 0 && *line)
 		{
 			free(line);
-			continue ;
+			if (handle_eof(&line) == -1)
+				quit_error(line);
 		}
-		if (r == 0)
+		else if (r == 0)
 			quit(line);
 		run_dat_shit(line);
 		free(line);

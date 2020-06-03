@@ -6,13 +6,13 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 21:36:56 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 23:17:49 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 02:51:35 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int		lexer(char *line, t_list **tokens)
+int			lexer(char *line, t_list **tokens)
 {
 	int	r;
 
@@ -41,7 +41,7 @@ int		lexer(char *line, t_list **tokens)
 	return (0);
 }
 
-int		parser(t_list **tokens, t_entry **entry)
+int			parser(t_list **tokens, t_entry **entry)
 {
 	int r;
 
@@ -83,10 +83,25 @@ int		parser(t_list **tokens, t_entry **entry)
 	return (r);
 }
 
-void	interpreter(t_entry *entry)
+void		interpreter(t_entry *entry)
 {
 	printf("\e[1;32m3: INTERPRETER\e[0m\n");
 	printf("-------------OUTPUT------------\n");
 	run_entry(entry);
 	printf("--------------END--------------\n");
+}
+
+void		run_dat_shit(char *line)
+{
+	t_list		*tokens;
+	t_entry		*entry;
+
+	if (ft_strlen(line) == 0 || is_only_space(line))
+		return ;
+	if (lexer(line, &tokens))
+		return ;
+	if (parser(&tokens, &entry))
+		return ;
+	interpreter(entry);
+	free_entry(entry);
 }
