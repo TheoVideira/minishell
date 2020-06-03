@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:54:00 by user42            #+#    #+#             */
-/*   Updated: 2020/06/03 15:46:49 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 16:02:03 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,7 @@ void	handle_sigquit(int sig)
 		brutally_murder_childrens(sig);
 		ft_putstr_fd("Quit (core dumped)\n", 1);
 	}
+	else
+		ft_putstr_fd("\b\b  \b\b", 1);
 	g_mini.lastcall = 131;
 }
