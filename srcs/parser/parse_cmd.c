@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:16:30 by user42            #+#    #+#             */
-/*   Updated: 2020/06/03 16:50:18 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 17:46:18 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,17 @@ static int		join_tokens(t_list **token, t_list **target)
 	toadd = pop_first(token);
 	s1 = toadd->content;
 	if (!*token || is_operator(get_token(token)))
-		return (ALLOC_ERROR);
+	{
+		ft_lstdelone(toadd, free);
+		return (PARSING_ERROR);
+	}
 	s2 = get_token_hard(token);
 	if (!(new = ft_strjoin(s1, s2)))
+	{
+		free(s1);
+		free(s2);
 		return (ALLOC_ERROR);
+	}
 	toadd->content = new;
 	free(s1);
 	free(s2);
@@ -36,6 +43,7 @@ static int		join_tokens(t_list **token, t_list **target)
 static int		parse_args(t_list **token, t_list **args, t_list **redir)
 {
 	char	*t;
+	int		r;
 
 	*redir = 0;
 	while (*token && !is_operator((t = get_token(token))))
@@ -44,8 +52,8 @@ static int		parse_args(t_list **token, t_list **args, t_list **redir)
 			ft_strncmp(t, ">>", 2) == 0 ||
 			ft_strncmp(t, "<", 2) == 0)
 		{
-			if (join_tokens(token, redir) == ALLOC_ERROR)
-				return (ALLOC_ERROR);
+			if ((r = join_tokens(token, redir)))
+				return (r);
 		}
 		else
 			ft_lstadd_back(args, pop_first(token));
@@ -69,8 +77,16 @@ static int		parse_label(t_list **args, t_cmd **c, t_list **token)
 		return (ALLOC_ERROR);
 	if (is_redir(get_token(token)))
 	{
+		if ((*token)->next == 0 )
+		{
+			free(*c);
+			return (PARSING_ERROR);
+		}
 		if ((new = ft_lstnew(0)) == 0)
+		{
+			free(*c);
 			return (ALLOC_ERROR);
+		}
 	}
 	else
 		new = pop_first(token);
@@ -87,17 +103,15 @@ int				parse_cmd(t_list **token, t_cmd **c)
 
 	if (!*token || is_operator(get_token(token)))
 		return (PARSING_ERROR);
-	if (parse_label(&args, c, token) == ALLOC_ERROR)
-		return (ALLOC_ERROR);
-	r = parse_args(token, &args, &redir);
-	if (r == ALLOC_ERROR)
-		return (ALLOC_ERROR);
+	if ((r = parse_label(&args, c, token)))
+		return (r);
+	r = parse_args(token, &args, &redir);	
 	(*c)->args = list_to_char_array(args);
 	(*c)->redir = list_to_char_array(redir);
-	if ((ft_lstsize(args) && (*c)->args == 0) ||
-		(ft_lstsize(redir) && (*c)->redir == 0))
+	if (r == 0 && ((ft_lstsize(args) && (*c)->args == 0) ||
+		(ft_lstsize(redir) && (*c)->redir == 0)))
 		return (ALLOC_ERROR);
 	ft_lstclear(&args, 0);
 	ft_lstclear(&redir, 0);
-	return (0);
+	return (r);
 }
