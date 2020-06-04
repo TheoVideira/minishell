@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_export.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/04 16:38:35 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/04 16:48:29 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/04 22:02:12 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ static int	builtin_export_add(int ac, char *const *av, t_dict *env)
 		if (!valid_key(key) || (key[0] == '_' && !key[1]))
 		{
 			if (!(key[0] == '_' && !key[1]))
-				ft_perror_msg("-minishell", "export", key,
+				ft_perror_msg("minishell", "export", key,
 					"not a valid identifier");
 			free(key);
 			continue;
