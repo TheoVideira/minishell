@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 15:41:15 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/03 02:51:54 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 16:41:37 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <libft.h>
+# include "libft.h"
 # include <errno.h>
 # include <stdio.h>
 # include <string.h>
-# include <get_next_line.h>
+# include "get_next_line.h"
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <unistd.h>
@@ -166,6 +166,7 @@ int				builtin_echo(int ac, char *const *av);
 int				builtin_cd(int ac, char *const *av, t_dict *env);
 int				builtin_pwd(void);
 int				builtin_export(int ac, char *const *av, t_dict *env);
+int				var_exists(char *eq, char *key);
 int				builtin_unset(int ac, char *const *av, t_dict *env);
 int				builtin_env(t_dict *env);
 int				builtin_exit(int ac, char *const *av);
