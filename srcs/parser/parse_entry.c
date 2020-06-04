@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:04:13 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 04:56:06 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 22:56:33 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 static int	check_emptylines(t_list **tokens)
 {
+	char *tok;
+
 	destroy_token(tokens);
-	if (ft_strncmp(get_token(tokens), ";", 1) == 0)
+	if ((tok = get_token(tokens)) && ft_strncmp(tok, ";", 1) == 0)
 		return (PARSING_ERROR);
 	return (0);
 }
@@ -35,8 +37,12 @@ int			parse_entry(t_list **tokens, t_entry **entry)
 	{
 		if (ft_strncmp(tok, ";;", 3) == 0)
 			return (PARSING_ERROR);
-		if (ft_strncmp(tok, ";", 2) == 0 && (r = check_emptylines(tokens)))
-			return (r);
+		if (ft_strncmp(tok, ";", 2) == 0)
+		{
+			if ((r = check_emptylines(tokens)))
+				return (r);
+			continue ;
+		}	
 		if ((r = parse_or(tokens, &tree)) != 0)
 			return (r);
 		if (!(l = ft_lstnew(tree)))
