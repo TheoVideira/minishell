@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/04 16:38:35 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/04 16:38:39 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/04 16:48:29 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ static int	builtin_export_add(int ac, char *const *av, t_dict *env)
 			free(key);
 			continue;
 		}
-		if (var_exists(eq, key))
+		if (!var_exists(eq, key))
 			continue;
 		value = (eq) ? ft_strdup(eq + 1) : NULL;
 		ft_dictrem(&env, key, free);
