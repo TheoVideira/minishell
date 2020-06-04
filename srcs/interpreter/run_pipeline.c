@@ -1,30 +1,52 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   run_pipeline.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/06/02 05:08:55 by user42            #+#    #+#             */
+/*   Updated: 2020/06/03 16:34:05 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
-int run_pipeline(t_pipeline *pi, t_minishell *mini)
+static int	run_single_builtin(int save[2], t_list *l)
 {
-	t_list *l;
-	int len;
-	int save[2];
-	int fd;
+	int	fd;
+	int	r;
+
+	if ((fd = handle_redirs(((t_cmd*)l->content)->redir)) != -1)
+	{
+		if ((r = build_cmd((t_cmd *)l->content)))
+			return (r);
+		g_mini.lastcall = execute_builtin((t_cmd *)l->content);
+		close(fd);
+	}
+	else
+		g_mini.lastcall = 1;
+	dup2(save[0], 0);
+	dup2(save[1], 1);
+	return (g_mini.lastcall);
+}
+
+int			run_pipeline(t_pipeline *pi)
+{
+	t_list	*l;
+	int		len;
+	int		save[2];
+	int		r;
 
 	l = pi->cmds;
 	len = ft_lstsize(pi->cmds);
 	save[0] = dup(0);
 	save[1] = dup(1);
 	if (len == 1 && is_builtin((t_cmd *)l->content))
-	{
-		if ((fd = handle_redirs(((t_cmd*)l->content)->redir)) != -1)
-		{
-			build_cmd((t_cmd *)l->content, mini);// panic
-			mini->lastcall = execute_builtin((t_cmd *)l->content, mini); // check if label not found
-			close(fd);
-		}
-		else
-			mini->lastcall = 1;
-		dup2(save[0], 0);
-		dup2(save[1], 1);
-		return (mini->lastcall);
-	}
-	run_processes(save, len, pi->cmds, mini);
-	return (mini->lastcall); // value of pipe
+		r = run_single_builtin(save, l);
+	else
+		r = run_processes(save, len, pi->cmds);
+	if (r)
+		return (r);
+	return (g_mini.lastcall);
 }

@@ -1,32 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   run_entry.c                                        :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/06/02 04:59:21 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 05:08:50 by user42           ###   ########.fr       */
+/*   Created: 2020/05/26 15:54:00 by user42            #+#    #+#             */
+/*   Updated: 2020/06/03 16:02:03 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int	run_entry(t_entry *entry)
+void	handle_sigint(int sig)
 {
-	t_list	*tree;
-	int		r;
+	g_mini.lastcall = 130;
+	if (!g_mini.childs)
+		write(1, "\n\e[1;35mOK-BOOMER\e[0m$>", 24);
+	brutally_murder_childrens(sig);
+}
 
-	tree = entry->instructions;
-	r = 0;
-	while (tree)
+void	handle_sigquit(int sig)
+{
+	if (g_mini.childs)
 	{
-		r = run_tree((t_node *)tree->content);
-		if (r == ALLOC_ERROR)
-			alloc_error();
-		else if (r == FATAL_ERROR)
-			fatal_error();
-		tree = tree->next;
+		brutally_murder_childrens(sig);
+		ft_putstr_fd("Quit (core dumped)\n", 1);
 	}
-	return (0);
+	else
+		ft_putstr_fd("\b\b  \b\b", 1);
+	g_mini.lastcall = 131;
 }

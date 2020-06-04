@@ -1,41 +1,88 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_token.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/05/26 15:02:36 by user42            #+#    #+#             */
+/*   Updated: 2020/06/02 04:56:41 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
-static int			loop_until(char *str, char end)
+static int	single_quotes(char *str)
+{
+	int i;
+
+	i = 1;
+	while (str[i])
+	{
+		if (str[i] == '\'')
+			return (i + 1);
+		i++;
+	}
+	return (QUOTE_NOT_CLOSED);
+}
+
+static int	double_quotes(char *str)
+{
+	int i;
+
+	i = 1;
+	while (str[i])
+	{
+		if (str[i] == '\\')
+			i++;
+		else if (str[i] == '"')
+			return (i + 1);
+		i++;
+	}
+	return (QUOTE_NOT_CLOSED);
+}
+
+static int	no_quotes(char *str)
 {
 	int i;
 
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == end && str[i - 1] != '\\')
-			return (i);
+		if (is_separator(&str[i]) && str[i - 1] != '\\')
+			break ;
+		if ((str[i] == '\'' || str[i] == '"'
+			|| ft_isspace(str[i])) && str[i - 1] != '\\')
+			break ;
 		i++;
 	}
 	return (i);
 }
 
-static int	read_token(char **str)
+static int	read_token(char *str)
 {
-	int		tmp;
+	int		len;
+	int		r;
 
-	while (**str && !ft_isspace(**str))
+	len = 0;
+	if (*str && (r = is_separator(str)))
+		return (r);
+	while (*str && !ft_isspace(*str))
 	{
-		if ((tmp = is_separator(*str)))
-		{
-			*str += tmp;
-			break;
-		}	
-		else if (**str == '"')
-			*str += 1 + loop_until(*str + 1, '"') + 1; // check error
-		else if (**str == '\'')
-			*str += 1 + loop_until(*str + 1, '\'') + 1; // check error
-		else
-			(*str)++;
-		if (is_separator(*str))
+		if (is_separator(str))
 			break ;
-		//check uneven quotes
+		else if (*str == '\'')
+			r = single_quotes(str);
+		else if (*str == '"')
+			r = double_quotes(str);
+		else
+			r = no_quotes(str);
+		if (r < 0)
+			return (r);
+		len += r;
+		str += r;
 	}
-	return (0);
+	return (len);
 }
 
 int			get_next_token(char *str, char **tofill)
@@ -49,14 +96,15 @@ int			get_next_token(char *str, char **tofill)
 	while (ft_isspace(*str))
 		str++;
 	tokenstart = str;
-	if ((r = read_token(&str)))
+	if ((r = read_token(str)) < 0)
 		return (r);
+	str += r;
 	if (str - tokenstart == 0)
 	{
 		token = 0;
 		return (0);
 	}
-	if (!(token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1)))) // check error
+	if (!(token = ft_calloc(1, sizeof(char) * (str - tokenstart + 1))))
 		return (ALLOC_ERROR);
 	ft_memcpy(token, tokenstart, str - tokenstart);
 	*tofill = token;

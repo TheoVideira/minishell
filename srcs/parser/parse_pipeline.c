@@ -1,15 +1,26 @@
-#include <minishell.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_pipeline.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/05/26 15:33:59 by user42            #+#    #+#             */
+/*   Updated: 2020/06/03 17:41:45 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include <minishell.h>
 
 static int	parse_parentheses(t_list **token, t_node **n)
 {
 	int r;
 
-	destroyToken(token);
+	destroy_token(token);
 	r = parse_or(token, n);
 	if (r != 0)
 		return (r);
-	if (*token && ft_strncmp(getToken(token), ")", 2) != 0)
+	if (*token && ft_strncmp(get_token(token), ")", 2) != 0)
 		return (PARSING_ERROR);
 	if (!*token)
 	{
@@ -17,18 +28,23 @@ static int	parse_parentheses(t_list **token, t_node **n)
 		{
 			if (ask_for_more(token) != 0)
 				return (FATAL_ERROR);
-			if (ft_strncmp(getToken(token), ")", 2) == 0)
+			if (ft_strncmp(get_token(token), ")", 2) == 0)
 				break ;
 			r = parse_or(token, n);
 			if (r != 0)
 				return (r);
-			if (*token && ft_strncmp(getToken(token), ")", 2) == 0)
+			if (*token && ft_strncmp(get_token(token), ")", 2) == 0)
 				break ;
 		}
-	} 
-	printf("OK BOOMER\n");
-	destroyToken(token);
+	}
+	destroy_token(token);
 	return (0);
+}
+
+static int	return_and_free(t_cmd *c, int code)
+{
+	free_command(c);
+	return (code);
 }
 
 static int	parse_commands(t_list **token, t_pipeline *p)
@@ -39,32 +55,27 @@ static int	parse_commands(t_list **token, t_pipeline *p)
 
 	while (*token)
 	{
-		r = parse_cmd(token, &c);
-		if (r != 0)
-			return (r);
-		tmp = ft_lstnew(c);
-		if (tmp == 0)
+		if ((r = parse_cmd(token, &c)) != 0)
 		{
 			free_command(c);
-			return (ALLOC_ERROR);
+			return (r);
 		}
+		if ((tmp = ft_lstnew(c)) == 0)
+			return (return_and_free(c, ALLOC_ERROR));
 		ft_lstadd_back(&p->cmds, tmp);
-		if (*token && ft_strncmp(getToken(token), "|", 2) == 0)
+		if (*token && ft_strncmp(get_token(token), "|", 2) == 0)
 		{
-			destroyToken(token);
+			destroy_token(token);
 			if (!*token && ask_for_more(token) != 0)
-			{
-				free_command(c);
 				return (FATAL_ERROR);
-			}
-		}		
-		else if (*token && is_operator(getToken(token)))
+		}
+		else if (*token && is_operator(get_token(token)))
 			return (0);
 	}
 	return (r);
 }
 
-int		parse_pipeline(t_list **token, t_node **n)
+int			parse_pipeline(t_list **token, t_node **n)
 {
 	t_pipeline	*p;
 	int			r;
@@ -72,13 +83,16 @@ int		parse_pipeline(t_list **token, t_node **n)
 	r = 0;
 	if (!*token)
 		return (PARSING_ERROR);
-	if (ft_strncmp(getToken(token), "(", 2) == 0)
+	if (ft_strncmp(get_token(token), "(", 2) == 0)
 		return (parse_parentheses(token, n));
 	if ((p = ft_calloc(1, sizeof(t_pipeline))) == 0)
 		return (ALLOC_ERROR);
 	r = parse_commands(token, p);
 	if (r != 0)
+	{
+		free_pipeline(p);
 		return (r);
+	}
 	if ((*n = create_node(PIPELINE, p)) == 0)
 		return (ALLOC_ERROR);
 	return (0);

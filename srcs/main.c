@@ -3,142 +3,84 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/03/12 17:07:57 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/06/03 03:13:42 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
+t_minishell g_mini = {0};
 
-//DEBUG
-void	printdict(t_dict *dict)
+static void	init(int ac, char **av, char **env)
 {
-	printf("\e[31;1m ENV \e[0m\n");
-	while(dict)
-	{
-		printf("%s=%s\n", dict->key, (char *)dict->value);
-		dict = dict->next;
-	}
+	(void)ac;
+	(void)av;
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, handle_sigquit);
+	g_mini.env = envtodict(env);
+	g_mini.isparent = 1;
 }
 
-static int lexer(char *line, t_list	**tokens)
+static void	quit(char *line)
+{
+	ft_dictclear(g_mini.env, free);
+	free(line);
+	write(1,"exit\n", 5);
+	exit(g_mini.lastcall);
+}
+
+static void	quit_error(char *line)
+{
+	ft_dictclear(g_mini.env, free);
+	if (line)
+		free(line);
+	write(1,"\n", 1);
+	ft_perror("minishell", "stdin error", 0);
+	write(1,"exit\n", 5);
+	exit(1);
+}
+
+static int	handle_eof(char **line)
 {
 	int r;
 
-	r = tokenize(line, tokens);
-	if (r == ALLOC_ERROR)
+	while ((r = get_next_line(0, line)) == 0)
 	{
-		ft_lstclear(tokens, free);
-		free(line);
-		alloc_error();
-		return (r);
+		free(*line);
+		continue;
 	}
-			printf("\e[1;32m1: TOKENIZER\e[0m\n");
-		printf("Listing tokens\n");
-		t_list *tok = *tokens;
-		while (tok)
-		{
-			printf("|%s|\n",(char*)tok->content);
-			tok = tok->next;
-		}
-		printf("Just tokenized |%s|\n", line);
-		return (0);
+	if (r == -1)
+		return (-1);
+	return (1);
 }
 
-static int parser(t_list **tokens, t_entry **entry)
+int			main(int ac, char **av, char **env)
 {
-		int r;
-
-		r = parse_entry(tokens, entry);
-		if (r == PARSING_ERROR)
-		{
-			if (!*tokens)
-				ft_putstr_fd("minishell: syntax error: unexpected end of line\n", 2);	
-			else
-				ft_perror_msg("minishell", "syntax error near unexpected token", 0, (char*)(*tokens)->content);	
-			free_entry(*entry);
-	
-		}
-		else if (r == ALLOC_ERROR)
-		{
-			ft_lstclear(tokens, free);
-			alloc_error();
-		}
-		else if (r == FATAL_ERROR)
-		{
-			fatal_error();
-			ft_lstclear(tokens, free);
-			free_entry(*entry);
-		}
-		else
-		{
-			/* code */
-			printf("\e[1;32m2: PARSER\e[0m\n");
-
-			
-			printf("Just parsed\n");
-			t_list *tree;
-			tree = (*entry)->instructions;
-			while (tree)
-			{
-				print_tree((t_node*)tree->content);
-				tree = tree->next;
-				printf("-------------------------------\n");
-			}
-		}
-		return (r);
-}
-
-static void interpreter(t_entry *entry, t_minishell *mini)
-{
-		int r;
-		printf("\e[1;32m3: INTERPRETER\e[0m\n");
-		printf("-------------OUTPUT------------\n");
-		r = run_entry(entry, mini);
-		if (r == ALLOC_ERROR)
-			alloc_error();
-		else if (r == FATAL_ERROR)
-			fatal_error();
-		printf("--------------END--------------\n");
-}
-
-static void run_dat_shit(char *line, t_minishell *mini)
-{
-	t_list		*tokens;
-	t_entry		*entry;
-
-	if (lexer(line, &tokens))
-		return ;
-	free(line);
-	if (parser(&tokens, &entry))
-		return ;
-	interpreter(entry, mini);
-	free_entry(entry);
-}
-
-int main(int ac, char **av, char **env)
-{
-	t_minishell mini = {0};
 	int			r;
 	char		*line;
-	
-	(void) ac;
-	(void) av;
-	mini.env = envtodict(env);
+
+	r = 1;
+	line = 0;
+	init(ac, av, env);
 	while (1)
 	{
 		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
-		r = get_next_line(0, &line);
-		if (r == 0)
+		if ((r = get_next_line(0, &line)) == -1)
+			quit_error(line);
+		if (r == 0 && *line)
 		{
 			free(line);
-			break ;
+			if (handle_eof(&line) == -1)
+				quit_error(line);
 		}
-		run_dat_shit(line, &mini);				
+		else if (r == 0)
+			quit(line);
+		run_dat_shit(line);
+		free(line);
 	}
-	ft_dictclear(mini.env, free);
-	return (0);
+	ft_dictclear(g_mini.env, free);
+	return (g_mini.lastcall);
 }

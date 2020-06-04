@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/06/02 16:01:27 by user42            #+#    #+#             */
+/*   Updated: 2020/06/02 16:01:27 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
 static int		redir_open_out_append(char **redirs, int i, int foi[2])
@@ -48,13 +60,15 @@ static int		redir_open_in(char **redirs, int i, int foi[2])
 	return (fd);
 }
 
-int handle_redirs(char **redirs)
+int				handle_redirs(char **redirs)
 {
 	int i;
 	int fd;
-	int foi[2] = { -1, -1 };
+	int foi[2];
 
 	i = 0;
+	foi[0] = -1;
+	foi[1] = -1;
 	if (!redirs)
 		return (0);
 	while (redirs[i])

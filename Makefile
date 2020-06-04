@@ -21,7 +21,9 @@ SRCS =		$(GNL_SRCS) \
 			srcs/parser/parse_tokens.c \
 			srcs/parser/ask_for_more.c \
 			srcs/interpreter/env_formatting.c \
+			srcs/interpreter/search_directory.c \
 			srcs/interpreter/arg_formatting.c \
+			srcs/interpreter/escaped_characters.c \
 			srcs/interpreter/builtins.c \
 			srcs/interpreter/processes.c \
 			srcs/interpreter/processes_utils.c \
@@ -30,6 +32,7 @@ SRCS =		$(GNL_SRCS) \
 			srcs/interpreter/run_entry.c \
 			srcs/interpreter/run_pipeline.c \
 			srcs/interpreter/run_tree.c \
+			srcs/interpreter/piping.c \
 			srcs/builtins/builtins_cd.c \
 			srcs/builtins/builtins_echo.c \
 			srcs/builtins/builtins_env.c \
@@ -37,11 +40,13 @@ SRCS =		$(GNL_SRCS) \
 			srcs/builtins/builtins_export.c \
 			srcs/builtins/builtins_pwd.c \
 			srcs/builtins/builtins_unset.c \
+			srcs/misc/signals.c \
 			srcs/misc/env.c \
 			srcs/misc/errors.c \
 			srcs/misc/tree.c \
 			srcs/misc/freeing.c \
 			srcs/misc/utils.c \
+			srcs/main_utils.c \
 			srcs/main.c
 
 
