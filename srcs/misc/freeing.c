@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/03 14:32:27 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/02 01:48:38 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 19:31:34 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	free_char_array(char **arr)
 {
 	char **ptr;
 
+	if (!arr)
+		return ;
 	ptr = arr;
 	while (*ptr)
 	{

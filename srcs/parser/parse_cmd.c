@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:16:30 by user42            #+#    #+#             */
-/*   Updated: 2020/06/03 17:46:18 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 19:32:53 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ int				parse_cmd(t_list **token, t_cmd **c)
 	t_list	*args;
 	t_list	*redir;
 
+	*c = 0;
 	if (!*token || is_operator(get_token(token)))
 		return (PARSING_ERROR);
 	if ((r = parse_label(&args, c, token)))

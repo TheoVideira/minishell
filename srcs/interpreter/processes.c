@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 23:10:27 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 19:28:20 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ static int		fork_process(int i, t_list *cmd)
 		g_mini.isparent = 0;
 		build_cmd((t_cmd *)cmd->content);
 		if (run_command((t_cmd *)cmd->content))
+		{
+			ft_perror("minishell", ((t_cmd *)(cmd->content))->label, 0);
 			exit(1);
+		}
 	}
 	else if (g_mini.childs[i].pid == -1)
 		return (FATAL_ERROR);
