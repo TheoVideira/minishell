@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/03 14:32:27 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/04 19:31:34 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 22:48:24 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,20 @@ void	free_char_array(char **arr)
 void	free_node(t_node *tofree)
 {
 	if (tofree->left)
+	{
 		free_node(tofree->left);
+		tofree->left = 0;
+	}
 	if (tofree->right)
+	{
 		free_node(tofree->right);
+		tofree->right = 0;
+	}
 	if (tofree->type == PIPELINE)
+	{
 		free_pipeline(tofree->pipeline);
+		tofree->pipeline = 0;
+	}
 	free(tofree);
 }
 

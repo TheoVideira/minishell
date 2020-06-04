@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:16:30 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 19:32:53 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 22:44:19 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ static int		parse_args(t_list **token, t_list **args, t_list **redir)
 		else
 			ft_lstadd_back(args, pop_first(token));
 	}
+	if (ft_strncmp(t, "(", 2) == 0)
+		return (PARSING_ERROR);
 	return (0);
 }
 
