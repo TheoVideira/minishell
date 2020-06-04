@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/01 19:28:29 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 00:48:54 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 23:35:32 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,25 +38,44 @@ static int	merge_tokens(char *ptr, size_t len, int nb, char **tok)
 	return (0);
 }
 
-static int	replace_backslash(char **ptr)
+static int	replace_backslash(char *ptr)
 {
 	int nb;
 
 	nb = 0;
-	while (**ptr)
+	while (*ptr)
 	{
-		if (**ptr == '\\')
+		if (*ptr == '\\')
 		{
-			**ptr = '\0';
-			(*ptr)++;
+			*ptr = '\0';
+			ptr++;
 			nb++;
 		}
-		(*ptr)++;
+		ptr++;
 	}
 	return (nb);
 }
 
-int			replace_escaped(char **token)
+static int	replace_backslash_dq(char *ptr)
+{
+	int nb;
+
+	nb = 0;
+	while (*ptr)
+	{
+		if (*ptr == '\\' && *(ptr + 1)
+			&& (*(ptr + 1) == '"' || *(ptr + 1) =='\\'))
+		{
+			*ptr = '\0';
+			ptr++;
+			nb++;
+		}
+		ptr++;
+	}
+	return (nb);
+}
+
+int			replace_escaped(char **token, int indq)
 {
 	char	*ptr;
 	size_t	len;
@@ -67,7 +86,10 @@ int			replace_escaped(char **token)
 	if (!ptr || ft_strchr(ptr, '\\') == 0)
 		return (0);
 	len = ft_strlen(ptr);
-	nb = replace_backslash(&ptr);
+	if (indq)
+		nb = replace_backslash_dq(ptr);
+	else
+		nb = replace_backslash(ptr);
 	if ((r = merge_tokens(*token, len + 1, nb, &ptr)))
 		return (r);
 	free(*token);
