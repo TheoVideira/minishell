@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:07:17 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 16:12:05 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 16:16:16 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	find_name(char *label, char **ex)
 	if (((path = (char *)ft_dictget(g_mini.env, "PATH")) == 0
 			|| ft_strlen(path) == 0) && (path = getcwd(NULL, 0)) == 0)
 	{
-		ft_perror("minishell", cmd->label, 0);
+		ft_perror("minishell", label, 0);
 		exit(1);
 	}
 	if (!(entries = ft_split(path, ':')))
