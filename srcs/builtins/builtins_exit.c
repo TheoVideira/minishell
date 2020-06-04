@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 17:13:00 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/04 20:41:16 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 20:43:24 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int			builtin_exit(int ac, char *const *av)
 {
 	int exit_code;
 
-	// write(1, "exit\n", 5);
+	write(1, "exit\n", 5);
 	if (ac == 1)
 		exit(g_mini.lastcall);
 	if (ft_isnum(av[1]))
