@@ -6,11 +6,24 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:07:17 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 16:23:21 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 00:40:42 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+void		command_not_found(char *label)
+{
+	char *str1;
+
+	if ((str1 = ft_strjoin(label, " : command not found\n")) == 0)
+	{
+		alloc_error();
+		exit(1);
+	}
+	ft_putstr_fd(str1, 2);
+	free(str1);
+}
 
 static int	search_entry(char *entry, char *label, char **ex)
 {
@@ -39,14 +52,13 @@ static int	find_name(char *label, char **ex)
 	}
 	if (!(entries = ft_split(path, ':')))
 		return (ALLOC_ERROR);
-	i = 0;
-	while (entries[i])
+	i = -1;
+	while (entries[++i])
 	{
 		if ((r = search_entry(entries[i], label, ex)) < 0)
 			free_char_array(entries);
 		if (r)
 			return (r);
-		i++;
 	}
 	free_char_array(entries);
 	free(path);

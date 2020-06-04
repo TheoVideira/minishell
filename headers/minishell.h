@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 15:41:15 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/04 23:29:46 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 00:50:30 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,8 +159,6 @@ void			handle_sigquit(int sig);
 /*
 **	Built-ins
 */
-void			ft_perror(char *shell, char *prg, char *arg);
-void			ft_perror_msg(char *shell, char *prg, char *arg, char *msg);
 int				builtin_echo(int ac, char *const *av);
 int				builtin_cd(int ac, char *const *av, t_dict *env);
 int				builtin_pwd(void);
@@ -196,13 +194,17 @@ int				is_only_space(char *str);
 **	Env
 */
 t_dict			*envtodict(char **env);
-char			**dictoenv(t_dict *dict);
+int				dictoenv(t_dict *dict);
 
 /*
 **	Error management
 */
 void			alloc_error();
 void			fatal_error();
+void			syntax_error(char *token);
+void			ft_perror(char *shell, char *prg, char *arg);
+void			ft_perror_msg(char *shell, char *prg, char *arg, char *msg);
+
 void			command_not_found(char *label);
 
 extern t_minishell g_mini;

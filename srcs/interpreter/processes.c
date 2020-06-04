@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 19:28:20 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 00:51:41 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int				run_processes(int save[2], int nb, t_list *cmds)
 
 	if (!(g_mini.childs = ft_calloc(1, sizeof(t_process) * (nb + 1))))
 		return (ALLOC_ERROR);
-	if (g_mini.env && (g_mini.envtmp = dictoenv(g_mini.env)) == 0)
+	if (g_mini.env && dictoenv(g_mini.env) == ALLOC_ERROR)
 		return (ALLOC_ERROR);
 	if ((r = launch_processes(save, cmds)))
 		brutally_murder_childrens(SIGKILL);
