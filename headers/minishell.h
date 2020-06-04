@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 15:41:15 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/04 20:40:44 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 23:29:46 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void			print_tree(t_node *n);
 **	Pre exec build
 */
 int				format_arg(char *arg, char **into);
-int				replace_escaped(char **token);
+int				replace_escaped(char **token, int indq);
 int				search_dir(char *dirname, char *label, char **target);
 
 /*

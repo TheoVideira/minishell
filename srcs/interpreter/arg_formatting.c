@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:53 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 16:06:41 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 23:30:34 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int		double_quotes(char *str, char **token)
 		return (ALLOC_ERROR);
 	ft_memcpy(*token, str - size, size);
 	if ((r = replace_env(token))
-		|| (r = replace_escaped(token)))
+		|| (r = replace_escaped(token, 1)))
 	{
 		free(*token);
 		return (r);
@@ -77,7 +77,7 @@ static int		no_quotes(char *str, char **token)
 		return (ALLOC_ERROR);
 	ft_memcpy(*token, str - size, size);
 	r = replace_env(token);
-	if (r || (r = replace_escaped(token)))
+	if (r || (r = replace_escaped(token, 0)))
 	{
 		free(*token);
 		return (r);
