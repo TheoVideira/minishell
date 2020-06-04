@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:49:12 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 15:58:26 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 23:06:13 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,14 @@ void	fatal_error(void)
 void	command_not_found(char *label)
 {
 	char *str1;
-	char *str2;
 
-	if ((str1 = ft_strjoin("minishell: command not found: ", label)) == 0)
+	if ((str1 = ft_strjoin(label, " : command not found\n")) == 0)
 	{
 		alloc_error();
 		exit(1);
 	}
-	if ((str2 = ft_strjoin(str1, "\n")) == 0)
-	{
-		free(str1);
-		alloc_error();
-		return ;
-	}
-	ft_putstr_fd(str2, 2);
+	ft_putstr_fd(str1, 2);
 	free(str1);
-	free(str2);
 }
 
 void	ft_perror(char *shell, char *prg, char *arg)
