@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:49:12 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 15:25:10 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/04 15:58:26 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	command_not_found(char *label)
 	if ((str1 = ft_strjoin("minishell: command not found: ", label)) == 0)
 	{
 		alloc_error();
-		return ;
+		exit(1);
 	}
 	if ((str2 = ft_strjoin(str1, "\n")) == 0)
 	{
