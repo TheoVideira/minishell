@@ -1,12 +1,9 @@
 CC = gcc
 CFLAGS = -fsanitize=address -g3 -Wall -Wextra -Werror
 
-
-
 GNL_SRCS =		gnl/get_next_line.c \
 				gnl/get_next_line_utils.c
 GNL_HEADERS =	gnl/get_next_line.h \
-
 
 SRCS =		$(GNL_SRCS) \
 			srcs/lexer/get_next_token.c \
@@ -54,7 +51,18 @@ SRCS =		$(GNL_SRCS) \
 HEADERS =	$(GNL_HEADERS) \
 			headers/minishell.h \
 
-OBJS = $(SRCS:%.c=objs/%.o)
+OBJ_PARENT_DIR = objs
+
+OBJS_DIR =	$(OBJ_PARENT_DIR) \
+			$(OBJ_PARENT_DIR)/gnl \
+			$(OBJ_PARENT_DIR)/srcs \
+			$(OBJ_PARENT_DIR)/srcs/lexer \
+			$(OBJ_PARENT_DIR)/srcs/parser \
+			$(OBJ_PARENT_DIR)/srcs/interpreter \
+			$(OBJ_PARENT_DIR)/srcs/builtins \
+			$(OBJ_PARENT_DIR)/srcs/misc
+
+OBJS = $(SRCS:%.c=$(OBJ_PARENT_DIR)/%.o)
 
 NAME = minishell
 
@@ -63,10 +71,11 @@ STATIC_LIB = libft/libft.a
 INCLUDES = -I./libft -I./headers -I./gnl
 
 #Compilation
-objs/%.o: %.c
+$(OBJ_PARENT_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
 all: $(NAME)
+
 bonus: $(NAME)
 
 libftplz:
@@ -75,12 +84,16 @@ libftplz:
 clean:
 	$(MAKE) -C libft fclean
 	$(RM) -f $(OBJS)
+	$(RM) -r $(OBJS_DIR)
 
 fclean: clean
 	$(RM) -f minishell
 
 re: fclean all
 
-$(NAME) : libftplz $(OBJS)
+$(NAME) : $(OBJS_DIR) libftplz $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(STATIC_LIB) $(INCLUDES) -o $(NAME)
-	
+
+$(OBJS_DIR) :
+	mkdir -p  $(OBJS_DIR)
+
