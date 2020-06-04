@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/22 17:56:12 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/02 22:30:02 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/04 15:57:13 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ static int	builtin_export_add(int ac, char *const *av, t_dict *env)
 	while (++i < ac)
 	{
 		eq = ft_strchr(av[i], '=');
+		(void)i;
+		(void)i;
 		key = (eq) ? ft_substr(av[i], 0, eq - av[i]) : ft_strdup(av[i]);
 		if (!valid_key(key) || (key[0] == '_' && !key[1]))
 		{
