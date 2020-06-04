@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_export.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/22 17:56:12 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/03 15:33:15 by user42           ###   ########.fr       */
+/*   Created: 2020/06/04 16:38:35 by marvin            #+#    #+#             */
+/*   Updated: 2020/06/04 16:48:29 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ static int	builtin_export_add(int ac, char *const *av, t_dict *env)
 			free(key);
 			continue;
 		}
+		if (!var_exists(eq, key))
+			continue;
 		value = (eq) ? ft_strdup(eq + 1) : NULL;
 		ft_dictrem(&env, key, free);
 		ft_dictadd(&env, ft_dictnew(key, value));

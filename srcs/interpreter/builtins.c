@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:02:04 by user42            #+#    #+#             */
-/*   Updated: 2020/06/03 00:18:16 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/03 16:35:57 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ int		execute_builtin(t_cmd *c)
 
 int		is_builtin(t_cmd *c)
 {
+	if (c->label == NULL)
+		return (0);
 	if (!ft_strcmp(c->label, "echo"))
 		return (1);
 	if (!ft_strcmp(c->label, "cd"))
