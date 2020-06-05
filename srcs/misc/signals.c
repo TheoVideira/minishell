@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:54:00 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 20:23:47 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 17:14:20 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	handle_sigint(int sig)
 	g_mini.lastcall = 130;
 	if (!g_mini.childs)
 		write(1, "\n\e[1;35mOK-BOOMER\e[0m$>", 24);
+	else
+		write(1, "\n", 1);
 	brutally_murder_childrens(sig);
 }
 
