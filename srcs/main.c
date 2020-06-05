@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 02:10:09 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 03:48:16 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,17 @@ static void	init(int ac, char **av, char **env)
 	(void)av;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, handle_sigquit);
-	g_mini.env = envtodict(env);
+	if (env && *env)
+	{
+		g_mini.env = envtodict(env);
+		if (g_mini.env == 0)
+		{
+			alloc_error();
+			exit(1);
+		}
+	}
+	else
+		g_mini.env = 0;
 	g_mini.isparent = 1;
 }
 
@@ -37,9 +47,7 @@ static void	quit_error(char *line)
 	ft_dictclear(g_mini.env, free);
 	if (line)
 		free(line);
-	write(1, "\n", 1);
-	ft_perror("minishell", "stdin error", 0);
-	write(1, "exit\n", 5);
+	write(1,"exit\n", 5);
 	exit(1);
 }
 
@@ -53,7 +61,7 @@ static int	handle_eof(char **line)
 		continue;
 	}
 	if (r == -1)
-		return (-1);
+		return (fatal_error("get_next_line"));
 	return (1);
 }
 

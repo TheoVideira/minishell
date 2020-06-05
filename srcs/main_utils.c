@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 21:36:56 by user42            #+#    #+#             */
-/*   Updated: 2020/06/05 02:13:03 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 03:47:58 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int				parser(t_list **tokens, t_entry **entry)
 	}
 	else if (r == FATAL_ERROR)
 	{
-		fatal_error();
 		ft_lstclear(tokens, free);
 		free_entry(*entry);
 	}
