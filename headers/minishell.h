@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 15:41:15 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 00:50:30 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 03:02:58 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,8 @@ int				builtin_echo(int ac, char *const *av);
 int				builtin_cd(int ac, char *const *av, t_dict *env);
 int				builtin_pwd(void);
 int				builtin_export(int ac, char *const *av, t_dict *env);
-int				var_exists(char *eq, char *key);
+int				builtin_export_add(int ac, char *const *av, t_dict *env);
+int				builtin_export_print(t_dict *env);
 int				builtin_unset(int ac, char *const *av, t_dict *env);
 int				builtin_env(t_dict *env);
 int				builtin_exit(int ac, char *const *av);
