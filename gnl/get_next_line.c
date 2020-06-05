@@ -6,13 +6,13 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 21:33:18 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 21:39:10 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*ft_substr_gnl(char const *s, unsigned int start, int len)
+static char	*substr_gnl(char const *s, unsigned int start, int len)
 {
 	char	*dest;
 	int		i;
@@ -32,7 +32,7 @@ static char	*ft_substr_gnl(char const *s, unsigned int start, int len)
 	return (dest);
 }
 
-int		managecharsleft(t_gnllst *l, t_line *s_line)
+int			managecharsleft(t_gnllst *l, t_line *s_line)
 {
 	char	*tmp;
 	int		e;
@@ -41,12 +41,12 @@ int		managecharsleft(t_gnllst *l, t_line *s_line)
 		return (0);
 	if ((e = endofline(l->charsleft, l->size)) != -1)
 	{
-		if (!(*(s_line->line) = ft_substr_gnl(l->charsleft, 0, e)))
+		if (!(*(s_line->line) = substr_gnl(l->charsleft, 0, e)))
 			return (-1);
 		tmp = l->charsleft;
 		if (l->size == e + 1)
 			l->charsleft = 0;
-		else if (!(l->charsleft = ft_substr_gnl(l->charsleft, e + 1, l->size - e)))
+		else if (!(l->charsleft = substr_gnl(l->charsleft, e + 1, l->size - e)))
 			return (-1);
 		free(tmp);
 		l->size -= e + 1;
@@ -61,7 +61,7 @@ int		managecharsleft(t_gnllst *l, t_line *s_line)
 	}
 }
 
-int		allocandconcat(t_line *s_line, char *buff, int tocpy)
+int			allocandconcat(t_line *s_line, char *buff, int tocpy)
 {
 	char *tmp;
 
@@ -74,7 +74,7 @@ int		allocandconcat(t_line *s_line, char *buff, int tocpy)
 	return (0);
 }
 
-int		readloop(int fd, char *buff, t_line *s_line, t_gnllst *current)
+int			readloop(int fd, char *buff, t_line *s_line, t_gnllst *current)
 {
 	int rd;
 	int eol;
@@ -97,13 +97,13 @@ int		readloop(int fd, char *buff, t_line *s_line, t_gnllst *current)
 	i = rd - eol - 1;
 	if (eol + 1 == rd)
 		current->charsleft = 0;
-	else if (i > 0 && !(current->charsleft = ft_substr_gnl(buff, eol + 1, i)))
+	else if (i > 0 && !(current->charsleft = substr_gnl(buff, eol + 1, i)))
 		return (-1);
 	current->size = i < 0 ? 0 : i;
 	return (i < 0 ? 0 : 1);
 }
 
-int		get_next_line(int fd, char **line)
+int			get_next_line(int fd, char **line)
 {
 	static t_gnllst	*list;
 	t_gnllst		*current;

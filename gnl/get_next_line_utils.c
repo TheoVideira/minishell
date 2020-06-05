@@ -6,13 +6,13 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:58:25 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 20:38:54 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 21:39:25 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_memjoin(char const *s1, int l1, char const *s2, int l2)
+char		*ft_memjoin(char const *s1, int l1, char const *s2, int l2)
 {
 	char	*str;
 	char	*ptr;
