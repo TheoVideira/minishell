@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 03:49:49 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 21:30:17 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static int	handle_eof(char **line)
 {
 	int r;
 
-	while ((r = get_next_line(0, line)) == 0)
+	while ((r = get_next_line(0, line)) == 0 && *line)
 	{
 		free(*line);
 		continue;
@@ -75,13 +75,14 @@ int			main(int ac, char **av, char **env)
 	init(ac, av, env);
 	while (1)
 	{
-		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
+		if (r != 0)
+			write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
 		if ((r = get_next_line(0, &line)) == -1)
 			quit_error(line);
 		if (r == 0 && *line)
 		{
 			free(line);
-			if (handle_eof(&line) == -1)
+			if ((r = handle_eof(&line)) == -1)
 				quit_error(line);
 		}
 		else if (r == 0)
