@@ -6,13 +6,13 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:50:37 by user42            #+#    #+#             */
-/*   Updated: 2020/06/03 15:37:22 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 00:51:53 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-char	*getenvkey(char *str)
+char		*getenvkey(char *str)
 {
 	int		start;
 	int		end;
@@ -24,7 +24,7 @@ char	*getenvkey(char *str)
 	return (ft_substr(str, start, end));
 }
 
-char	*getenvvalue(char *str)
+char		*getenvvalue(char *str)
 {
 	int		start;
 	int		end;
@@ -38,7 +38,7 @@ char	*getenvvalue(char *str)
 	return (ft_substr(str, start, end));
 }
 
-t_dict	*envtodict(char **env)
+t_dict		*envtodict(char **env)
 {
 	t_dict	*dict;
 	t_dict	*tmp;
@@ -65,16 +65,34 @@ t_dict	*envtodict(char **env)
 	return (dict);
 }
 
-char	**dictoenv(t_dict *dict)
+static int	format_entry(t_dict *dict, char **env, int i)
 {
 	int		len1;
 	int		len2;
-	int		i;
-	char	**env;
 
-	len1 = ft_dictsize(dict);
-	if (!(env = ft_calloc(1, (len1 + 1) * sizeof(char*))))
-		return (0);
+	len1 = ft_strlen(dict->key);
+	len2 = ft_strlen((char*)dict->value);
+	if (!(env[i] = ft_calloc(1, (len1 + 1 + len2 + 1) * sizeof(char))))
+	{
+		free_char_array(env);
+		return (ALLOC_ERROR);
+	}
+	ft_memcpy(env[i], dict->key, len1);
+	env[i][len1] = '=';
+	ft_memcpy(env[i] + len1 + 1, (char*)dict->value, len2);
+	return (0);
+}
+
+int			dictoenv(t_dict *dict)
+{
+	char	**env;
+	int		len;
+	int		i;
+	int		r;
+
+	len = ft_dictsize(dict);
+	if (!(env = ft_calloc(1, (len + 1) * sizeof(char*))))
+		return (ALLOC_ERROR);
 	i = 0;
 	while (dict)
 	{
@@ -83,18 +101,11 @@ char	**dictoenv(t_dict *dict)
 			dict = dict->next;
 			continue ;
 		}
-		len1 = ft_strlen(dict->key);
-		len2 = ft_strlen((char*)dict->value);
-		if (!(env[i] = ft_calloc(1, (len1 + 1 + len2 + 1) * sizeof(char))))
-		{
-			free_char_array(env);
-			return (0);
-		}
-		ft_memcpy(env[i], dict->key, len1);
-		env[i][len1] = '=';
-		ft_memcpy(env[i] + len1 + 1, (char*)dict->value, len2);
+		if ((r = format_entry(dict, env, i)))
+			return (ALLOC_ERROR);
 		dict = dict->next;
 		i++;
 	}
-	return (env);
+	g_mini.envtmp = env;
+	return (0);
 }

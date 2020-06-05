@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:16:30 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 22:44:19 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 00:56:44 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static int		parse_label(t_list **args, t_cmd **c, t_list **token)
 		return (ALLOC_ERROR);
 	if (is_redir(get_token(token)))
 	{
-		if ((*token)->next == 0 )
+		if ((*token)->next == 0)
 		{
 			free(*c);
 			return (PARSING_ERROR);
@@ -108,7 +108,7 @@ int				parse_cmd(t_list **token, t_cmd **c)
 		return (PARSING_ERROR);
 	if ((r = parse_label(&args, c, token)))
 		return (r);
-	r = parse_args(token, &args, &redir);	
+	r = parse_args(token, &args, &redir);
 	(*c)->args = list_to_char_array(args);
 	(*c)->redir = list_to_char_array(redir);
 	if (r == 0 && ((ft_lstsize(args) && (*c)->args == 0) ||

@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:49:12 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 23:06:13 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 00:28:41 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,19 @@
 
 void	alloc_error(void)
 {
-	ft_putstr_fd("minishell: allocation error while parsing\n", 2);
+	ft_putstr_fd("minishell: cannot allocate memory\n", 2);
 }
 
 void	fatal_error(void)
 {
-	ft_perror("minishell", "a weird error has occured", 0);
+	ft_perror("minishell", "an error has occured", 0);
 }
 
-void	command_not_found(char *label)
+void	syntax_error(char *token)
 {
-	char *str1;
-
-	if ((str1 = ft_strjoin(label, " : command not found\n")) == 0)
-	{
-		alloc_error();
-		exit(1);
-	}
-	ft_putstr_fd(str1, 2);
-	free(str1);
+	ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+	ft_putstr_fd(token, 2);
+	ft_putstr_fd("'\n", 2);
 }
 
 void	ft_perror(char *shell, char *prg, char *arg)

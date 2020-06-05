@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:04:56 by user42            #+#    #+#             */
-/*   Updated: 2020/05/26 15:35:03 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 00:16:25 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int		ask_for_more(t_list **token)
 		write(1, ">", 1);
 		r = get_next_line(0, &line);
 		if (r == -1)
-			return (-1);
+			return (FATAL_ERROR);
 		len = ft_strlen(line);
 	}
 	tokenize(line, token);

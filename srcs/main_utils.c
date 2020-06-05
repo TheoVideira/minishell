@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 21:36:56 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 20:11:40 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 02:07:48 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,21 @@ int			lexer(char *line, t_list **tokens)
 	return (0);
 }
 
-static void		parsing_error(t_list **tokens, t_entry **entry)
-{
-	if (!*tokens)
-		ft_putstr_fd(
-				"minishell: syntax error: unexpected end of line\n", 2);
-	else
-		ft_perror_msg("minishell", "syntax error near unexpected token",
-											0, (char*)(*tokens)->content);
-	ft_lstclear(tokens, free);
-	free_entry(*entry);
-	g_mini.lastcall = 2;
-}
-
 int				parser(t_list **tokens, t_entry **entry)
 {
 	int r;
 
 	r = parse_entry(tokens, entry);
 	if (r == PARSING_ERROR)
-		parsing_error(tokens, entry);
+	{
+		if (!*tokens)
+			ft_putstr_fd("minishell: syntax error: unexpected end of line\n", 2);	
+		else
+			syntax_error((char*)(*tokens)->content);	
+		ft_lstclear(tokens, free);
+		free_entry(*entry);
+		g_mini.lastcall = 2;
+	}
 	else if (r == ALLOC_ERROR)
 	{
 		ft_lstclear(tokens, free);
