@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:49:12 by user42            #+#    #+#             */
-/*   Updated: 2020/06/05 02:21:00 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 03:25:44 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 
 void	alloc_error(void)
 {
-	ft_putstr_fd("minishell: cannot allocate memory\n", 2);
+	ft_perror("minishell", 0, 0);
 }
 
-void	fatal_error(void)
+int		fatal_error(char *label)
 {
-	ft_perror("minishell", "an error has occured", 0);
+	ft_perror("minishell", label, 0);
+	return (FATAL_ERROR);
 }
 
 void	syntax_error(char *token)

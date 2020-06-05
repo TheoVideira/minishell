@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 02:22:28 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 03:43:38 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ static void	quit_error(char *line)
 	ft_dictclear(g_mini.env, free);
 	if (line)
 		free(line);
-	write(1,"\n", 1);
-	ft_perror("minishell", "stdin error", 0);
 	write(1,"exit\n", 5);
 	exit(1);
 }
@@ -63,7 +61,7 @@ static int	handle_eof(char **line)
 		continue;
 	}
 	if (r == -1)
-		return (-1);
+		return (fatal_error("get_next_line"));
 	return (1);
 }
 

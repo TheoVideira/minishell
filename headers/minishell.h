@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 15:41:15 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 03:02:58 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 03:31:22 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,11 +201,10 @@ int				dictoenv(t_dict *dict);
 **	Error management
 */
 void			alloc_error();
-void			fatal_error();
+int				fatal_error(char *label);
 void			syntax_error(char *token);
 void			ft_perror(char *shell, char *prg, char *arg);
 void			ft_perror_msg(char *shell, char *prg, char *arg, char *msg);
-
 void			command_not_found(char *label);
 
 extern t_minishell g_mini;

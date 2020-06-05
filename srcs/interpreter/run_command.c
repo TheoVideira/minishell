@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:07:17 by user42            #+#    #+#             */
-/*   Updated: 2020/06/05 02:32:58 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 03:35:44 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	find_name(char *label, char **ex)
 	if (((path = (char *)ft_dictget(g_mini.env, "PATH")) == 0
 			|| ft_strlen(path) == 0) && (path = getcwd(NULL, 0)) == 0)
 	{
-		ft_perror("minishell", label, 0);
+		fatal_error("getcwd");
 		exit(1);
 	}
 	if (!(entries = ft_split(path, ':')))
@@ -71,23 +71,23 @@ static void	launch_file(t_cmd *cmd)
 
 	if (stat(cmd->label, &tmp) == -1)
 	{
-		ft_perror("minishell", cmd->label, 0);
+		fatal_error(cmd->label);
 		exit(127);
 	}
 	if (S_ISDIR(tmp.st_mode))
 	{
 		errno = EISDIR;
-		ft_perror("minishell", cmd->label, 0);
+		fatal_error(cmd->label);
 		exit(126);
 	}
 	if ((tmp.st_mode & S_IEXEC) == 0)
 	{
 		errno = EACCES;
-		ft_perror("minishell", cmd->label, 0);
+		fatal_error(cmd->label);
 		exit(126);
 	}
 	execve(cmd->label, cmd->args, g_mini.envtmp);
-	ft_perror("minishell", cmd->label, 0);
+	fatal_error(cmd->label);
 	exit(1);
 }
 
@@ -97,7 +97,7 @@ int			run_command(t_cmd *cmd)
 	int		r;
 	int		fd;
 
-	if ((fd = handle_redirs(cmd->redir)) == -1)
+	if ((fd = handle_redirs(cmd->redir)) == FATAL_ERROR)
 		return (FATAL_ERROR);
 	r = 0;
 	if ((cmd->label == 0) || (r = execute_builtin(cmd)) > -1)
@@ -115,7 +115,7 @@ int			run_command(t_cmd *cmd)
 		exit(127);
 	}
 	execve(path, cmd->args, g_mini.envtmp);
-	ft_perror("minishell", path, 0);
+	fatal_error(cmd->label);
 	exit(126);
 	return (0);
 }

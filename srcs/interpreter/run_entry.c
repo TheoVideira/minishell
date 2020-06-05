@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 04:59:21 by user42            #+#    #+#             */
-/*   Updated: 2020/06/02 05:08:50 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 03:29:52 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ int	run_entry(t_entry *entry)
 		r = run_tree((t_node *)tree->content);
 		if (r == ALLOC_ERROR)
 			alloc_error();
-		else if (r == FATAL_ERROR)
-			fatal_error();
 		tree = tree->next;
 	}
 	return (0);

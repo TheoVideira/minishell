@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:01:27 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 16:20:31 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 03:29:25 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ static int		redir_open_out_append(char **redirs, int i, int foi[2])
 		close(foi[0]);
 	if ((fd = open(redirs[i] + 2, O_CREAT | O_WRONLY | O_APPEND, 0666)) == -1)
 	{
-		ft_perror("minishell", redirs[i] + 2, 0);
-		return (fd);
+		return (fatal_error(redirs[i] + 2));
 	}
 	foi[0] = fd;
 	dup2(fd, 1);
@@ -36,8 +35,7 @@ static int		redir_open_out(char **redirs, int i, int foi[2])
 		close(foi[0]);
 	if ((fd = open(redirs[i] + 1, O_CREAT | O_WRONLY | O_TRUNC, 0666)) == -1)
 	{
-		ft_perror("minishell", redirs[i] + 1, 0);
-		return (fd);
+		return (fatal_error(redirs[i] + 1));
 	}
 	foi[0] = fd;
 	dup2(fd, 1);
@@ -52,8 +50,7 @@ static int		redir_open_in(char **redirs, int i, int foi[2])
 		close(foi[1]);
 	if ((fd = open(redirs[i] + 1, O_RDONLY)) == -1)
 	{
-		ft_perror("minishell", redirs[i] + 1, 0);
-		return (fd);
+		return (fatal_error(redirs[i] + 1));
 	}
 	foi[1] = fd;
 	dup2(fd, 0);
