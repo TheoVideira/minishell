@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/24 17:11:43 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/05 02:32:55 by user42           ###   ########.fr       */
+/*   Created: 2020/06/05 22:21:45 by marvin            #+#    #+#             */
+/*   Updated: 2020/06/05 22:21:51 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,10 @@ int				builtin_cd(int ac, char *const *av, t_dict *env)
 	oldpwd = NULL;
 	pwd = NULL;
 	if (ac > 2)
+	{
+		ft_perror_msg("minishell", "cd", NULL, "too many arguments");
 		return (1);
+	}
 	dir = (ac == 1) ? ft_dictget(env, "HOME") : av[1];
 	if (!(oldpwd = ft_get_pwd("OLDPWD")))
 		return (cd_return(dir, oldpwd, pwd));
