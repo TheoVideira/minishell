@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/24 17:13:00 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/04 20:43:24 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 02:31:44 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int			builtin_exit(int ac, char *const *av)
 	else
 	{
 		ft_perror_msg("minishell", "exit", av[1],
-			"numeric argument required\n");
+			"numeric argument required");
 		exit(2);
 	}
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/04 20:24:00 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 02:22:28 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,17 @@ static void	init(int ac, char **av, char **env)
 	(void)av;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, handle_sigquit);
-	g_mini.env = envtodict(env);
+	if (env && *env)
+	{
+		g_mini.env = envtodict(env);
+		if (g_mini.env == 0)
+		{
+			alloc_error();
+			exit(1);
+		}
+	}
+	else
+		g_mini.env = 0;
 	g_mini.isparent = 1;
 }
 
