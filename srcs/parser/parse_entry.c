@@ -6,19 +6,23 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:04:13 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 22:56:33 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 02:01:47 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static int	check_emptylines(t_list **tokens)
+static int	check_emptylines(char *tok, t_list **tokens)
 {
-	char *tok;
-
-	destroy_token(tokens);
-	if ((tok = get_token(tokens)) && ft_strncmp(tok, ";", 1) == 0)
+	if (ft_strncmp(tok, ";;", 3) == 0)
 		return (PARSING_ERROR);
+	if (ft_strncmp(tok, ";", 2) == 0)
+	{
+		destroy_token(tokens);
+		if ((tok = get_token(tokens)) && ft_strncmp(tok, ";", 1) == 0)
+			return (PARSING_ERROR);
+		return (1);
+	}
 	return (0);
 }
 
@@ -35,14 +39,11 @@ int			parse_entry(t_list **tokens, t_entry **entry)
 		return (PARSING_ERROR);
 	while ((tok = get_token(tokens)))
 	{
-		if (ft_strncmp(tok, ";;", 3) == 0)
-			return (PARSING_ERROR);
-		if (ft_strncmp(tok, ";", 2) == 0)
-		{
-			if ((r = check_emptylines(tokens)))
-				return (r);
+		if ((r = check_emptylines(tok, tokens)) == 1
+				&& !(r = 0))
 			continue ;
-		}	
+		else if (r < 0)
+			return (r);
 		if ((r = parse_or(tokens, &tree)) != 0)
 			return (r);
 		if (!(l = ft_lstnew(tree)))
