@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 14:57:28 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 20:38:26 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 21:32:03 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+# include <libft.h>
 
 typedef struct	s_gnllst
 

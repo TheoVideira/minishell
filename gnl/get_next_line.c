@@ -6,13 +6,13 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 10:58:05 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 20:50:28 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/05 21:33:18 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*ft_substr(char const *s, unsigned int start, int len)
+static char	*ft_substr_gnl(char const *s, unsigned int start, int len)
 {
 	char	*dest;
 	int		i;
@@ -41,12 +41,12 @@ int		managecharsleft(t_gnllst *l, t_line *s_line)
 		return (0);
 	if ((e = endofline(l->charsleft, l->size)) != -1)
 	{
-		if (!(*(s_line->line) = ft_substr(l->charsleft, 0, e)))
+		if (!(*(s_line->line) = ft_substr_gnl(l->charsleft, 0, e)))
 			return (-1);
 		tmp = l->charsleft;
 		if (l->size == e + 1)
 			l->charsleft = 0;
-		else if (!(l->charsleft = ft_substr(l->charsleft, e + 1, l->size - e)))
+		else if (!(l->charsleft = ft_substr_gnl(l->charsleft, e + 1, l->size - e)))
 			return (-1);
 		free(tmp);
 		l->size -= e + 1;
@@ -74,25 +74,19 @@ int		allocandconcat(t_line *s_line, char *buff, int tocpy)
 	return (0);
 }
 
-#include <stdio.h>
-
 int		readloop(int fd, char *buff, t_line *s_line, t_gnllst *current)
 {
 	int rd;
 	int eol;
 	int i;
 
-	i = -1;
-	while (++i < BUFFER_SIZE)
-		buff[i] = 0;
+	ft_bzero(buff, BUFFER_SIZE);
 	while ((rd = read(fd, buff, BUFFER_SIZE)) > 0 &&
 		(eol = endofline(buff, BUFFER_SIZE)) == -1)
 	{
 		if (allocandconcat(s_line, buff, rd))
 			return (-1);
-		i = -1;
-		while (++i < BUFFER_SIZE)
-			buff[i] = 0;
+		ft_bzero(buff, BUFFER_SIZE);
 	}
 	if (rd == -1)
 		return (-1);
@@ -103,7 +97,7 @@ int		readloop(int fd, char *buff, t_line *s_line, t_gnllst *current)
 	i = rd - eol - 1;
 	if (eol + 1 == rd)
 		current->charsleft = 0;
-	else if (i > 0 && !(current->charsleft = ft_substr(buff, eol + 1, i)))
+	else if (i > 0 && !(current->charsleft = ft_substr_gnl(buff, eol + 1, i)))
 		return (-1);
 	current->size = i < 0 ? 0 : i;
 	return (i < 0 ? 0 : 1);
