@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_export_add.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/04 15:59:12 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/05 03:12:44 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/06 18:22:37 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	valid_key(char *key)
 	return ((!i || !nan) ? 0 : 1);
 }
 
-static int	is_skippable(char *key, char *eq)
+static int	is_skippable(char *key, char *eq, int *ret)
 {
 	if (!valid_key(key) || (key[0] == '_' && !key[1]))
 	{
@@ -54,6 +54,7 @@ static int	is_skippable(char *key, char *eq)
 			ft_perror_msg("minishell", "export", key,
 				"not a valid identifier");
 		free(key);
+		*ret = 1;
 		return (1);
 	}
 	if (!var_exists(eq, key))
@@ -81,11 +82,13 @@ static int	compute_value(char *key, char *eq, char **value)
 int			builtin_export_add(int ac, char *const *av, t_dict *env)
 {
 	int		i;
+	int		ret;
 	char	*eq;
 	char	*key;
 	char	*value;
 
 	i = 0;
+	ret = 0;
 	while (++i < ac)
 	{
 		eq = ft_strchr(av[i], '=');
@@ -95,12 +98,12 @@ int			builtin_export_add(int ac, char *const *av, t_dict *env)
 			ft_perror("minishell", "export", 0);
 			return (1);
 		}
-		if (is_skippable(key, eq))
+		if (is_skippable(key, eq, &ret))
 			continue ;
 		if (compute_value(key, eq, &value))
 			return (1);
 		ft_dictrem(&env, key, free);
 		ft_dictadd(&env, ft_dictnew(key, value));
 	}
-	return (0);
+	return (ret);
 }
