@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:07:17 by user42            #+#    #+#             */
-/*   Updated: 2020/06/05 03:35:44 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/12 17:50:24 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,11 @@ static int	find_name(char *label, char **ex)
 		if ((r = search_entry(entries[i], label, ex)) < 0)
 			free_char_array(entries);
 		if (r)
+		{
+			free_char_array(entries);
+			free(path);
 			return (r);
+		}
 	}
 	free_char_array(entries);
 	free(path);
