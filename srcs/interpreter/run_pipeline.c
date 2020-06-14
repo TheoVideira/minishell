@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 05:08:55 by user42            #+#    #+#             */
-/*   Updated: 2020/06/05 02:33:07 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/14 22:35:54 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,24 @@ static int	run_single_builtin(int save[2], t_list *l)
 	return (g_mini.lastcall);
 }
 
+static int	is_single_builtin(t_cmd *c)
+{
+	int r;
+
+	if ((r = format_arg(c->args[0], &(c->label))))
+		return (r);
+	if (is_builtin(c))
+	{
+		free(c->label);
+		r = build_cmd(c);
+		if (r)
+			return (r);
+		return (1);
+	}
+	free(c->label);
+	return (0);
+}
+
 int			run_pipeline(t_pipeline *pi)
 {
 	t_list	*l;
@@ -42,8 +60,12 @@ int			run_pipeline(t_pipeline *pi)
 	len = ft_lstsize(pi->cmds);
 	save[0] = dup(0);
 	save[1] = dup(1);
-	if (len == 1 && is_builtin((t_cmd *)l->content))
+	if (len == 1 && (r = is_single_builtin((t_cmd *)l->content)))
+	{
+		if (r < 0)
+			return (r);
 		r = run_single_builtin(save, l);
+	}
 	else
 		r = run_processes(save, len, pi->cmds);
 	if (r)
