@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/03 14:32:27 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 00:52:45 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/12 17:13:59 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void	free_char_array(char **arr)
 
 void	free_node(t_node *tofree)
 {
+	if (!tofree)
+		return ;
 	if (tofree->left)
 	{
 		free_node(tofree->left);

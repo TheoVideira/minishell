@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:33:59 by user42            #+#    #+#             */
-/*   Updated: 2020/06/04 19:33:17 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/12 17:02:51 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ static int	parse_parentheses(t_list **token, t_node **n)
 	{
 		while (1)
 		{
-			if (ask_for_more(token) != 0)
-				return (FATAL_ERROR);
+			if ((r = ask_for_more(token)))
+				return (r);
 			if (ft_strncmp(get_token(token), ")", 2) == 0)
 				break ;
 			r = parse_or(token, n);
@@ -67,7 +67,7 @@ static int	parse_commands(t_list **token, t_pipeline *p)
 		if (*token && ft_strncmp(get_token(token), "|", 2) == 0)
 		{
 			destroy_token(token);
-			if (!*token && ask_for_more(token) != 0)
+			if (!*token && (r = ask_for_more(token)))
 				return (FATAL_ERROR);
 		}
 		else if (*token && is_operator(get_token(token)))

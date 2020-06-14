@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:34:42 by user42            #+#    #+#             */
-/*   Updated: 2020/06/05 03:40:42 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/14 19:16:04 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int			search_dir(char *dirname, char *label, char **fullpath)
 
 	if ((dir = opendir(dirname)) == 0)
 	{
-		return (fatal_error("opendir"));
+		return (FATAL_ERROR);
 	}
 	r = 0;
 	while ((de = readdir(dir)))
