@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:34:42 by user42            #+#    #+#             */
-/*   Updated: 2020/06/14 18:55:18 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/14 19:16:04 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ int			search_dir(char *dirname, char *label, char **fullpath)
 	r = 0;
 	while ((de = readdir(dir)))
 	{
-		// printf("ENTRY |%s|\n", de->d_name);
 		if (ft_strcmp(label, de->d_name) == 0)
 		{
 			r = compute_full_path(dirname, de->d_name, fullpath);

@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:07:17 by user42            #+#    #+#             */
-/*   Updated: 2020/06/14 19:03:50 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/14 19:30:36 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,16 @@ static int	find_name(char *label, char **ex)
 	if (!(entries = ft_split(path, ':')))
 		return (ALLOC_ERROR);
 	i = -1;
+	r = 0;
 	while (entries[++i])
 	{
 		r = search_entry(entries[i], label, ex);
 		if (r == 1)
-		{
-			free_char_array(entries);
-			free(path);
-			return (r);
-		}
+			break ;
 	}
 	free_char_array(entries);
 	free(path);
-	return (0);
+	return (r);
 }
 
 static void	launch_file(t_cmd *cmd)
