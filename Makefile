@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -fsanitize=address -g3 -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 
 GNL_SRCS =		gnl/get_next_line.c \
 				gnl/get_next_line_utils.c
@@ -72,28 +72,29 @@ STATIC_LIB = libft/libft.a
 INCLUDES = -I./libft -I./headers -I./gnl
 
 #Compilation
-$(OBJ_PARENT_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
+$(OBJ_PARENT_DIR)/%.o: %.c $(HEADERS) | $(OBJS_DIR)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 all: $(NAME)
 
 bonus: $(NAME)
 
-libftplz:
+$(STATIC_LIB):
 	$(MAKE) -C libft bonus
 
 clean:
-	$(MAKE) -C libft fclean
+	$(MAKE) -C libft clean
 	$(RM) -f $(OBJS)
 	$(RM) -r $(OBJS_DIR)
 
 fclean: clean
+	$(MAKE) -C libft fclean
 	$(RM) -f minishell
 
 re: fclean all
 
-$(NAME) : $(OBJS_DIR) libftplz $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(STATIC_LIB) $(INCLUDES) -o $(NAME)
+$(NAME) : $(STATIC_LIB) $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(STATIC_LIB) -o $(NAME)
 
 $(OBJS_DIR) :
 	mkdir -p  $(OBJS_DIR)
