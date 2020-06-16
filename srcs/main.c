@@ -3,197 +3,93 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mclaudel <mclaudel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/03/12 17:07:57 by mclaudel         ###   ########.fr       */
+/*   Updated: 2020/06/05 21:18:16 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-char	*getenvkey(char *str)
+t_minishell g_mini = {0};
+
+static void	init(int ac, char **av, char **env)
 {
-	int		start;
-	int		end;
-
-	start = 0;
-	end = 0;
-	while (str[end] && str[end] != '=')
-		end++;
-	return (ft_substr(str, start, end));
-}
-
-char	*getenvvalue(char *str)
-{
-	int		start;
-	int		end;
-
-	start = 0;
-	end = 0;
-	while (str[start] && str[start] != '=')
-		start++;
-	start++;
-	end = ft_strlen(str) - start;
-	return (ft_substr(str, start, end));
-}
-
-t_dict	*envtodict(char **env)
-{
-	t_dict	*dict;
-	t_dict	*tmp;
-	char	*key;
-	char	*value;
-
-	dict = 0;
-	if (!env)
-		return (0);
-	while (*env)
-	{
-		if (!(key = getenvkey(*env)))
-			return (0);
-		value = getenvvalue(*env);
-		if (!value || !(tmp = ft_dictnew(key, value)))
-		{
-			free(value);
-			ft_dictclear(dict, 0);
-			return (0);
-		}
-		ft_dictadd(&dict, tmp);
-		env++;
-	}
-	return (dict);
-}
-
-char	**dictoenv(t_dict *dict)
-{ 
-	int len1;
-	int len2;
-	int i;
-	char **env;
-
-	len1 = ft_dictsize(dict);
-	if (!(env = ft_calloc(1, (len1 + 1) * sizeof(char*))))
-		return (0);
-	i = 0;
-	while (dict)
-	{
-		len1 = ft_strlen(dict->key);
-		len2 = ft_strlen((char*)dict->value);
-		if (!(env[i] = ft_calloc(1, (len1 + 1 + len2 + 1) * sizeof(char))))
-		{
-			free_char_array(env);
-			return (0);	
-		}
-		ft_memcpy(env[i], dict->key, len1);
-		env[i][len1] = '=';
-		ft_memcpy(env[i] + len1 + 1, (char*)dict->value, len2);
-		dict = dict->next;
-		i++;
-	}
-	return (env);
-}
-
-//DEBUG
-void	printdict(t_dict *dict)
-{
-	printf("\e[31;1m ENV \e[0m\n");
-	while(dict)
-	{
-		printf("%s=%s\n", dict->key, (char *)dict->value);
-		dict = dict->next;
-	}
-}
-
-int main(int ac, char **av, char **env)
-{
-	t_minishell mini = {0};
-	int			r;
-	char		*line;
 	(void)ac;
 	(void)av;
-	(void)env;
-	(void) r;
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, handle_sigquit);
+	if (env && *env)
+	{
+		g_mini.env = envtodict(env);
+		if (g_mini.env == 0)
+		{
+			alloc_error();
+			exit(1);
+		}
+	}
+	else
+		g_mini.env = 0;
+	g_mini.isparent = 1;
+}
 
+static void	quit(char *line)
+{
+	ft_dictclear(g_mini.env, free);
+	free(line);
+	write(1,"exit\n", 5);
+	exit(g_mini.lastcall);
+}
 
-	char *str = "0123456789";
-	printf("%s\n", ft_strreplace(str, 2, 5, "Plz don t kill me"));
+static void	quit_error(char *line)
+{
+	ft_dictclear(g_mini.env, free);
+	if (line)
+		free(line);
+	write(1,"exit\n", 5);
+	exit(1);
+}
 
-	mini.env = envtodict(env);
+static int	handle_eof(char **line)
+{
+	int r;
 
+	while ((r = get_next_line(0, line)) == 0 && *line)
+	{
+		free(*line);
+		continue;
+	}
+	if (r == -1)
+		return (fatal_error("get_next_line"));
+	return (1);
+}
+
+int			main(int ac, char **av, char **env)
+{
+	int			r;
+	char		*line;
+
+	r = 1;
+	line = 0;
+	init(ac, av, env);
 	while (1)
 	{
-		write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
-		r = get_next_line(0, &line);
-		
-		// if (r == -1)
-		// 	if (errno)
-		// 		perror(strerror(errno));
-		// //Parse
-		// job = parse_instruction(line);
-		// //Execute
-		// execute_instruction(job);
-		// free_instruction(job);
-		// if (r == 0)
-		// {
-		// 	free(line);
-		// 	break ;
-		// }
-
-		t_list *tokens = tokenize(line, &mini);
-		t_list *tok = tokens;
-
-		printf("\e[1;32m1: TOKENIZER\e[0m\n");
-		printf("Listing tokens\n");
-		while (tokens)
+		if (r != 0)
+			write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
+		if ((r = get_next_line(0, &line)) == -1)
+			quit_error(line);
+		if (r == 0 && *line)
 		{
-			printf("|%s|\n",(char*)tokens->content);
-			tokens = tokens->next;
+			free(line);
+			if ((r = handle_eof(&line)) == -1)
+				quit_error(line);
 		}
-		tokens = tok;
-		printf("Just tokenized |%s|\n", line);
-		free(line); // IMPORTANT
-		
-		printf("\e[1;32m2: PARSER\e[0m\n");
-		t_entry *entry;
-		if (parse_entry(&tok, &entry) == -1)
-			printf("\e[1;31mSYNTAX ERROR\e[0m\n");
-		printf("Just parsed\n");
-
-		t_list *tree;
-		tree = entry->instructions;
-		while (tree)
-		{
-			print_tree((t_node*)tree->content);
-			tree = tree->next;
-			printf("-------------------------------\n");
-		}
-		
-		while (tok)
-		{
-			printf("THIS SHOULD NOT APPEAR\n");
-			printf("\"%s\"\n",(char*)tok->content);
-			tok = tok->next;
-		}
-		printf("\e[1;32m3: INTERPRETER\e[0m\n");
-		printf("-------------OUTPUT------------\n");
-		run_entry(entry, &mini);
-		printf("--------------END--------------\n");
-		// ft_lstclear(tokens);
-
-		// t_node *tree;
-		// tree = create_node(OR, 0);
-		// tree->left = create_node(AND, 0);
-		// tree->right = create_node(PIPELINE, 0);
-		// tree->left->left = create_node(PIPELINE, 0);
-		// tree->left->right = create_node(OR, 0);
-		// tree->left->right->left = create_node(PIPELINE, 0);
-		// tree->left->right->right = create_node(PIPELINE, 0);
-		// print_tree(tree);
-		
-		
-		// free_tokenarray(tokens);
+		else if (r == 0)
+			quit(line);
+		run_dat_shit(line);
+		free(line);
 	}
-	//Think about freeing if signal caught
-	return (0);
+	ft_dictclear(g_mini.env, free);
+	return (g_mini.lastcall);
 }
