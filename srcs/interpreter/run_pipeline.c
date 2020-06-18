@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 05:08:55 by user42            #+#    #+#             */
-/*   Updated: 2020/06/14 22:35:54 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/19 00:41:59 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static int	is_single_builtin(t_cmd *c)
 	if (is_builtin(c))
 	{
 		free(c->label);
-		r = build_cmd(c);
 		if (r)
 			return (r);
 		return (1);
