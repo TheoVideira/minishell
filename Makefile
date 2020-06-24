@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS =  -Wall -Wextra -Werror
+CFLAGS = -fsanitize=address -g3 -Wall -Wextra -Werror
 
 GNL_SRCS =		gnl/get_next_line.c \
 				gnl/get_next_line_utils.c
@@ -29,7 +29,6 @@ SRCS =		$(GNL_SRCS) \
 			srcs/interpreter/run_entry.c \
 			srcs/interpreter/run_pipeline.c \
 			srcs/interpreter/run_tree.c \
-			srcs/interpreter/piping.c \
 			srcs/builtins/builtins_cd.c \
 			srcs/builtins/builtins_echo.c \
 			srcs/builtins/builtins_env.c \
