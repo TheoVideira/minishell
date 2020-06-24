@@ -6,16 +6,22 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/06/24 12:02:58 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/24 15:59:54 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static int		fork_process(int i, t_list *cmd)
+static int		fork_process(int i, int io[2], int savedin, t_list *cmd)
 {
 	if ((g_mini.childs[i].pid = fork()) == 0)
 	{
+		if (i > 0)
+			dup2(savedin, 0);
+		if (cmd->next)
+			dup2(io[1], 1);
+		close(io[0]);
+		close(io[1]);
 		g_mini.isparent = 0;
 		build_cmd((t_cmd *)cmd->content);
 		if (run_command((t_cmd *)cmd->content))
@@ -31,22 +37,32 @@ static int		launch_processes(int save[2], t_list *cmd)
 	int i;
 	int r;
 	int io[2];
-
+	int savedin;
+	(void) save;
 	i = 0;
+	savedin = -1;
 	while (cmd)
 	{
-		r = open_pipe(i, io, save, cmd);
+		if (cmd->next)
+		{
+			pipe(io);
+		}
+		// r = open_pipe(i, io, save, cmd);
+		// if (r)
+		// 	return (r);
+		r = fork_process(i, io, savedin, cmd);
 		if (r)
 			return (r);
-		r = fork_process(i, cmd);
-		if (r)
-			return (r);
-		r = close_pipe(io, cmd);
-		if (r)
-			return (r);
+		close(savedin);
+		close(io[1]);
+		// r = close_pipe(io, cmd);
+		// if (r)
+		// 	return (r);
+		savedin = io[0];
 		cmd = cmd->next;
 		i++;
 	}
+	close(savedin);
 	return (0);
 }
 
