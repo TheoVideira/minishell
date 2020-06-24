@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/06/24 15:59:54 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/24 16:42:11 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,37 +32,30 @@ static int		fork_process(int i, int io[2], int savedin, t_list *cmd)
 	return (0);
 }
 
-static int		launch_processes(int save[2], t_list *cmd)
+static int		launch_processes(t_list *cmd)
 {
 	int i;
 	int r;
 	int io[2];
 	int savedin;
-	(void) save;
+
 	i = 0;
 	savedin = -1;
 	while (cmd)
 	{
-		if (cmd->next)
-		{
-			pipe(io);
-		}
-		// r = open_pipe(i, io, save, cmd);
-		// if (r)
-		// 	return (r);
+		if (cmd->next && pipe(io))
+			return (fatal_error("pipe"));
 		r = fork_process(i, io, savedin, cmd);
 		if (r)
 			return (r);
-		close(savedin);
-		close(io[1]);
-		// r = close_pipe(io, cmd);
-		// if (r)
-		// 	return (r);
+		if (savedin != -1 && close(savedin))
+			return (fatal_error("close"));
+		if (cmd->next && close(io[1]))
+			return (fatal_error("close"));
 		savedin = io[0];
 		cmd = cmd->next;
 		i++;
 	}
-	close(savedin);
 	return (0);
 }
 
@@ -80,7 +73,7 @@ static int		end_processes(int nb)
 	return (0);
 }
 
-int				run_processes(int save[2], int nb, t_list *cmds)
+int				run_processes(int nb, t_list *cmds)
 {
 	int r;
 
@@ -88,12 +81,10 @@ int				run_processes(int save[2], int nb, t_list *cmds)
 		return (ALLOC_ERROR);
 	if (g_mini.env && dictoenv(g_mini.env) == ALLOC_ERROR)
 		return (ALLOC_ERROR);
-	if ((r = launch_processes(save, cmds)))
+	if ((r = launch_processes(cmds)))
 		brutally_murder_childrens(SIGKILL);
 	else
 		end_processes(nb);
-	if (dup2(save[0], 0) == -1 || dup2(save[1], 1) == -1)
-		return (fatal_error("dup2"));
 	free(g_mini.childs);
 	g_mini.childs = 0;
 	free_char_array(g_mini.envtmp);
