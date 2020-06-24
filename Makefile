@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -fsanitize=address -g3 -Wall -Wextra -Werror
+CFLAGS =  -Wall -Wextra -Werror
 
 GNL_SRCS =		gnl/get_next_line.c \
 				gnl/get_next_line_utils.c

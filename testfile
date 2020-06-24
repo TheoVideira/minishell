@@ -1,0 +1,3 @@
+cat | grep
+echo a
+echo b
