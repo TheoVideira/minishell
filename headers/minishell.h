@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 15:41:15 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 03:31:22 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/24 16:41:33 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int				build_cmd(t_cmd	*cmd);
 int				run_entry(t_entry *entry);
 int				run_tree(t_node *tree);
 int				run_pipeline(t_pipeline *pipe);
-int				run_processes(int save[2], int nb, t_list *cmds);
+int				run_processes(int nb, t_list *cmds);
 int				run_command(t_cmd *cmd);
 void			brutally_murder_childrens(int sig);
 int				open_pipe(int i, int io[2], int save[2], t_list *cmd);

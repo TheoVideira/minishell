@@ -6,16 +6,25 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/06/05 03:46:36 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/29 09:57:44 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static int		fork_process(int i, t_list *cmd)
+static int		fork_process(int i, int io[2], int savedin, t_list *cmd)
 {
 	if ((g_mini.childs[i].pid = fork()) == 0)
 	{
+		if (i > 0)
+			dup2(savedin, 0);
+		if (cmd->next)
+			dup2(io[1], 1);
+		if (!(i == 0 && !cmd->next))
+		{
+			close(io[0]);
+			close(io[1]);
+		}
 		g_mini.isparent = 0;
 		build_cmd((t_cmd *)cmd->content);
 		if (run_command((t_cmd *)cmd->content))
@@ -26,24 +35,27 @@ static int		fork_process(int i, t_list *cmd)
 	return (0);
 }
 
-static int		launch_processes(int save[2], t_list *cmd)
+static int		launch_processes(t_list *cmd)
 {
 	int i;
 	int r;
 	int io[2];
+	int savedin;
 
 	i = 0;
+	savedin = -1;
 	while (cmd)
 	{
-		r = open_pipe(i, io, save, cmd);
+		if (cmd->next && pipe(io))
+			return (fatal_error("pipe"));
+		r = fork_process(i, io, savedin, cmd);
 		if (r)
 			return (r);
-		r = fork_process(i, cmd);
-		if (r)
-			return (r);
-		r = close_pipe(io, cmd);
-		if (r)
-			return (r);
+		if (savedin != -1 && close(savedin))
+			return (fatal_error("close"));
+		if (cmd->next && close(io[1]))
+			return (fatal_error("close"));
+		savedin = io[0];
 		cmd = cmd->next;
 		i++;
 	}
@@ -58,12 +70,13 @@ static int		end_processes(int nb)
 	while (++i < nb)
 	{
 		waitpid(g_mini.childs[i].pid, &(g_mini.childs[i].status), 0);
-		g_mini.lastcall = WEXITSTATUS(g_mini.childs[i].status);
+		if (WIFEXITED(g_mini.childs[i].status))
+			g_mini.lastcall = WEXITSTATUS(g_mini.childs[i].status);
 	}
 	return (0);
 }
 
-int				run_processes(int save[2], int nb, t_list *cmds)
+int				run_processes(int nb, t_list *cmds)
 {
 	int r;
 
@@ -71,12 +84,10 @@ int				run_processes(int save[2], int nb, t_list *cmds)
 		return (ALLOC_ERROR);
 	if (g_mini.env && dictoenv(g_mini.env) == ALLOC_ERROR)
 		return (ALLOC_ERROR);
-	if ((r = launch_processes(save, cmds)))
+	if ((r = launch_processes(cmds)))
 		brutally_murder_childrens(SIGKILL);
 	else
 		end_processes(nb);
-	if (dup2(save[0], 0) == -1 || dup2(save[1], 1) == -1)
-		return (fatal_error("dup2"));
 	free(g_mini.childs);
 	g_mini.childs = 0;
 	free_char_array(g_mini.envtmp);

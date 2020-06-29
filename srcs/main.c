@@ -6,13 +6,15 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/05 21:30:17 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/29 22:45:56 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
 t_minishell g_mini = {0};
+
+// PENSER A ENLEVER LE FSANITIZE DU MAKEFILE
 
 static void	init(int ac, char **av, char **env)
 {

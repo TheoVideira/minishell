@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:16:30 by user42            #+#    #+#             */
-/*   Updated: 2020/06/12 17:02:51 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/24 12:29:03 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static int		parse_args(t_list **token, t_list **args, t_list **redir)
 	int		r;
 
 	*redir = 0;
+	t = "";
 	while (*token && !is_operator((t = get_token(token))))
 	{
 		if (ft_strncmp(t, ">", 2) == 0 ||
