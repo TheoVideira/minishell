@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 05:08:55 by user42            #+#    #+#             */
-/*   Updated: 2020/06/24 16:42:31 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/29 23:14:28 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,18 @@ static int	run_single_builtin(t_list *l)
 	int	fd;
 	int	r;
 
-	if ((fd = handle_redirs(((t_cmd*)l->content)->redir)) != -1)
+	if (((t_cmd*)l->content)->redir)
+		fd = handle_redirs(((t_cmd*)l->content)->redir);
+	if (fd == -1)
+		g_mini.lastcall = 1;
+	else
 	{
 		if ((r = build_cmd((t_cmd *)l->content)))
 			return (r);
 		g_mini.lastcall = execute_builtin((t_cmd *)l->content);
-		close(fd);
+		if (fd > 0)
+			close(fd);
 	}
-	else
-		g_mini.lastcall = 1;
 	return (g_mini.lastcall);
 }
 
