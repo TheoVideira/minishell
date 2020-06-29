@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/06/24 16:42:11 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/29 09:57:44 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,11 @@ static int		fork_process(int i, int io[2], int savedin, t_list *cmd)
 			dup2(savedin, 0);
 		if (cmd->next)
 			dup2(io[1], 1);
-		close(io[0]);
-		close(io[1]);
+		if (!(i == 0 && !cmd->next))
+		{
+			close(io[0]);
+			close(io[1]);
+		}
 		g_mini.isparent = 0;
 		build_cmd((t_cmd *)cmd->content);
 		if (run_command((t_cmd *)cmd->content))
