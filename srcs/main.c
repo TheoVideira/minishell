@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/29 23:03:49 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/29 23:18:11 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,19 @@ static void	quit_error(char *line, char *func)
 	exit(1);
 }
 
-static int	handle_eof(char **line)
-{
-	int r;
+// static int	handle_eof(char **line)
+// {
+// 	int r;
 
-	while ((r = get_next_line(0, line)) == 0 && *line)
-	{
-		free(*line);
-		continue;
-	}
-	if (r == -1)
-		return (fatal_error("get_next_line"));
-	return (1);
-}
+// 	while ((r = get_next_line(0, line)) == 0 && *line)
+// 	{
+// 		free(*line);
+// 		continue;
+// 	}
+// 	if (r == -1)
+// 		return (fatal_error("get_next_line"));
+// 	return (1);
+// }
 
 int			main(int ac, char **av, char **env)
 {
@@ -83,9 +83,10 @@ int			main(int ac, char **av, char **env)
 			quit_error(line, "get_next_line");
 		if (r == 0 && *line)
 		{
+			write(0, "\n", 1);
 			free(line);
-			if ((r = handle_eof(&line)) == -1)
-				quit_error(line, "handle_eof");
+			// if ((r = handle_eof(&line)) == -1)
+			// 	quit_error(line, "handle_eof");
 		}
 		else if (r == 0)
 			quit(line);
