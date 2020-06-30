@@ -6,11 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2020/06/29 22:45:56 by user42           ###   ########.fr       */
-=======
-/*   Updated: 2020/06/29 23:22:26 by user42           ###   ########.fr       */
->>>>>>> develop
+/*   Updated: 2020/06/30 11:20:09 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +49,7 @@ static void	quit_error(char *line, char *func)
 	ft_dictclear(g_mini.env, free);
 	if (line)
 		free(line);
-<<<<<<< HEAD
-	write(1, "exit\n", 5);
-=======
 	fatal_error(func);
->>>>>>> develop
 	exit(1);
 }
 
