@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/06/30 11:20:09 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/30 11:55:27 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,29 @@ static void	quit_error(char *line, char *func)
 
 static int	handle_eof(char **line)
 {
-	int r;
+	int		r;
+	char	*prev;
+	char	*curr;
+	char	*new;
 
-	while ((r = get_next_line(0, line)) == 0 && *line)
+	prev = *line;
+	new = *line;
+	curr = 0;
+	while ((r = get_next_line(0, &curr)) == 0 && curr)
 	{
-		free(*line);
-		continue;
+		new = ft_strjoin(prev, curr);
+		free(prev);
+		free(curr);
+		prev = new;
+		if(!new)
+			return (-1);
 	}
 	if (r == -1)
-		return (fatal_error("get_next_line"));
+		return (-1);
+	if(!(*line = ft_strjoin(new, curr)))
+		return (-1);
+	free(new);
+	free(curr);
 	return (1);
 }
 
@@ -83,7 +97,6 @@ int			main(int ac, char **av, char **env)
 			quit_error(line, "get_next_line");
 		if (r == 0 && *line)
 		{
-			free(line);
 			if ((r = handle_eof(&line)) == -1)
 				quit_error(line, "handle_eof");
 		}
