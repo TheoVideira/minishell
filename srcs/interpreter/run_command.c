@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 16:07:17 by user42            #+#    #+#             */
-/*   Updated: 2020/06/14 19:30:36 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/29 23:10:07 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int			run_command(t_cmd *cmd)
 	int		r;
 	int		fd;
 
-	if ((fd = handle_redirs(cmd->redir)) == FATAL_ERROR)
+	if (cmd->redir && (fd = handle_redirs(cmd->redir)) == FATAL_ERROR)
 		return (FATAL_ERROR);
 	r = 0;
 	if ((cmd->label == 0) || (r = execute_builtin(cmd)) > -1)

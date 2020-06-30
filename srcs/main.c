@@ -6,7 +6,11 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2020/06/29 22:45:56 by user42           ###   ########.fr       */
+=======
+/*   Updated: 2020/06/29 23:22:26 by user42           ###   ########.fr       */
+>>>>>>> develop
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +48,16 @@ static void	quit(char *line)
 	exit(g_mini.lastcall);
 }
 
-static void	quit_error(char *line)
+static void	quit_error(char *line, char *func)
 {
 	ft_dictclear(g_mini.env, free);
 	if (line)
 		free(line);
+<<<<<<< HEAD
 	write(1, "exit\n", 5);
+=======
+	fatal_error(func);
+>>>>>>> develop
 	exit(1);
 }
 
@@ -80,12 +88,12 @@ int			main(int ac, char **av, char **env)
 		if (r != 0)
 			write(1, "\e[1;35mOK-BOOMER\e[0m$>", 23);
 		if ((r = get_next_line(0, &line)) == -1)
-			quit_error(line);
+			quit_error(line, "get_next_line");
 		if (r == 0 && *line)
 		{
 			free(line);
 			if ((r = handle_eof(&line)) == -1)
-				quit_error(line);
+				quit_error(line, "handle_eof");
 		}
 		else if (r == 0)
 			quit(line);
