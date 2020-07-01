@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 05:08:55 by user42            #+#    #+#             */
-/*   Updated: 2020/06/29 23:14:28 by user42           ###   ########.fr       */
+/*   Updated: 2020/07/01 16:43:26 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ static int	is_single_builtin(t_cmd *c)
 {
 	int r;
 
+	if (!c->args[0])
+		return (0);
 	if ((r = format_arg(c->args[0], &(c->label))))
 		return (r);
 	if (is_builtin(c))
