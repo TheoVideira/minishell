@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/28 14:50:20 by mclaudel          #+#    #+#             */
-/*   Updated: 2020/07/01 16:47:59 by user42           ###   ########.fr       */
+/*   Updated: 2020/07/01 20:03:36 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static void	init(int ac, char **av, char **env)
 	}
 	else
 		g_mini.env = 0;
+	g_mini.lastcall = 0;
 	g_mini.isparent = 1;
 }
 

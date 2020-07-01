@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/02 21:36:56 by user42            #+#    #+#             */
-/*   Updated: 2020/06/14 20:13:50 by user42           ###   ########.fr       */
+/*   Updated: 2020/07/01 20:03:32 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int				lexer(char *line, t_list **tokens)
 	{
 		ft_lstclear(tokens, free);
 		ft_putstr_fd("minishell: unclosed quote\n", 2);
+		g_mini.lastcall = 2; 
 		return (r);
 	}
 	return (0);
