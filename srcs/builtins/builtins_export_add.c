@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_export_add.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/04 15:59:12 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/06 18:22:37 by marvin           ###   ########.fr       */
+/*   Updated: 2020/07/06 01:22:31 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,14 @@ static int	compute_value(char *key, char *eq, char **value)
 {
 	if (eq)
 	{
-		*value = ft_strdup(eq + 1);
+		*value = ft_calloc(1, ft_strlen(eq + 1) + how_many_skips(eq + 1) + 1);
 		if ((*value) == NULL)
 		{
 			free(key);
 			ft_perror("minishell", "export", 0);
 			return (1);
 		}
+		create_value(eq, value);
 	}
 	else
 		*value = NULL;

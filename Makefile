@@ -36,6 +36,7 @@ SRCS =		$(GNL_SRCS) \
 			srcs/builtins/builtins_export.c \
 			srcs/builtins/builtins_export_add.c \
 			srcs/builtins/builtins_export_print.c \
+			srcs/builtins/builtins_export_utils.c\
 			srcs/builtins/builtins_pwd.c \
 			srcs/builtins/builtins_unset.c \
 			srcs/misc/signals.c \
