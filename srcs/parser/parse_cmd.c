@@ -6,11 +6,18 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:16:30 by user42            #+#    #+#             */
-/*   Updated: 2020/07/06 00:20:15 by user42           ###   ########.fr       */
+/*   Updated: 2020/07/06 00:41:03 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+static int		is_redir(char *str)
+{
+	return (ft_strncmp(str, ">", 2) == 0 ||
+			ft_strncmp(str, ">>", 2) == 0 ||
+			ft_strncmp(str, "<", 2) == 0);
+}
 
 static int		join_tokens(t_list **token, t_list **target)
 {
@@ -21,7 +28,8 @@ static int		join_tokens(t_list **token, t_list **target)
 
 	toadd = pop_first(token);
 	s1 = toadd->content;
-	if (!*token || is_operator(get_token(token)))
+	s2 = get_token(token);
+	if (!*token || is_operator(s2) || is_redir(s2))
 	{
 		ft_lstdelone(toadd, free);
 		return (PARSING_ERROR);
@@ -49,9 +57,7 @@ static int		parse_args(t_list **token, t_list **args, t_list **redir)
 	t = "";
 	while (*token && !is_operator((t = get_token(token))))
 	{
-		if (ft_strncmp(t, ">", 2) == 0 ||
-			ft_strncmp(t, ">>", 2) == 0 ||
-			ft_strncmp(t, "<", 2) == 0)
+		if (is_redir(t))
 		{
 			if ((r = join_tokens(token, redir)))
 				return (r);
@@ -62,13 +68,6 @@ static int		parse_args(t_list **token, t_list **args, t_list **redir)
 	if (ft_strncmp(t, "(", 2) == 0)
 		return (PARSING_ERROR);
 	return (0);
-}
-
-static int		is_redir(char *str)
-{
-	return (ft_strncmp(str, ">", 2) == 0 ||
-			ft_strncmp(str, ">>", 2) == 0 ||
-			ft_strncmp(str, "<", 2) == 0);
 }
 
 static int		parse_label(t_list **args, t_cmd **c, t_list **token)
