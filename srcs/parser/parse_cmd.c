@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:16:30 by user42            #+#    #+#             */
-/*   Updated: 2020/06/24 12:29:03 by user42           ###   ########.fr       */
+/*   Updated: 2020/07/06 00:20:15 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ static int		parse_label(t_list **args, t_cmd **c, t_list **token)
 		if ((*token)->next == 0)
 		{
 			free(*c);
+			*c = 0;
 			return (PARSING_ERROR);
 		}
 		if ((new = ft_lstnew(0)) == 0)
