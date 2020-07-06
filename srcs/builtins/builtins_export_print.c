@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_export_print.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/05 02:49:01 by user42            #+#    #+#             */
-/*   Updated: 2020/06/06 19:39:55 by marvin           ###   ########.fr       */
+/*   Updated: 2020/07/06 16:58:29 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int			builtin_export_print(t_dict *env)
 	while (++i < ft_dictsize(env))
 	{
 		var = ft_dictgetindex(env, tab[i]);
-		if (strcmp(var->key, "_") == 0)
+		if (ft_strcmp(var->key, "_") == 0)
 			continue ;
 		write(1, "declare -x ", 11);
 		write(1, var->key, ft_strlen(var->key));
@@ -59,7 +59,7 @@ int			builtin_export_print(t_dict *env)
 			continue;
 		}
 		write(1, "=\"", 2);
-		write(1, var->value, strlen(var->value));
+		write(1, var->value, ft_strlen(var->value));
 		ft_putendl_fd("\"", 1);
 	}
 	return (0);
