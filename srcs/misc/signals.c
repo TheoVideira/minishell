@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 15:54:00 by user42            #+#    #+#             */
-/*   Updated: 2020/07/06 13:41:44 by user42           ###   ########.fr       */
+/*   Updated: 2020/07/06 16:06:27 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	handle_sigint(int sig)
 {
 	int r;
 
-	(void) sig;
+	(void)sig;
 	if (!g_mini.childs)
 	{
 		brutally_murder_childrens(sig);
