@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/26 14:01:44 by user42            #+#    #+#             */
-/*   Updated: 2020/06/29 22:55:08 by user42           ###   ########.fr       */
+/*   Updated: 2020/07/06 13:13:20 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,10 @@ static int		end_processes(int nb)
 		if (WIFEXITED(g_mini.childs[i].status))
 			g_mini.lastcall = WEXITSTATUS(g_mini.childs[i].status);
 	}
+	if (WCOREDUMP(g_mini.childs[i - 1].status))
+		ft_putstr_fd("Quit (core dumped)", 1);
+	if (WIFSIGNALED(g_mini.childs[i - 1].status))
+		write(1, "\n", 1);
 	return (0);
 }
 
