@@ -15,5 +15,3 @@ nom_commande arg1 arg2 ... argn < fichier_entrée > fichier sortie
 ```
 Une commande peut recevoir soit des argument et/ou une entrée (avec la redirection "<" ou un autre prompt shell (ex: cat )) 
 et ou/une une redirection (">") de la sortie vers un autre fichier. Par défaut la sortie se fait sur le prompt du shell
-
-Si il y a plusieurs redirectons vers un fichier de sortie (">"), tous ls fichiers seront ouverts ou créés le seulement le dernier renseigné contiendra la sortie de la commande.
